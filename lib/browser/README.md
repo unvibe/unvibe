@@ -1,0 +1,1 @@
+# Browser only utitlity functions

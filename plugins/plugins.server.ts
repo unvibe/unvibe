@@ -1,0 +1,9 @@
+export * as CorePlugin from './core/plugin.server';
+export * as GitPlugin from './git/plugin.server';
+export * as TypescriptPlugin from './typescript/plugin.server';
+export * as GoPlugin from './go/plugin.server';
+export * as TurborepoPlugin from './turborepo/plugin.server';
+export * as NPMPlugin from './npm/plugin.server';
+export * as EslintPlugin from './eslint/plugin.server';
+export * as PrettierPlugin from './prettier/plugin.server';
+export * as GithubPlugin from './github/plugin.server';

@@ -1,0 +1,57 @@
+import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import clsx from 'clsx';
+import React from 'react';
+
+interface CheckboxProps
+  extends React.ComponentPropsWithoutRef<typeof RadixCheckbox.Root> {
+  label?: string;
+}
+
+export const Checkbox: React.FC<CheckboxProps> = ({
+  label,
+  className,
+  checked,
+  ...props
+}) => {
+  const id = props.id;
+  return (
+    <div className='flex items-center space-x-2 select-none cursor-pointer'>
+      <RadixCheckbox.Root
+        className={clsx(
+          'w-6 h-6 rounded border border-border flex items-center justify-center transition-colors duration-150 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer',
+          checked ? 'bg-blue-600' : 'bg-background',
+          className
+        )}
+        checked={checked}
+        id={id}
+        {...props}
+      >
+        <RadixCheckbox.Indicator className='w-6 h-6 flex items-center justify-center text-background'>
+          <svg
+            width='20'
+            height='20'
+            viewBox='0 0 20 20'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M5.5 10.5L9 14L15 7'
+              stroke='currentColor'
+              strokeWidth='2.2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
+        </RadixCheckbox.Indicator>
+      </RadixCheckbox.Root>
+      {label && (
+        <label
+          htmlFor={id}
+          className='text-base text-foreground cursor-pointer'
+        >
+          {label}
+        </label>
+      )}
+    </div>
+  );
+};

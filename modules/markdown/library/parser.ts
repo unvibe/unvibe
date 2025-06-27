@@ -1,0 +1,29 @@
+import MarkdownIt from 'markdown-it-async';
+import { codeToHtml } from 'shiki';
+
+const md = MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  highlight: async (str, lang) => {
+    return await codeToHtml(str, {
+      lang,
+      theme: 'github-dark',
+    });
+  },
+});
+
+export async function parseMarkdown(markdown: string): Promise<string> {
+  // markdown-it is synchronous
+  return md.render(markdown);
+}
+
+export async function highlightCode(
+  code: string,
+  lang: string
+): Promise<string> {
+  return codeToHtml(code, {
+    lang,
+    theme: 'github-dark',
+  });
+}

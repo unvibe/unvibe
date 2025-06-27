@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    { "id": "app", "label": "Next.js App Entrypoint (/app)" },
+    { "id": "modules", "label": "UI Modules (/modules)" },
+    { "id": "server", "label": "Backend (/server)" },
+    { "id": "plugins", "label": "Plugins (/plugins)" },
+    { "id": "database", "label": "Database (SQLite via Drizzle-ORM)" },
+    { "id": "api", "label": "API Layer (server/api)" },
+    { "id": "llm_models", "label": "LLM Models (server/llm/models)" },
+    { "id": "llm_runners", "label": "LLM Runners (server/llm/runners)" },
+    { "id": "agents", "label": "Agents (server/llm/agent)" },
+    { "id": "websocket", "label": "WebSocket Server (server/websocket)" }
+  ],
+  "edges": [
+    { "from": "app", "to": "modules", "type": "renders", "description": "App entrypoint sets up providers and renders UI modules." },
+    { "from": "modules", "to": "api", "type": "calls", "description": "UI modules call typed API endpoints via React Query hooks." },
+    { "from": "modules", "to": "websocket", "type": "subscribes", "description": "UI subscribes to WebSocket events for progress/status updates." },
+    { "from": "api", "to": "server", "type": "routes", "description": "API endpoints delegate to backend business logic." },
+    { "from": "server", "to": "database", "type": "queries", "description": "Backend reads/writes data via Drizzle-ORM." },
+    { "from": "server", "to": "plugins", "type": "loads/augments", "description": "Backend uses plugins for project analysis, tool/diagnostic augmentation, and LLM tool registration." },
+    { "from": "server", "to": "agents", "type": "instantiates", "description": "Backend creates agents to handle threaded/LLM interactions." },
+    { "from": "agents", "to": "llm_models", "type": "uses", "description": "Agents select and use LLM models from the registry." },
+    { "from": "agents", "to": "llm_runners", "type": "delegates", "description": "Agents delegate LLM execution to the appropriate runner." },
+    { "from": "plugins", "to": "llm_models", "type": "registers/augments", "description": "Plugins can register or augment available LLM models and tools (server-side)." },
+    { "from": "plugins", "to": "agents", "type": "extends", "description": "Plugins can extend agent context with tools and system parts." },
+    { "from": "server", "to": "websocket", "type": "emits", "description": "Backend emits progress/status events to WebSocket clients." },
+    { "from": "api", "to": "database", "type": "queries", "description": "API endpoints may directly query/update the database." }
+  ]
+}
