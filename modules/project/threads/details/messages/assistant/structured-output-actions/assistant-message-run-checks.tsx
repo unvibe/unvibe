@@ -12,6 +12,7 @@ import {
 } from 'react-icons/hi2';
 import { useProject } from '@/modules/project/provider';
 import { useMemo } from 'react';
+import { useStructuredOutputContext } from '../structured-output/context';
 
 function QualityCheckProgress({
   progress,
@@ -50,18 +51,17 @@ function QualityCheckText({
 }
 
 export function ThreadDetailsMessageCodeQualityCheck({
-  data,
   onClick,
   isPending,
   diagnostics,
 }: {
-  data?: ModelResponseStructure['proposed_files'];
   onClick: () => void;
   isPending: boolean;
   diagnostics?: { name: string; result: string }[];
 }) {
-  const addedFiles = data?.add || [];
-  const removedFiles = data?.remove || [];
+  const { data } = useStructuredOutputContext();
+  const addedFiles = data?.replace_files || [];
+  const removedFiles = data?.delete_files || [];
   const hasProposalFiles = addedFiles.length > 0 || removedFiles.length > 0;
   const project = useProject();
 

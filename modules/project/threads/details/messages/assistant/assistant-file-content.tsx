@@ -2,6 +2,34 @@ import { highlightCode } from '@/modules/markdown/library/parser';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 
+export function MinimalFileContent({
+  content,
+  path,
+}: {
+  content: string;
+  path: string;
+}) {
+  const [highlighted, setHighlighted] = useState(content || '');
+
+  useEffect(() => {
+    const ext = path.split('.').pop() || 'text';
+    highlightCode(content || '', ext).then((result) => {
+      setHighlighted(result);
+    });
+  }, [content, path]);
+
+  return (
+    <div className='rounded-xl max-w-full overflow-hidden relative border border-border'>
+      <pre
+        dangerouslySetInnerHTML={{ __html: highlighted }}
+        className={clsx(
+          'relative text-foreground-1 whitespace-pre-wrap text-xs font-mono max-h-[300px] overflow-hidden',
+          '[&>*]:px-4 [&>*]:pt-3 [&>*]:pb-4 [&>*]:overflow-x-auto'
+        )}
+      />
+    </div>
+  );
+}
 export function ThreadDetailsMessageListItemFileContent({
   data,
   initCodeSnippet,

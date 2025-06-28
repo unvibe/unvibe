@@ -101,6 +101,7 @@ body {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   overflow-x: auto;
+  background-color: var(--color-background-1);
 }
 .markdown-body pre {
   overflow: hidden;

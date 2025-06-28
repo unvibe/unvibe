@@ -4,10 +4,10 @@ import { Spinner } from '@/modules/ui/spinner';
 import { Modal } from '@/modules/ui/modal';
 import { Alert, variantIcons } from '@/modules/ui/alert';
 import { FaTerminal } from 'react-icons/fa';
+import { useStructuredOutputContext } from '../structured-output/context';
 
 export function ConfirmModal({
   closeModal,
-  proposed_files,
   isRunningCommands,
   isWritingFiles,
   isDangerous,
@@ -16,7 +16,6 @@ export function ConfirmModal({
   diagnostics,
 }: {
   closeModal: () => void;
-  proposed_files: ModelResponseStructure['proposed_files'];
   isRunningCommands?: boolean;
   isWritingFiles?: boolean;
   isDangerous?: boolean;
@@ -24,12 +23,10 @@ export function ConfirmModal({
   installPackages: () => void;
   diagnostics?: { name: string; result: string }[];
 }) {
-  // const hasPackages = Boolean(
-  //   proposed_packages?.add?.length || proposed_packages?.remove?.length
-  // );
+  const { data } = useStructuredOutputContext();
   const hasPackages = false;
   const hasProposalFiles = Boolean(
-    proposed_files?.add?.length || proposed_files?.remove?.length
+    data.replace_files?.length || data?.delete_files?.length
   );
 
   const hasErrors = diagnostics?.some((d) => !!d.result);

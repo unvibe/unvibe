@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it-async';
-import { codeToHtml } from 'shiki';
+import { codeToHtml, createHighlighterCoreSync } from 'shiki';
 
 const md = MarkdownIt({
   html: true,

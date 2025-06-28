@@ -7,7 +7,8 @@ export async function loader() {
     models: await client('GET /models'),
   };
 }
-export default async function Page({ loaderData }: Route.ComponentProps) {
+
+export default function Page({ loaderData }: Route.ComponentProps) {
   return (
     <main className='w-full px-8 h-screen flex items-center justify-center text-center overflow-y-auto relative'>
       <ThreadsHome models={loaderData.models} />

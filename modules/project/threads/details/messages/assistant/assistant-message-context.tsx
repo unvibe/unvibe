@@ -9,6 +9,7 @@ import {
 import { ThreadDetailsMessageProps } from '../_shared-types';
 import type { ModelResponseStructure } from '@/server/llm/structured_output';
 import { noop } from '@/lib/core/noop';
+import type { Message } from '@/server/db/schema';
 
 type StructuredContentState = {
   added: { path: string; content?: string; selected: boolean }[];
@@ -20,6 +21,7 @@ type AssistantMessageContext = {
     get: () => StructuredContentState | null;
     set: Dispatch<SetStateAction<StructuredContentState | null>>;
   };
+  message: Message;
   metadata:
     | {
         type: 'tool_call';
@@ -42,34 +44,37 @@ export function useAssistantMessageContext() {
   return useContext(AssistantMessageContext) as AssistantMessageContext;
 }
 
-function cleanUp(candidate: ModelResponseStructure | string) {
+function cleanUp(
+  candidate: ModelResponseStructure | string
+): ModelResponseStructure {
   if (typeof candidate === 'string') {
     return {
       message: candidate,
-      proposal_id: '',
-      proposed_files: {
-        add: [],
-        remove: [],
-      },
-      proposed_packages: { add: [], remove: [] },
-    } as ModelResponseStructure;
+      delete_files: [],
+      edit_files: [],
+      replace_files: [],
+      shell_scripts: [],
+    };
   }
 
-  const files = candidate?.proposed_files || { add: [], remove: [] };
-
-  const addedFiles = files?.add?.filter(
+  const addedFiles = candidate.replace_files?.filter(
     (file) => typeof file === 'object' && file.path
   );
-  const removedFiles = files?.remove?.filter(
+  const removedFiles = candidate.delete_files?.filter(
     (file) => typeof file === 'object' && file.path
   );
 
   return {
     ...candidate,
-    proposed_files: {
-      add: addedFiles,
-      remove: removedFiles,
-    },
+    edit_files:
+      candidate.edit_files?.filter(
+        (file) => typeof file === 'object' && file.path
+      ) || [],
+    replace_files: addedFiles || [],
+    delete_files: removedFiles || [],
+    shell_scripts:
+      candidate.shell_scripts?.filter((script) => typeof script === 'string') ||
+      [],
     message: candidate.message || '',
   };
 }
@@ -128,11 +133,11 @@ export function AssistantMessageContextProvider({
       const parsedContent = cleanUp(parseMessageContent(data.content));
       const addedFilesCount =
         typeof parsedContent !== 'string'
-          ? parsedContent?.proposed_files?.add?.length || 0
+          ? parsedContent?.replace_files?.length || 0
           : 0;
       const removedFilesCount =
         typeof parsedContent !== 'string'
-          ? parsedContent?.proposed_files?.remove?.length || 0
+          ? parsedContent?.delete_files?.length || 0
           : 0;
 
       const showAction =
@@ -147,12 +152,12 @@ export function AssistantMessageContextProvider({
         threadId,
         initialState: {
           added:
-            parsedContent?.proposed_files?.add?.map((file) => ({
+            parsedContent?.replace_files?.map((file) => ({
               ...file,
               selected: true,
             })) || [],
           removed:
-            parsedContent?.proposed_files?.remove?.map((file) => ({
+            parsedContent?.delete_files?.map((file) => ({
               ...file,
               selected: true,
             })) || [],
@@ -177,6 +182,7 @@ export function AssistantMessageContextProvider({
   const contextValue = useMemo(() => {
     return {
       metadata,
+      message: data,
       state: {
         get: () => selectedFiles,
         set: setSelectedFiles,

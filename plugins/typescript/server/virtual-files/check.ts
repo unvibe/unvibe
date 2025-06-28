@@ -9,9 +9,12 @@
 
 import path from 'path';
 import crypto from 'crypto';
+import { createRequire } from 'module';
 
 // ------------------------- types -------------------------
 export type VirtualFile = { path: string; content: string };
+
+const require = createRequire(import.meta.url);
 
 interface ProjectCtx {
   ts: typeof import('typescript');

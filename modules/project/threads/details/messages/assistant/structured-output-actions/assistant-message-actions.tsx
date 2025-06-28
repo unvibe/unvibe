@@ -9,10 +9,12 @@ import { useAPIMutation } from '@/server/api/client';
 import clsx from 'clsx';
 import { useParams } from '@/lib/next/navigation';
 import { useProject } from '@/modules/project/provider';
-import { useAssistantMessageContext } from './assistant-message-context';
+import { useAssistantMessageContext } from '../assistant-message-context';
+import { useStructuredOutputContext } from '../structured-output/context';
 
 export function AssistantMessageActions() {
   const context = useAssistantMessageContext();
+  const { data } = useStructuredOutputContext();
   const parsedContent =
     typeof context.metadata?.content === 'string'
       ? undefined
@@ -24,8 +26,8 @@ export function AssistantMessageActions() {
   const params = useParams();
   const projectId =
     typeof params.project_id === 'string' ? params.project_id : '';
-  const addedFiles = parsedContent?.proposed_files?.add || [];
-  const removedFiles = parsedContent?.proposed_files?.remove || [];
+  const addedFiles = data.replace_files || [];
+  const removedFiles = data.delete_files || [];
 
   const { mutate: getDiagnostics, isPending: isCheckingTypeErrors } =
     useAPIMutation('POST /projects/diagnostics');
@@ -131,7 +133,6 @@ export function AssistantMessageActions() {
             <>
               <ThreadDetailsMessageCodeQualityCheck
                 isPending={isCheckingTypeErrors}
-                data={parsedContent?.proposed_files}
                 diagnostics={diagnostics}
                 onClick={() => {
                   // feedback the error
@@ -146,7 +147,6 @@ export function AssistantMessageActions() {
               />
               <ThreadDetailsMessageChoiceButtons
                 hasChecks={true}
-                proposed_files={{ add: addedFiles, remove: removedFiles }}
                 diagnostics={diagnostics}
                 isPending={isCheckingTypeErrors}
               />
@@ -155,7 +155,6 @@ export function AssistantMessageActions() {
             <>
               <div />
               <ThreadDetailsMessageChoiceButtons
-                proposed_files={{ add: addedFiles, remove: removedFiles }}
                 isPending={false}
                 hasChecks={false}
               />

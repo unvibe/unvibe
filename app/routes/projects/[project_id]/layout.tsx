@@ -4,24 +4,25 @@ import { ProjectProvider } from '@/modules/project/provider';
 import type { Project } from '@/plugins/core/server/api/lib/project';
 import { Route } from './+types/layout';
 import { Outlet } from 'react-router';
-
-async function getProject(project_id: string): Promise<Project> {
-  try {
-    const projectResponse = await fetch(
-      'http://localhost:3008/api/v2/projects/parse-project?source=projects&projectDirname=' +
-        project_id
-    );
-    const json = await projectResponse.json();
-    return json.project;
-  } catch (error) {
-    noop(error);
-    throw new Error('Failed to fetch project');
-  }
-}
+import { client } from '@/server/api/client';
 
 export async function loader({ params }: Route.LoaderArgs) {
+  const data = await client('GET /projects/parse-project', {
+    source: 'projects',
+    projectDirname: params.project_id,
+  });
   return {
-    project: await getProject(params.project_id),
+    project: data.project,
+  };
+}
+
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+  const data = await client('GET /projects/parse-project', {
+    source: 'projects',
+    projectDirname: params.project_id,
+  });
+  return {
+    project: data.project,
   };
 }
 

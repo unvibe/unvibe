@@ -9,7 +9,9 @@
 import path from 'path';
 import crypto from 'crypto';
 import stripAnsi from 'strip-ansi';
+import { createRequire } from 'module';
 
+const require = createRequire(import.meta.url);
 // ---------------------- local ESLint loader ----------------------
 type ESLintCtor = typeof import('eslint').ESLint;
 

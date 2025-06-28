@@ -7,9 +7,10 @@ import { HiMiniArrowDownTray, HiOutlineEye } from 'react-icons/hi2';
 import { useAPIMutation } from '@/server/api/client';
 import { Spinner } from '@/modules/ui/spinner';
 import { ConfirmModal } from './assistant-message-action-confirm-modal';
-import { AssistantMessageDemoModal } from './assitant-message-demo-modal';
+import { AssistantMessageDemoModal } from '../assitant-message-demo-modal';
 import toast from 'react-hot-toast';
 import { useParams } from '@/lib/next/navigation';
+import { useStructuredOutputContext } from '../structured-output/context';
 
 function PreviewButton({ onClick }: { onClick: () => void }) {
   return (
@@ -28,16 +29,15 @@ function PreviewButton({ onClick }: { onClick: () => void }) {
 }
 
 export function ThreadDetailsMessageChoiceButtons({
-  proposed_files,
   diagnostics,
   isPending,
   hasChecks,
 }: {
-  proposed_files: ModelResponseStructure['proposed_files'];
   diagnostics?: { name: string; result: string }[];
   isPending: boolean;
   hasChecks: boolean;
 }) {
+  const { data } = useStructuredOutputContext();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const params = useParams();
@@ -67,12 +67,12 @@ export function ThreadDetailsMessageChoiceButtons({
   }
 
   const writeOperations =
-    proposed_files?.add?.map((file) => ({
+    data.replace_files?.map((file) => ({
       ...file,
       operation: 'write' as const,
     })) || [];
   const deleteOperations =
-    proposed_files?.remove?.map((file) => ({
+    data.delete_files?.map((file) => ({
       ...file,
       content: '',
       operation: 'delete' as const,
@@ -83,7 +83,7 @@ export function ThreadDetailsMessageChoiceButtons({
   // );
   const hasPackages = false;
   const hasProposalFiles = Boolean(
-    proposed_files?.add?.length || proposed_files?.remove?.length
+    data.replace_files?.length || data?.delete_files?.length
   );
 
   const installPackages = () => {
@@ -154,7 +154,7 @@ export function ThreadDetailsMessageChoiceButtons({
     (diagnostics?.some((check) => !!check.result) && checksRan) || hasPackages;
 
   const prefixes = ['./app', 'app'];
-  const firstPage = proposed_files?.add.find(
+  const firstPage = data.replace_files?.find(
     (file) =>
       prefixes.some((p) => file.path.startsWith(p)) &&
       file.path.endsWith('page.tsx')
@@ -200,7 +200,6 @@ export function ThreadDetailsMessageChoiceButtons({
       {showConfirm ? (
         <ConfirmModal
           closeModal={() => setShowConfirm(false)}
-          proposed_files={proposed_files}
           diagnostics={diagnostics}
           isRunningCommands={isRunningPackageManagerCommands}
           isWritingFiles={isWritingFiles}
