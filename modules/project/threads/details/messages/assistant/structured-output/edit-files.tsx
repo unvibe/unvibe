@@ -28,17 +28,24 @@ export function StructuredOutputEditFiles() {
             key={edit.path + i.toString()}
             data={resolved ?? edit}
             type='remove'
-            decorations={[
-              {
-                start: { line: edit.insert_at - 1, character: 0 },
-                end: {
-                  line:
-                    edit.insert_at - 1 + edit.content.split('\n').length - 1,
-                  character: 0,
-                },
-                properties: { class: 'highlighted-word' },
-              },
-            ]}
+            decorations={
+              !resolved
+                ? undefined
+                : [
+                    {
+                      start: { line: edit.insert_at - 1, character: 0 },
+                      end: {
+                        line:
+                          edit.insert_at -
+                          1 +
+                          edit.content.split('\n').length -
+                          1,
+                        character: 0,
+                      },
+                      properties: { class: 'highlighted-word' },
+                    },
+                  ]
+            }
             selected={selection.some((p) => p.path === edit.path && p.selected)}
             setSelected={(newState) => {
               setSelection((prev) => {

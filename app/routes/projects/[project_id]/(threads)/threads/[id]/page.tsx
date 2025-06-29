@@ -1,4 +1,3 @@
-import { useParams } from '@/lib/next/navigation';
 import { ThreadDetails } from '@/modules/project/threads/details';
 import { ThreadDetailsHeaderActions } from '@/modules/project/threads/details/header';
 import { Route } from './+types/page';

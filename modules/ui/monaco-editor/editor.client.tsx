@@ -7,15 +7,24 @@ export function MonacoEditor({
   content,
   fileName,
   height = '100vh',
+  onChange,
+  value,
 }: {
   content?: string;
   fileName: string;
   height?: string;
+  onChange?: (value: string) => void;
+  value?: string;
 }) {
   return (
     <Editor
       height={height}
       defaultValue={content}
+      theme='github-dark'
+      value={value}
+      onChange={(value) => {
+        onChange?.(value || '');
+      }}
       onMount={(editor, monaco) => {
         // Create the highlighter, it can be reused
         createHighlighter({
@@ -39,7 +48,6 @@ export function MonacoEditor({
           editor.setModel(model);
         });
       }}
-      theme='github-dark'
       options={{
         minimap: {
           enabled: false,

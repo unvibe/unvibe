@@ -10,6 +10,7 @@ export function ThreadDetailsMessageListItemFile({
   icon,
   NO_CONTENT = false,
   decorations,
+  enabledEditing = false,
 }: {
   icon?: React.ReactNode;
   type: 'add' | 'remove' | 'edit';
@@ -18,6 +19,7 @@ export function ThreadDetailsMessageListItemFile({
   selected?: boolean;
   NO_CONTENT?: boolean;
   decorations?: Decorations;
+  enabledEditing?: boolean;
 }) {
   const [expaneded, setExpanded] = useState(true);
   const codeSnippetRef = useRef<HTMLPreElement | null>(null);
@@ -43,6 +45,7 @@ export function ThreadDetailsMessageListItemFile({
         selected={selected}
         setSelected={setSelected}
         codeSnippetRef={codeSnippetRef}
+        enableEditing={enabledEditing}
       />
       {!NO_CONTENT && (
         <ThreadDetailsMessageListItemFileContent

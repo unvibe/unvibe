@@ -9,6 +9,7 @@ export function StructuredOutputReplaceFiles() {
       {files.map((file, i) => (
         <ThreadDetailsMessageListItemFile
           key={file.path + i.toString()}
+          enabledEditing={true}
           icon={
             <span className='w-4 h-4 border-2 border-emerald-600 flex relative'>
               <span className='absolute inset-0 flex items-center justify-center'>
