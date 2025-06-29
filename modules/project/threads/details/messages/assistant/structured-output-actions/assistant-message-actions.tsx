@@ -15,10 +15,6 @@ import { useStructuredOutputContext } from '../structured-output/context';
 export function AssistantMessageActions() {
   const context = useAssistantMessageContext();
   const { data } = useStructuredOutputContext();
-  const parsedContent =
-    typeof context.metadata?.content === 'string'
-      ? undefined
-      : context.metadata?.content;
   const threadId = context.metadata.threadId;
   const [diagnostics, setDiagnostics] = useState<
     { name: string; result: string }[]

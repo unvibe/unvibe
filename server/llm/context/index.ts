@@ -130,7 +130,7 @@ export class Context {
   ) {
     return contextMessages.map(async (message) => {
       if (this.isValidThreadMessageRole(message.role)) {
-        const id = crypto.randomUUID();
+        const id: string = crypto.randomUUID();
 
         if (message.content) {
           message.content = await transform(message, id);
@@ -171,7 +171,7 @@ export class Context {
             message.role === 'tool' ? (message.call_id ?? null) : null,
           tool_calls:
             message.role === 'assistant' ? (message.tool_calls ?? null) : null,
-        };
+        } as Message;
       } else {
         throw new Error(
           `invalid role at -> ${JSON.stringify(message, null, 2)}`

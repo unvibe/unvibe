@@ -1,9 +1,12 @@
 import clsx from 'clsx';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from '@/lib/next/navigation';
 import { Checkbox } from '@/modules/ui';
-import { useProjectActions } from '@/modules/project/provider';
-import { HiChevronDown } from 'react-icons/hi2';
+import { useProject, useProjectActions } from '@/modules/project/provider';
+import { useAssistantMessageContext } from './assistant-message-context';
+import { QualityCheckProgress } from './structured-output-actions/assistant-message-run-checks';
+import { DiagnosticMessage } from '@/server/db/schema';
+import { Modal } from '@/modules/ui/modal';
 
 export interface FileActionProps {
   // props
@@ -32,6 +35,8 @@ export function ThreadDetailsMessageListItemFileActions({
   selected?: boolean;
   setSelected?: (selected: boolean) => void;
 }) {
+  const [showDiagnosticsModal, setShowDiagnosticsModal] = useState(false);
+  const metadata = useAssistantMessageContext().message.metadata;
   const params = useParams();
   const { path } = data;
   const projectId =
@@ -64,18 +69,46 @@ export function ThreadDetailsMessageListItemFileActions({
       .flat();
   }, [projectContext]);
 
-  // const actions = useMemo(() => {
-  //   const plugins = projectContext.clientPlugins;
-  //   const pluginsWithActions = plugins.filter(
-  //     (plugin) => plugin.Plugin.components?.assistant?.proposal?.actions
-  //   );
+  const project = useProject();
 
-  //   return pluginsWithActions
-  //     .map((plugin) =>
-  //       Object.values(plugin.Plugin.components.assistant!.proposal!.actions!)
-  //     )
-  //     .flat();
-  // }, [projectContext]);
+  const diagnosticChecks = useMemo(() => {
+    return Object.values(project.plugins)
+      .map((plugin) => {
+        return plugin.sourceCodeHooks.filter((d) => d.operations.diagnostic);
+      })
+      .flat()
+      .filter((d) => {
+        return new RegExp(d.rule).test(data.path);
+      });
+  }, [project]);
+
+  const fileResult = diagnosticChecks.map((check) => {
+    const result =
+      metadata?.diagnostics?.[check.name]?.[data.path.replace('./', '')];
+    if (!result || result.length === 0) return 'passed';
+    return result.some((message) => message.type === 'error')
+      ? 'error'
+      : 'warning';
+  });
+
+  const passedCount = fileResult.filter((result) => result === 'passed').length;
+  const total = fileResult.length;
+  const progress = Math.round((passedCount / total) * 100) || 1;
+
+  const collectedDiagnostics = useMemo(() => {
+    const array: (DiagnosticMessage & { checkName: string })[] = [];
+    diagnosticChecks.forEach((check) => {
+      const messages =
+        metadata?.diagnostics?.[check.name]?.[data.path.replace('./', '')];
+      messages?.forEach((message) => {
+        array.push({
+          checkName: check.name,
+          ...message,
+        });
+      });
+    });
+    return array;
+  }, []);
 
   return (
     <div className='p-1 font-mono pl-4 text-xs flex items-center justify-between'>
@@ -99,13 +132,29 @@ export function ThreadDetailsMessageListItemFileActions({
         </div>
       </div>
       <div className='flex items-center gap-1'>
-        <button className='p-2 bg-background-1/50 text-foreground-2 rounded-xl'>
-          <HiChevronDown className='w-5 h-5' />
+        <button
+          className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'
+          onClick={() => {
+            setShowDiagnosticsModal(true);
+          }}
+        >
+          <QualityCheckProgress
+            progress={progress}
+            type={
+              fileResult.some((m) => m === 'error')
+                ? 'error'
+                : fileResult.some((m) => m === 'warning')
+                  ? 'warning'
+                  : 'success'
+            }
+          />
         </button>
-        {/* {actions.map((Action, index) => (
-          <Action key={index} {...fileActionsProps} />
-        ))} */}
       </div>
+      {showDiagnosticsModal && (
+        <Modal onClose={() => setShowDiagnosticsModal(false)}>
+          <pre>{JSON.stringify(collectedDiagnostics, null, 2)}</pre>
+        </Modal>
+      )}
     </div>
   );
 }

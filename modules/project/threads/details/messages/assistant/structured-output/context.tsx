@@ -1,5 +1,3 @@
-import { useParams } from '@/lib/next/navigation';
-import { useAPIQuery } from '@/server/api/client';
 import { ModelResponseStructure } from '@/server/llm/structured_output';
 import {
   createContext,
@@ -31,17 +29,6 @@ export function StructuredOutputContextProvider({
   children: React.ReactNode;
   data: ModelResponseStructure;
 }) {
-  const projectId = useParams().project_id as string;
-  const { data: diagnostics } = useAPIQuery('POST /projects/diagnose', {
-    projectDirname: projectId,
-    source: 'projects',
-    proposal: data,
-  });
-
-  console.log({
-    diagnostics,
-    data,
-  });
   const [selection, setSelection] = useState<
     StructuredOutputContextValue['selection']
   >(() => {

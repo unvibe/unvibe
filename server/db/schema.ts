@@ -1,6 +1,7 @@
 import { sqliteTable, text, integer, blob } from 'drizzle-orm/sqlite-core';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { ChatCompletionMessageToolCall } from 'openai/resources/index.mjs';
+import { ModelResponseStructure } from '../llm/structured_output';
 
 // threads table definition
 export const threads = sqliteTable('threads', {
@@ -21,6 +22,14 @@ export const threads = sqliteTable('threads', {
     .default([]), // always a JSON array
 });
 
+export type FilesMapDiagnostics = Record<string, DiagnosticMessage[]>;
+export type DiagnosticsByHookName = Record<string, FilesMapDiagnostics>;
+export type StructuredOutputMetadata = {
+  raw: string; // the raw JSON string of the structured output
+  source_sha1: Record<string, string>; // sha1 hashes of the source files
+  parsed: ModelResponseStructure; // the parsed structured output
+  diagnostics: DiagnosticsByHookName; // diagnostics for each hook
+};
 // messages table definition
 export const messages = sqliteTable('messages', {
   id: text('id').primaryKey(),
@@ -36,6 +45,9 @@ export const messages = sqliteTable('messages', {
   refusal: text('refusal').$type<string | null>(),
   tool_call_id: text('tool_call_id').$type<string | null>(),
   index: integer('index').notNull(),
+  metadata: blob('metadata', {
+    mode: 'json',
+  }).$type<StructuredOutputMetadata>(),
 });
 
 export const customSystemParts = sqliteTable('custom_system_parts', {
@@ -53,6 +65,19 @@ export const contextConfig = sqliteTable('context_config', {
     .notNull()
     .$type<Record<string, boolean>>(),
 });
+
+export type DiagnosticMessage = {
+  type: 'error' | 'warning';
+  message: string;
+  line: number;
+  column: number;
+};
+
+export type CustomSystemPart = InferSelectModel<typeof customSystemParts>;
+export type CustomSystemPartInsert = InferInsertModel<typeof customSystemParts>;
+
+export type ContextConfig = InferSelectModel<typeof contextConfig>;
+export type ContextConfigInsert = InferInsertModel<typeof contextConfig>;
 
 // Infer TypeScript types from the schema:
 export type Thread = InferSelectModel<typeof threads>;

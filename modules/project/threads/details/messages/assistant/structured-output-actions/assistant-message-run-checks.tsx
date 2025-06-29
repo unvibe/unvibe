@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { Progress } from '@/modules/ui/progress/progress-circle';
 import { Button } from '@/modules/ui/button';
 import { Spinner } from '@/modules/ui/spinner';
-import type { ModelResponseStructure } from '@/server/llm/structured_output';
 import {
   HiOutlineShieldCheck,
   // HiOutlineShieldExclamation,
@@ -14,12 +13,12 @@ import { useProject } from '@/modules/project/provider';
 import { useMemo } from 'react';
 import { useStructuredOutputContext } from '../structured-output/context';
 
-function QualityCheckProgress({
+export function QualityCheckProgress({
   progress,
   type,
 }: {
   progress: number;
-  type: 'error' | 'warning' | 'idle';
+  type: 'error' | 'warning' | 'idle' | 'success';
 }) {
   let color = 'text-foreground-2';
 
@@ -27,6 +26,8 @@ function QualityCheckProgress({
     color = 'text-amber-600';
   } else if (type === 'idle') {
     color = 'text-foreground-2';
+  } else if (type === 'success') {
+    color = 'text-emerald-600';
   } else {
     color = 'text-rose-600';
   }

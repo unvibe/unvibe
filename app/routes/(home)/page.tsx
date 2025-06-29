@@ -1,7 +1,7 @@
 // import { WelcomeMessage } from '@/modules/home';
 // import { createClient } from '@/server/api/client/create';
 // import { baseURL } from '@/server/api/constants';
-import { Route } from './+types/page';
+// import { Route } from './+types/page';
 import { redirect } from 'react-router';
 
 export async function loader() {
@@ -18,7 +18,7 @@ export async function clientLoader() {
   return redirect('/home/projects');
 }
 
-export default function HomePage({ loaderData }: Route.ComponentProps) {
+export default function HomePage() {
   return null;
   // const recent = loaderData.projects.projects.slice(0, 3);
   // return (

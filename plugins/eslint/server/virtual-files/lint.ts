@@ -8,8 +8,9 @@
 
 import path from 'path';
 import crypto from 'crypto';
-import stripAnsi from 'strip-ansi';
+// import stripAnsi from 'strip-ansi';
 import { createRequire } from 'module';
+import { StructuredOutputMetadata } from '@/server/db/schema';
 
 const require = createRequire(import.meta.url);
 // ---------------------- local ESLint loader ----------------------
@@ -78,6 +79,33 @@ export async function lint(
   const all = [...unchanged, ...fresh];
   if (!all.length) return '';
 
-  const formatter = await eslint.loadFormatter('stylish');
-  return stripAnsi(await formatter.format(all));
+  // const formatter = await eslint.loadFormatter('stylish');
+  // const jsonFormatter = await eslint.loadFormatter('json');
+  // const jsonString = await jsonFormatter.format(all);
+  const metadataDiagnostic: StructuredOutputMetadata['diagnostics']['string'] =
+    {};
+
+  all.forEach((result) => {
+    if (!metadataDiagnostic[result.filePath]) {
+      metadataDiagnostic[result.filePath] = [];
+    }
+
+    result.messages.forEach((message) => {
+      metadataDiagnostic[result.filePath].push({
+        type: message.severity === 2 ? 'error' : 'warning',
+        line: message.line,
+        column: message.column,
+        message: message.message,
+      });
+    });
+  });
+
+  const transformedKeysToUseRelativePaths = Object.fromEntries(
+    Object.entries(metadataDiagnostic).map(([key, content]) => {
+      const relativePath = path.relative(projectRoot, key);
+      return [relativePath, content] as [string, typeof content];
+    })
+  );
+
+  return JSON.stringify(transformedKeysToUseRelativePaths);
 }

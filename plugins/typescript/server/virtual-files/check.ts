@@ -10,6 +10,7 @@
 import path from 'path';
 import crypto from 'crypto';
 import { createRequire } from 'module';
+import { StructuredOutputMetadata } from '@/server/db/schema';
 
 // ------------------------- types -------------------------
 export type VirtualFile = { path: string; content: string };
@@ -201,18 +202,35 @@ export async function check(
 
   builder.emit(); // optional – keeps build info fresh
 
-  if (!diagnostics.length) return '';
+  if (!diagnostics.length) return '{}';
 
-  return diagnostics
-    .map((d) => {
-      const msg = ts.flattenDiagnosticMessageText(d.messageText, '\n');
-      if (d.file && typeof d.start === 'number') {
-        const { line, character } = d.file.getLineAndCharacterOfPosition(
-          d.start
-        );
-        return `${d.file.fileName} (${line + 1},${character + 1}): ${msg}`;
-      }
-      return msg;
+  const metadataDiagnostic: StructuredOutputMetadata['diagnostics']['string'] =
+    {};
+
+  diagnostics.forEach((d) => {
+    const fileName = d.file?.fileName;
+    if (!fileName || !d.file) return; // skip diagnostics without file context
+    if (!metadataDiagnostic[fileName]) {
+      metadataDiagnostic[fileName] = [];
+    }
+
+    const msg = ts.flattenDiagnosticMessageText(d.messageText, '\n');
+    const { line, character } = d.file.getLineAndCharacterOfPosition(d.start!);
+
+    metadataDiagnostic[fileName].push({
+      type: 'error',
+      column: character + 1,
+      line: line + 1,
+      message: msg,
+    });
+  });
+
+  const transformedKeysToUseRelativePaths = Object.fromEntries(
+    Object.entries(metadataDiagnostic).map(([key, content]) => {
+      const relativePath = path.relative(projectRoot, key);
+      return [relativePath, content] as [string, typeof content];
     })
-    .join('\n');
+  );
+
+  return JSON.stringify(transformedKeysToUseRelativePaths);
 }
