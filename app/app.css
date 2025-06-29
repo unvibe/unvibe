@@ -125,6 +125,30 @@ code {
 .highlighted-word {
   @apply bg-emerald-500/10;
 }
+.error-underline {
+  @apply underline decoration-red-500;
+}
+
+[data-title]:hover:after {
+  opacity: 1;
+  transition: all 0.1s ease 0.5s;
+  visibility: visible;
+}
+
+[data-title]:after {
+  content: attr(data-title);
+  z-index: 99999;
+  bottom: 100%;
+  max-width: 100%;
+  overflow-x: scroll;
+  left: 0;
+  @apply absolute p-2 rounded-xl border border-border bg-background-2 text-foreground-2 text-sm whitespace-pre-wrap;
+  opacity: 0;
+  visibility: hidden;
+}
+[data-title] {
+  position: relative;
+}
 
 .markdown-body table {
   width: 100%;

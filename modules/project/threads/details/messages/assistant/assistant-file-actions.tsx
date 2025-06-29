@@ -47,6 +47,35 @@ export interface FileActionProps {
   setExpanded: (expanded: boolean) => void;
 }
 
+export function useFileDiagnostics(path: string) {
+  const project = useProject();
+  const metadata = useAssistantMessageContext().message.metadata;
+  const diagnosticChecks = useMemo(() => {
+    return Object.values(project.plugins)
+      .map((plugin) => {
+        return plugin.sourceCodeHooks.filter((d) => d.operations.diagnostic);
+      })
+      .flat()
+      .filter((d) => {
+        return new RegExp(d.rule).test(path);
+      });
+  }, [project]);
+  return useMemo(() => {
+    const array: (DiagnosticMessage & { checkName: string })[] = [];
+    diagnosticChecks.forEach((check) => {
+      const messages =
+        metadata?.diagnostics?.[check.name]?.[path.replace('./', '')];
+      messages?.forEach((message) => {
+        array.push({
+          checkName: check.name,
+          ...message,
+        });
+      });
+    });
+    return array;
+  }, []);
+}
+
 export function ThreadDetailsMessageListItemFileActions({
   data,
   icon,

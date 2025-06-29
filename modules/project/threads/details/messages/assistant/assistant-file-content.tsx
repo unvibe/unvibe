@@ -1,6 +1,7 @@
 import { Decorations, highlightCode } from '@/modules/markdown/library/parser';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
+import { useFileDiagnostics } from './assistant-file-actions';
 
 export function MinimalFileContent({
   content,
@@ -51,9 +52,42 @@ export function ThreadDetailsMessageListItemFileContent({
   const [highlighted, setHighlighted] = useState(data.content || '');
   const { content, path } = data;
 
+  const diagnostics = useFileDiagnostics(data.path);
+
   useEffect(() => {
     const ext = path.split('.').pop() || 'text';
-    highlightCode(content || '', ext, decorations).then((result) => {
+
+    const linesMap: Record<number, (typeof diagnostics)[number][]> = {};
+    diagnostics.forEach((d) => {
+      if (!linesMap[d.line]) {
+        linesMap[d.line] = [];
+      }
+      linesMap[d.line].push(d);
+    });
+
+    const diagnosticsDecorations = Object.keys(linesMap).map((lineNumber) => ({
+      start: {
+        line: Number(lineNumber) - 1,
+        character:
+          content?.split('\n')[Number(lineNumber) - 1].search(/\S/) || 0,
+      },
+      end: {
+        line: Number(lineNumber) - 1,
+        character: content?.split('\n')[Number(lineNumber) - 1].length || 80,
+      },
+      properties: {
+        class: 'error-underline',
+        ['data-title']: linesMap[Number(lineNumber)]
+          .map((d) => d.message)
+          .join('\n'),
+      },
+    }));
+
+    highlightCode(
+      content || '',
+      ext,
+      (decorations || []).concat(diagnosticsDecorations)
+    ).then((result) => {
       setHighlighted(result);
     });
   }, [content, path]);
