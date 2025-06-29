@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
 import fs from 'node:fs/promises';

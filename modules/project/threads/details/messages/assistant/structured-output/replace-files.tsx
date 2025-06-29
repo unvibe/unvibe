@@ -9,6 +9,16 @@ export function StructuredOutputReplaceFiles() {
       {files.map((file, i) => (
         <ThreadDetailsMessageListItemFile
           key={file.path + i.toString()}
+          icon={
+            <span className='w-4 h-4 border-2 border-emerald-600 flex relative'>
+              <span className='absolute inset-0 flex items-center justify-center'>
+                <span className='w-0.5 h-2 bg-emerald-600 rotate-90' />
+              </span>
+              <span className='absolute inset-0 flex items-center justify-center'>
+                <span className='w-0.5 h-2 bg-emerald-600' />
+              </span>
+            </span>
+          }
           data={file}
           type='add'
           selected={selection.some((p) => p.path === file.path && p.selected)}

@@ -57,7 +57,7 @@ export function ThreadDetailsMessageListItemFileContent({
   }, [content, path]);
 
   return (
-    <div className='rounded-xl max-w-full overflow-hidden relative'>
+    <div className='rounded-xl rounded-t-none max-w-full overflow-hidden relative'>
       <pre
         ref={initCodeSnippet}
         dangerouslySetInnerHTML={{ __html: highlighted }}

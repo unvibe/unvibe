@@ -12,10 +12,10 @@ export async function formatStructuredOutputFiles(
 ) {
   try {
     const json: ModelResponseStructure = JSON.parse(message);
-    if (json?.proposed_files?.add) {
-      const newDraft = await runTransforms(project, json?.proposed_files.add);
+    if (json?.replace_files) {
+      const newDraft = await runTransforms(project, json?.replace_files);
       const newJSON = { ...json };
-      newJSON.proposed_files.add = newDraft;
+      newJSON.replace_files = newDraft;
       return JSON.stringify(newJSON);
     }
     return message;

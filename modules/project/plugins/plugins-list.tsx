@@ -239,20 +239,44 @@ function ContextItemDetailsModal({
 }
 
 export function PluginIndicator({ name }: { name: string }) {
-  const hue = stringToHue(name);
-  const customStyles = {
-    backgroundColor: `hsl(${hue}, 0%, 20%)`,
-    borderColor: `hsl(${hue}, 0%, 50%)`,
-  };
-  const computedStyles = {
-    backgroundColor: `hsl(${hue}, 50%, 20%)`,
-    borderColor: `hsl(${hue}, 50%, 50%)`,
-  };
   return (
     <span
       className='w-3 h-3 rounded-full border'
-      style={name === 'custom' ? customStyles : computedStyles}
+      style={getPluginStyle(name)}
     />
+  );
+}
+
+export function getPluginStyle(name: string) {
+  const hue = stringToHue(name);
+
+  if (name === 'custom') {
+    return {
+      backgroundColor: `hsl(${hue}, 0%, 20%)`,
+      borderColor: `hsla(${hue}, 0%, 50%, 0.5)`,
+      color: `hsl(${hue}, 0%, 50%)`,
+    };
+  }
+  return {
+    backgroundColor: `hsl(${hue}, 50%, 20%)`,
+    borderColor: `hsl(${hue}, 50%, 50%)`,
+    color: `hsl(${hue}, 50%, 50%)`,
+  };
+}
+
+export function PluginIcon({
+  name,
+  sizeClassName = 'w-5 h-5',
+}: {
+  name: string;
+  sizeClassName?: string;
+}) {
+  const getIcon = usePluginsIcons();
+  const Icon = getIcon(name);
+  return (
+    <div className={clsx('shrink-0', sizeClassName)}>
+      <Icon className='w-full h-full' />
+    </div>
   );
 }
 
@@ -263,15 +287,6 @@ function ContextSectionCard({
 }) {
   const getIcon = usePluginsIcons();
   const Icon = getIcon(data.source_id);
-  const hue = stringToHue(data.source_id);
-  const customStyles = {
-    backgroundColor: `hsl(${hue}, 0%, 20%)`,
-    borderColor: `hsl(${hue}, 0%, 50%)`,
-  };
-  const computedStyles = {
-    backgroundColor: `hsl(${hue}, 50%, 20%)`,
-    borderColor: `hsl(${hue}, 50%, 50%)`,
-  };
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   return (
     <>
@@ -290,10 +305,6 @@ function ContextSectionCard({
           }}
         >
           <PluginIndicator name={data.source_id} />
-          <span
-            className='w-3 h-3 rounded-full border'
-            style={data.source_id === 'custom' ? customStyles : computedStyles}
-          />
           <span>{data.key}</span>
         </div>
         <div className='line-clamp-2 pt-2 text-foreground-2 text-sm'>
@@ -315,7 +326,7 @@ function ContextSectionCardAdd() {
     <>
       <button
         className={clsx(
-          'w-[250px] rounded-3xl text-sm relative cursor-pointer',
+          'w-[250px] min-h-[148px] rounded-3xl text-sm relative cursor-pointer',
           'border-dashed border-2 border-border hover:bg-background-1/50',
           'flex items-center justify-center text-foreground-2'
         )}

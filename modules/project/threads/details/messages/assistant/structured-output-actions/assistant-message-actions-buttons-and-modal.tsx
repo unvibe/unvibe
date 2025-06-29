@@ -1,7 +1,7 @@
 // UI for dev_propose_only agent, with full code quality check (no continueThread mutation) and custom choices buttons
 import clsx from 'clsx';
 import { useState } from 'react';
-import type { ModelResponseStructure } from '@/server/llm/structured_output';
+// import type { ModelResponseStructure } from '@/server/llm/structured_output';
 import { Button, ButtonProps } from '@/modules/ui/button';
 import { HiMiniArrowDownTray, HiOutlineEye } from 'react-icons/hi2';
 import { useAPIMutation } from '@/server/api/client';

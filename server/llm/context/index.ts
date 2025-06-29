@@ -123,14 +123,17 @@ export class Context {
   public toThreadMessages(
     contextMessages: AbstractContextMessage[],
     transform: (
-      content: AbstractContextMessage
+      content: AbstractContextMessage,
+      messageId: string
     ) => Promise<AbstractContextMessage['content']>,
     thread: { id: string }
   ) {
     return contextMessages.map(async (message) => {
       if (this.isValidThreadMessageRole(message.role)) {
+        const id = crypto.randomUUID();
+
         if (message.content) {
-          message.content = await transform(message);
+          message.content = await transform(message, id);
         }
         const content = (() => {
           if (!message.content) {
@@ -155,7 +158,7 @@ export class Context {
         })();
 
         return {
-          id: crypto.randomUUID(),
+          id,
           created_at: Date.now(),
           content,
           images_urls,

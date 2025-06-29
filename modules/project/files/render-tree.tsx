@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TiDocument, TiFolder, TiFolderOpen } from 'react-icons/ti';
 import { useParams } from '@/lib/next/navigation';
 import Link from '@/lib/next/link';
+import clsx from 'clsx';
 
 // Tree node type as discriminated union for folders and files
 export type FileNode = {
@@ -92,6 +93,78 @@ function TreeFolder({
   );
 }
 
+export type CustomRenderTreeDirProps = {
+  name: string;
+  node: FolderNode;
+  level: number;
+  path: string;
+  children: React.ReactNode;
+};
+
+export type CustomRenderTreeFileProps = {
+  node: FileNode;
+  name: string;
+  level: number;
+  path: string;
+};
+
+export function CustomRenderTree({
+  tree: node,
+  level,
+  Dir,
+  DirFile,
+  className = '',
+}: {
+  tree: TreeNode;
+  level: number;
+  Dir: React.ComponentType<CustomRenderTreeDirProps>;
+  DirFile: React.ComponentType<CustomRenderTreeFileProps>;
+  className?: string;
+}) {
+  if (node.type === 'folder') {
+    return (
+      <ul className={clsx('text-foreground-1', className)}>
+        {Object.values(node.children)
+          .sort((a, b) => {
+            if (a.type === b.type) return a.name.localeCompare(b.name);
+            return a.type === 'folder' ? -1 : 1;
+          })
+          .map((child) => {
+            if (child.type === 'file') {
+              return (
+                <DirFile
+                  key={child.path}
+                  name={child.name}
+                  node={child}
+                  level={level + 1}
+                  path={child.path}
+                />
+              );
+            } else {
+              return (
+                <Dir
+                  key={child.path}
+                  name={child.name}
+                  node={child}
+                  level={level + 1}
+                  path={child.path}
+                >
+                  <CustomRenderTree
+                    tree={child}
+                    level={level + 1}
+                    Dir={Dir}
+                    DirFile={DirFile}
+                  />
+                </Dir>
+              );
+            }
+          })}
+      </ul>
+    );
+  } else {
+    return null;
+  }
+}
 export function RenderTree({
   tree: node,
   level,

@@ -1,3 +1,16 @@
+## TODO
+
+@ api/endpoints/threads.ts
+
+- [ ] make ts-check return object of each file with its diagnostics
+- [ ] make eslint-lint return object of each file with its diagnostics
+- [ ] run git diff if the project supports git
+- [ ] append meta data to assistant messages in db
+
+@ modules/project/threads/details/messages/assistant/structured-output/...
+
+- [ ] use the metadata from the assistant message to render diagnostics git diff
+
 ## LOG (append only)
 
 ### Road to v1.0.0

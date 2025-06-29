@@ -14,6 +14,9 @@ import {
   shouldBeAstructuredOutput,
 } from '@/server/llm/structured_output/utils';
 import { models } from '@/server/llm/models';
+import { sha1 } from '@/lib/core/hash/sha1';
+import { jsonrepair } from 'jsonrepair';
+import { runProposalDiagnostics } from './projects';
 
 async function generateThreadTitle(prompt: string) {
   const DEFAULT_TITLE = 'Untitled Thread';
@@ -295,7 +298,7 @@ export const continueThread = createEndpoint({
     const startLength = context.collectMessages().length;
 
     // 5. get the model response (mutate the context)
-    await llm.send({
+    const result = await llm.send({
       model,
       structuredOutput: true,
       context,
@@ -303,16 +306,22 @@ export const continueThread = createEndpoint({
       search_enabled,
     });
 
-    // 6. update the thread's updated_at timestamp
-    await db
-      .update(schema.threads)
-      .set({
-        updated_at: Date.now(),
-        context_config: context_config || thread.context_config,
-      })
-      .where(eq(schema.threads.id, threadId));
+    let hash: string | null = null;
 
-    // 7. collect the messages from the context
+    if (result.response) {
+      hash = await sha1(result.response);
+      const repaired = jsonrepair(result.response);
+      const formatted = await formatStructuredOutputFiles(project, repaired);
+      const parsed = JSON.parse(formatted);
+      const diagnostics = await runProposalDiagnostics(parsed, project);
+      // attach the metadata somewhere
+      console.log('metadata', {
+        parsed,
+        diagnostics,
+      });
+    }
+
+    // 6. collect the messages from the context
     const history = context.collectMessages();
     const endLength = history.length;
     const newMessagesCount = endLength - startLength;
@@ -326,6 +335,10 @@ export const continueThread = createEndpoint({
         contextMessagesToStore,
         async (message) => {
           if (shouldBeAstructuredOutput(message)) {
+            const replaceHash = await sha1(message.content);
+            if (hash === replaceHash) {
+              console.log('do the magic here');
+            }
             return await formatStructuredOutputFiles(project, message.content);
           }
           return message.content;
@@ -334,6 +347,14 @@ export const continueThread = createEndpoint({
       )
     );
 
+    // 7. update the thread's updated_at timestamp
+    await db
+      .update(schema.threads)
+      .set({
+        updated_at: Date.now(),
+        context_config: context_config || thread.context_config,
+      })
+      .where(eq(schema.threads.id, threadId));
     // 8. insert the messages into the database
     await Promise.all(
       threadMessages.map((message) => {

@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
-import { stringToHue } from '../system/lib/string-to-hue';
 import { Modal } from '@/modules/ui/modal';
 import clsx from 'clsx';
 import { MdOutlineInfo } from 'react-icons/md';
 import { Switch } from '@/modules/ui';
 import { useProject } from '../provider';
 import { HiXMark } from 'react-icons/hi2';
-import { PluginIndicator } from '../plugins/plugins-list';
+import { getPluginStyle, PluginIcon } from '../plugins/plugins-list';
 
 function SectionCard({
   pluginName,
@@ -26,10 +25,14 @@ function SectionCard({
     value: boolean
   ) => void;
 }) {
+  const style = getPluginStyle(pluginName);
   return (
     <div className={clsx('p-1 bg-background-2 rounded-2xl pb-3')}>
       <h4 className='px-2 py-1 text-foreground-2 capitalize font-semibold text-sm flex items-center gap-2'>
-        <PluginIndicator name={pluginName} />
+        {/* <PluginIndicator name={pluginName} /> */}
+        <div className='p-2 rounded-xl border' style={{ ...style }}>
+          <PluginIcon name={pluginName} sizeClassName='w-4 h-4' />
+        </div>
         <span>{pluginName}</span>
       </h4>
       {keys.map((name) => {

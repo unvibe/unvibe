@@ -23,9 +23,9 @@ if you want to add more colors, check the usage of .success and how it is used
   /* dark theme */
   :root {
     color-scheme: dark;
-    --background: #0a0a0a;
-    --background-1: #1a1a1a;
-    --background-2: #2a2a2a;
+    --background: #181818;
+    --background-1: #1c1c1c;
+    --background-2: #2c2c2c;
     --border: #3a3a3a;
     --border-1: #303030;
     --border-2: #2a2a2a;
