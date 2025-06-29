@@ -4,9 +4,30 @@ import { useParams } from '@/lib/next/navigation';
 import { Checkbox } from '@/modules/ui';
 import { useProject, useProjectActions } from '@/modules/project/provider';
 import { useAssistantMessageContext } from './assistant-message-context';
-import { QualityCheckProgress } from './structured-output-actions/assistant-message-run-checks';
 import { DiagnosticMessage } from '@/server/db/schema';
 import { Modal } from '@/modules/ui/modal';
+import { Progress } from '@/modules/ui/progress/progress-circle';
+
+function QualityCheckProgress({
+  progress,
+  type,
+}: {
+  progress: number;
+  type: 'error' | 'warning' | 'idle' | 'success';
+}) {
+  let color = 'text-foreground-2';
+
+  if (type === 'warning') {
+    color = 'text-amber-600';
+  } else if (type === 'idle') {
+    color = 'text-foreground-2';
+  } else if (type === 'success') {
+    color = 'text-emerald-600';
+  } else {
+    color = 'text-rose-600';
+  }
+  return <Progress progress={progress} filledClassName={clsx(color)} />;
+}
 
 export interface FileActionProps {
   // props
@@ -110,6 +131,14 @@ export function ThreadDetailsMessageListItemFileActions({
     return array;
   }, []);
 
+  const status = fileResult.some((m) => m === 'error')
+    ? 'error'
+    : fileResult.some((m) => m === 'warning')
+      ? 'warning'
+      : 'success';
+
+  const shouldShowDiagnostics = diagnosticChecks.length > 0;
+
   return (
     <div className='p-1 font-mono pl-4 text-xs flex items-center justify-between'>
       <div className='flex items-center gap-2'>
@@ -131,26 +160,28 @@ export function ThreadDetailsMessageListItemFileActions({
           </div>
         </div>
       </div>
-      <div className='flex items-center gap-1'>
-        <button
-          className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'
-          onClick={() => {
-            setShowDiagnosticsModal(true);
-          }}
-        >
-          <QualityCheckProgress
-            progress={progress}
-            type={
-              fileResult.some((m) => m === 'error')
-                ? 'error'
-                : fileResult.some((m) => m === 'warning')
-                  ? 'warning'
-                  : 'success'
-            }
-          />
-        </button>
-      </div>
-      {showDiagnosticsModal && (
+      {shouldShowDiagnostics && (
+        <div className='flex items-center gap-1'>
+          <button
+            className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'
+            onClick={() => {
+              setShowDiagnosticsModal(true);
+            }}
+          >
+            <QualityCheckProgress
+              progress={progress}
+              type={
+                fileResult.some((m) => m === 'error')
+                  ? 'error'
+                  : fileResult.some((m) => m === 'warning')
+                    ? 'warning'
+                    : 'success'
+              }
+            />
+          </button>
+        </div>
+      )}
+      {showDiagnosticsModal && status !== 'success' && (
         <Modal onClose={() => setShowDiagnosticsModal(false)}>
           <pre>{JSON.stringify(collectedDiagnostics, null, 2)}</pre>
         </Modal>

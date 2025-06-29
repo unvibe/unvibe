@@ -29,6 +29,7 @@ export type StructuredOutputMetadata = {
   source_sha1: Record<string, string>; // sha1 hashes of the source files
   parsed: ModelResponseStructure; // the parsed structured output
   diagnostics: DiagnosticsByHookName; // diagnostics for each hook
+  resolved_edited_files?: { path: string; content: string }[]; // resolved edited files
 };
 // messages table definition
 export const messages = sqliteTable('messages', {

@@ -53,7 +53,6 @@ export function ThreadDetailsAssistantMessage() {
     <Wrapper>
       <StructuredOutputContextProvider data={value.metadata.content}>
         <StructuredOutput />
-        {value.metadata.showAction && <AssistantMessageActions />}
       </StructuredOutputContextProvider>
     </Wrapper>
   );

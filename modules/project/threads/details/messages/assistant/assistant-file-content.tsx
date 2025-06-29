@@ -1,4 +1,4 @@
-import { highlightCode } from '@/modules/markdown/library/parser';
+import { Decorations, highlightCode } from '@/modules/markdown/library/parser';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 
@@ -37,6 +37,7 @@ export function ThreadDetailsMessageListItemFileContent({
   setExpanded,
   codeSnippetRef,
   selected,
+  decorations,
 }: {
   expanded: boolean;
   setExpanded: (newState: boolean) => void;
@@ -45,13 +46,14 @@ export function ThreadDetailsMessageListItemFileContent({
   codeSnippetRef: React.RefObject<HTMLPreElement | null>;
   selected?: boolean;
   setSelected?: (selected: boolean) => void;
+  decorations?: Decorations;
 }) {
   const [highlighted, setHighlighted] = useState(data.content || '');
   const { content, path } = data;
 
   useEffect(() => {
     const ext = path.split('.').pop() || 'text';
-    highlightCode(content || '', ext).then((result) => {
+    highlightCode(content || '', ext, decorations).then((result) => {
       setHighlighted(result);
     });
   }, [content, path]);

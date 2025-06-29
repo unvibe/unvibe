@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { ThreadDetailsMessageListItemFileActions } from './assistant-file-actions';
 import { ThreadDetailsMessageListItemFileContent } from './assistant-file-content';
+import { Decorations } from '@/modules/markdown/library/parser';
 
 export function ThreadDetailsMessageListItemFile({
   data,
@@ -8,13 +9,15 @@ export function ThreadDetailsMessageListItemFile({
   setSelected,
   icon,
   NO_CONTENT = false,
+  decorations,
 }: {
   icon?: React.ReactNode;
-  type: 'add' | 'remove';
+  type: 'add' | 'remove' | 'edit';
   data: { path: string; content?: string };
   setSelected?: (selected: boolean) => void;
   selected?: boolean;
   NO_CONTENT?: boolean;
+  decorations?: Decorations;
 }) {
   const [expaneded, setExpanded] = useState(true);
   const codeSnippetRef = useRef<HTMLPreElement | null>(null);
@@ -44,6 +47,7 @@ export function ThreadDetailsMessageListItemFile({
       {!NO_CONTENT && (
         <ThreadDetailsMessageListItemFileContent
           data={data}
+          decorations={decorations}
           initCodeSnippet={initCodeSnippet}
           expanded={expaneded}
           setExpanded={setExpanded}

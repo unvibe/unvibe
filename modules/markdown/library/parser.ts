@@ -18,12 +18,17 @@ export async function parseMarkdown(markdown: string): Promise<string> {
   return md.render(markdown);
 }
 
+export type Decorations = Parameters<typeof codeToHtml>[1]['decorations'];
+
 export async function highlightCode(
   code: string,
-  lang: string
+  lang: string,
+  decorations?: Decorations
 ): Promise<string> {
+  console.log('found decorations', decorations);
   return codeToHtml(code, {
     lang,
     theme: 'github-dark',
+    decorations,
   });
 }

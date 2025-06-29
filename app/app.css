@@ -122,6 +122,10 @@ code {
   @apply font-mono;
 }
 
+.highlighted-word {
+  @apply bg-emerald-500/10;
+}
+
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;

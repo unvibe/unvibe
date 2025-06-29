@@ -95,6 +95,23 @@ async function createMetadata(
     )
   );
 
+  const resolvedEditedFiles = parsed.edit_files?.map((file) => {
+    const source =
+      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] || '';
+    // todo apply the range to the source
+    // Apply the edit by lines
+    const sourceLines = source.split('\n');
+    const editLines = file.content.split('\n');
+    // split the source lines in two parts
+    const newLines = [...sourceLines];
+    newLines.splice(file.insert_at - 1, 0, ...editLines);
+    const appliedContent = newLines.join('\n');
+    return {
+      path: file.path,
+      content: appliedContent,
+    };
+  });
+
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     diagnostics: Object.fromEntries(
@@ -104,6 +121,7 @@ async function createMetadata(
     ),
     parsed,
     source_sha1: sha1Map,
+    resolved_edited_files: resolvedEditedFiles,
   };
 
   return {
