@@ -62,6 +62,7 @@ export async function send({
     model.MODEL_CONFIG.id,
     runner || model.MODEL_CONFIG.defaultRunner
   );
+  console.log('llm.system', _config.context.getSystemInstructions());
   return run(_config);
 }
 

@@ -3,6 +3,7 @@ import { StructuredOutputEditFiles } from './edit-files';
 import { StructuredOutputReplaceFiles } from './replace-files';
 import { StructuredOutputDeleteFiles } from './delete-files';
 import { StructuredOutputShellScripts } from './shell-scripts';
+import { StructuredOutputEditRanges } from './edit-ranges';
 // import { FilesTree } from './files-tree';
 
 export { StructuredOutputContextProvider } from './context';
@@ -15,6 +16,7 @@ export function StructuredOutput() {
       <StructuredOutputDeleteFiles />
       {/* <FilesTree /> */}
       <StructuredOutputEditFiles />
+      <StructuredOutputEditRanges />
       <StructuredOutputReplaceFiles />
     </div>
   );

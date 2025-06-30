@@ -5,6 +5,7 @@ import { normalizePath, runProposalDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
 import { Project } from '@/plugins/core/server/api/lib/project';
 import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 export async function createMetadata(
   response: string | null | undefined,
@@ -20,7 +21,11 @@ export async function createMetadata(
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
   const deletedPaths = parsed.delete_files?.map((p) => p.path) || [];
   const editedPaths = parsed.edit_files?.map((p) => p.path) || [];
-  const relatedFiles = replacedPaths.concat(deletedPaths).concat(editedPaths);
+  const editedRanges = parsed.edit_ranges?.map((p) => p.path) || [];
+  const relatedFiles = replacedPaths
+    .concat(deletedPaths)
+    .concat(editedPaths)
+    .concat(editedRanges);
   const sha1Map = Object.fromEntries(
     await Promise.all(
       relatedFiles.map(async (filePath) => {
@@ -49,6 +54,17 @@ export async function createMetadata(
     };
   });
 
+  const resolvedEditedRanges = parsed.edit_ranges?.map((rangeEdit) => {
+    const source =
+      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(rangeEdit.path)] ||
+      '';
+    const newSource = applyRangeEdits(source, rangeEdit.edits);
+    return {
+      path: rangeEdit.path,
+      content: newSource,
+    };
+  });
+
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     diagnostics: Object.fromEntries(
@@ -59,6 +75,7 @@ export async function createMetadata(
     parsed,
     source_sha1: sha1Map,
     resolved_edited_files: resolvedEditedFiles,
+    resolved_edited_ranges: resolvedEditedRanges,
   };
 
   return {

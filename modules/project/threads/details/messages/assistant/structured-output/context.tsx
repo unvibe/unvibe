@@ -35,11 +35,13 @@ export function StructuredOutputContextProvider({
     const replace = data.replace_files || [];
     const remove = data.delete_files || [];
     const edit = data.edit_files || [];
+    const ranges = data.edit_ranges || [];
     const scripts = data.shell_scripts || [];
     return [
       ...replace.map((file) => ({ path: file.path, selected: true })),
       ...remove.map((file) => ({ path: file.path, selected: true })),
       ...edit.map((file) => ({ path: file.path, selected: true })),
+      ...ranges.map((range) => ({ path: range.path, selected: true })),
       ...scripts.map((script) => ({ path: script, selected: true })),
     ];
   });

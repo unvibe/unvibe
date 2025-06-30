@@ -12,6 +12,7 @@ import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
 
@@ -137,9 +138,20 @@ export async function runProposalDiagnostics(
   const addedFiles = proposal.replace_files || [];
   const deletedFiles = proposal.delete_files || [];
   const editedFiles = proposal.edit_files || [];
+  const editedRanges = proposal.edit_ranges || [];
   const content = [
     ...addedFiles,
     ...deletedFiles.map((file) => ({ path: file.path, content: '' })),
+    ...editedRanges.map((range) => {
+      const source =
+        project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(range.path)] ||
+        '';
+      const newSource = applyRangeEdits(source, range.edits);
+      return {
+        path: range.path,
+        content: newSource,
+      };
+    }),
     ...editedFiles.map((file) => {
       const source =
         project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] ||
