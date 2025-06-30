@@ -5,7 +5,7 @@ import { MdOutlineInfo } from 'react-icons/md';
 import { Switch } from '@/modules/ui';
 import { useProject } from '../provider';
 import { HiXMark } from 'react-icons/hi2';
-import { getPluginStyle, PluginIcon } from '../plugins/plugins-list';
+import { getPluginStyle, PluginIcon } from '../plugins-context/list-card';
 
 function SectionCard({
   pluginName,

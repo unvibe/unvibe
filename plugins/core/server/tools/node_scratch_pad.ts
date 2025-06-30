@@ -7,10 +7,15 @@ import { exec } from 'child_process';
 
 export const config = make({
   name: 'node_scratch_pad',
-  description: `Executes provided JavaScript code using Node.js (by writing to a temp file and running node on it). This tool is intended as a general-purpose JavaScript scratch pad for the LLM to answer questions, whether related or unrelated to the project context. It is a thinking tool for running quick computations, logic checks, or data transformations in JavaScript.\n\n**IMPORTANT:** Use this tool ONLY for Node.js scripts that complete quickly (a few seconds at most). Avoid starting servers or running long processes, as this will hang the model response.`,
+  description: `
+  Executes provided JavaScript code using Node.js (by writing to a temp file and running node on it). This tool is intended as a general-purpose JavaScript scratch pad for the LLM to answer questions, whether related or unrelated to the project context. It is a thinking tool for running quick computations, logic checks, or data transformations in JavaScript.\n\n**IMPORTANT:** Use this tool ONLY for Node.js scripts that complete quickly (a few seconds at most). Avoid starting servers or running long processes, as this will hang the model response. it has network access, you can use it to fetch data from the internet, perform quick computations, or run logic checks.\n\n**Note:** This tool is not limited to the current project context, it can be used for any JavaScript code that you want to run quickly.
+`,
   usage: `**node_scratch_pad**: A general-purpose JavaScript scratch pad (runs code in a temp file via Node.js).\n\nIntended for the LLM to answer questions or perform quick logic/data checks, not limited to project-specific code.\n\nParams:\n- code (string, required): JavaScript code to execute.\n- cwd (string, optional): Working directory (defaults to project root).\n\n**IMPORTANT:** Only use for scripts that end quickly. Do NOT use for long-running processes like starting servers, as this will hang your session.`,
   parameters: {
-    code: { type: 'string', description: 'JavaScript code to execute in Node.js.' },
+    code: {
+      type: 'string',
+      description: 'JavaScript code to execute in Node.js.',
+    },
     cwd: {
       type: 'string',
       description: 'Working directory (default: project root).',
@@ -57,7 +62,11 @@ export const createTool: CreateTool = ({ project }) => {
         await fs.unlink(tempFile); // cleanup
         return output;
       } catch (error) {
-        try { await fs.unlink(tempFile); } catch { /* ignore */ }
+        try {
+          await fs.unlink(tempFile);
+        } catch {
+          /* ignore */
+        }
         return error instanceof Error ? error.message : String(error);
       }
     }

@@ -25,7 +25,7 @@ export async function runTransforms(
     .filter((hook): hook is SourceCodeHook[] => !!hook)
     .flat()
     .filter((hook): hook is SourceCodeTransformHook =>
-      Boolean(hook.operations.diagnostic)
+      Boolean(hook.operations.transform)
     );
 
   let virtualFiles: VirtualFile[] = files;

@@ -5,7 +5,10 @@
    • Returns VirtualFile[] with prettified content (or untouched if Prettier missing)
    --------------------------------------------------------- */
 
+import { createRequire } from 'module';
 import path from 'path';
+
+const require = createRequire(import.meta.url);
 
 export type VirtualFile = { path: string; content: string };
 
@@ -64,7 +67,8 @@ function loadPrettier(root: string): typeof import('prettier') | null {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
       return require(probe());
-    } catch {
+    } catch (e) {
+      console.log(e);
       /* try next */
     }
   }

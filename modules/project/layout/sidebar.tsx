@@ -13,7 +13,7 @@ import { useCallback, useMemo } from 'react';
 import { SidebarToolsList } from '../tools/sidebar-tools-list';
 import { useParams, usePathname } from '@/lib/next/navigation';
 import { SidebarFilesList } from '../files/sidebar-files-list';
-import { SidebarPluginsList } from '../plugins/sidebar-plugins-list';
+import { SidebarPluginsList } from '../plugins-context/sidebar-plugins-list';
 import { SidebarThemesList } from '../themes/sidebar-themes-list';
 import { SidebarIcon, SidebarIconsGroup } from '../lib/sidebar-icon';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';

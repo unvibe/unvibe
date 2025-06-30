@@ -19,7 +19,8 @@ export async function formatStructuredOutputFiles(
       return JSON.stringify(newJSON);
     }
     return message;
-  } catch {
+  } catch (e) {
+    console.error('Error formatting structured output files:', e);
     return message;
   }
 }

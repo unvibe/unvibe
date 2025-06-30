@@ -8,7 +8,7 @@ Unvibe aims to make creating and managing complex projects easy, goal-oriented, 
 
 ## Quickstart: System at a Glance
 
-- **Frontend**: Next.js (React, React Query)
+- **Frontend**: Vite, React, React Router, React Query
 - **Backend**: Node.js, custom API + WebSocket server, Drizzle-ORM (SQLite)
 - **Plugins**: First-class, type-safe, support both server and client
 - **LLM-driven workflows**: Context-aware, dynamically composed
@@ -19,7 +19,7 @@ Unvibe aims to make creating and managing complex projects easy, goal-oriented, 
 ```
 +----------------+        +-----------------------+        +------------------+
 |    Frontend    |<------>|    API/WebSocket     |<------>|      Plugins      |
-| (Next.js, UI)  |        |   (Node.js Server)   |        | (Server & Client) |
+| (React UI)     |        |   (Node.js Server)   |        | (Server & Client) |
 +----------------+        +-----------------------+        +------------------+
         ^                        ^        ^                        ^
         |                        |        |                        |
@@ -44,7 +44,7 @@ Unvibe aims to make creating and managing complex projects easy, goal-oriented, 
 
 | Folder     | Purpose                                                |
 | ---------- | ------------------------------------------------------ |
-| `app/`     | Next.js app entry, layouts, pages                      |
+| `app/`     | React Router app entry, routes, pages, layouts         |
 | `modules/` | UI modules/components, layouts, providers, threads     |
 | `server/`  | Backend: APIs, WebSocket, core logic, DB, LLM runners  |
 | `plugins/` | Modular plugins (server/client), each in own folder    |
@@ -121,12 +121,13 @@ Unvibe aims to make creating and managing complex projects easy, goal-oriented, 
 
 ---
 
-## 6. Frontend (Next.js)
+## 6. Frontend (Vite, React, React Router)
 
-- Entrypoint: `app/layout.tsx` sets providers.
+- Entrypoint: `app/root.tsx` sets providers.
 - UI modules in `modules/` (UI, layout, threads, providers).
-- Pages define route logic, use typed API client.
+- Pages define route logic using React Router config in `app/routes.ts` or similar.
 - State/data flow via React Query.
+- SSR enabled via Vite and React Router configuration (`vite.config.ts`, `react-router.config.ts`).
 
 ---
 
@@ -175,8 +176,8 @@ const { data } = useAPIQuery('GET /threads/details', { id });
 
 ## 10. Configuration & Deployment
 
-- Config: `next.config.ts`, `.env`, assets in `app/`.
-- Deployment: Next.js app + separate WebSocket server (port 3006 default).
+- Config: `vite.config.ts`, `.env`, assets in `app/`.
+- Deployment: Vite-powered SSR app + separate WebSocket server (port 3006 default).
 - Env: DB URL, WebSocket port, API keys.
 - For scale: deploy WebSocket server separately.
 
@@ -186,7 +187,7 @@ const { data } = useAPIQuery('GET /threads/details', { id });
 
 | Layer    | Key Tech                               |
 | -------- | -------------------------------------- |
-| Frontend | Next.js, React, React Query            |
+| Frontend | Vite, React, React Router, React Query |
 | Backend  | Node.js, Drizzle-ORM, WebSocket (Node) |
 | Types    | TypeScript (shared contracts)          |
 | Plugins  | Modular via `/plugins/`                |
@@ -308,7 +309,6 @@ All significant changes, questions, or analyses are proposed using a structured 
 | Type Safety       | Guarantee that data structures and contracts are consistent and validated    |
 | WebSocket         | Protocol for real-time, bidirectional communication                         |
 | Drizzle-ORM       | TypeScript ORM for SQL databases                                            |
-| Next.js           | React web framework powering the frontend                                   |
 | Thread            | Conversation flow (messages, actions) between users and/or LLM logic        |
 
 ---

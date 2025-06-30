@@ -1,7 +1,11 @@
-import { MdOutlineDownloading, MdOutlinePlayArrow } from 'react-icons/md';
+import {
+  MdOutlineDownloading,
+  MdOutlinePlayArrow,
+  MdRefresh,
+} from 'react-icons/md';
 import { useAssistantMessageContext } from './assistant-message-context';
 import { useStructuredOutputContext } from './structured-output/context';
-import { useAPIMutation } from '@/server/api/client';
+import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { useParams } from 'react-router';
 
 export function AcceptProposal() {
@@ -29,7 +33,11 @@ export function AcceptProposal() {
   const { mutate: applyProposal } = useAPIMutation(
     'POST /projects/accept-proposal'
   );
+  const { mutate: continueThread } = useAPIMutation('POST /threads/continue');
   const projectId = useParams().project_id as string;
+  const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
+    id: messageContext.message.thread_id,
+  });
 
   return (
     <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
@@ -73,12 +81,40 @@ export function AcceptProposal() {
             </button>
           )}
           {hasIssues && (
-            <button className='font-mono text-sm p-1 px-3 bg-amber-800 text-amber-50 rounded-lg flex items-center gap-2'>
-              <span>
-                <MdOutlineDownloading className='w-5 h-5' />
-              </span>
-              <span>Accept anyway</span>
-            </button>
+            <>
+              <button className='font-mono text-sm p-1 px-3 bg-amber-800 text-amber-50 rounded-lg flex items-center gap-2'>
+                <span>
+                  <MdOutlineDownloading className='w-5 h-5' />
+                </span>
+                <span>Accept anyway</span>
+              </button>
+              <button
+                className='font-mono text-sm p-1 px-3 bg-background-1 text-foreground-2 rounded-lg flex items-center gap-2'
+                onClick={() => {
+                  continueThread(
+                    {
+                      projectId,
+                      prompt: `fix the errors in the proposal {errors}`,
+                      threadId: messageContext.message.thread_id,
+                      context_config:
+                        thread?.thread?.context_config || undefined,
+                      images: [],
+                      search_enabled: false,
+                    },
+                    {
+                      onSuccess() {
+                        refetch();
+                      },
+                    }
+                  );
+                }}
+              >
+                <span>
+                  <MdRefresh className='w-5 h-5' />
+                </span>
+                <span>Feedback</span>
+              </button>
+            </>
           )}
         </>
       )}
