@@ -81,6 +81,11 @@ export const structuredOutputInstructions = `
   ]
 }
 \`\`\`
+### Shell Scripts Usage Policy
+- Only use the \`shell_scripts\` field for scripts or commands that mutate or configure the current project (for example: \`npm install\`, \`bash setup.sh\`, or scripts that change files, install dependencies, etc).
+- For informational or read-only commands (for example: \`ls\`, \`date\`, reading logs, checking system info), use the provided tools interface to request their execution instead of including them in \`shell_scripts\`.
+- Never include shell commands in \`shell_scripts\` that do not change the state of the project; these should be run via the tools mechanism to get their output.
+
 
 ## Output Requirements
 

@@ -4,6 +4,9 @@ import * as llm from '@/server/llm';
 import { models } from '@/server/llm/models';
 import { Thread } from '@/server/db/schema';
 import { sendWebsocketEvent } from '@/server/websocket/server';
+import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { Project } from '@/plugins/core/server/api/lib/project';
+import { normalizePath } from '../projects/utils';
 
 export function sendEventEnd(tag: string, threadId: string) {
   sendWebsocketEvent({
@@ -103,4 +106,26 @@ export function createThread({
     workspaces: workspaces,
     context_config: context_config,
   };
+}
+
+export function resolveEdits(
+  edits: ModelResponseStructure['edit_files'] = [],
+  project: Project
+) {
+  return edits?.map((file) => {
+    const source =
+      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] || '';
+    // todo apply the range to the source
+    // Apply the edit by lines
+    const sourceLines = source.split('\n');
+    const editLines = file.content.split('\n');
+    // split the source lines in two parts
+    const newLines = [...sourceLines];
+    newLines.splice(file.insert_at - 1, 0, ...editLines);
+    const appliedContent = newLines.join('\n');
+    return {
+      path: file.path,
+      content: appliedContent,
+    };
+  });
 }

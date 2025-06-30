@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
 import { db } from '@/server/db';
 
+// todo: check all metadata of messages and compare its metadata.source_sha1 record
+// and mark it as they don't match anymore then the proposal is "outdated"
 export const getThreadDetails = createEndpoint({
   type: 'GET',
   pathname: '/threads/details',

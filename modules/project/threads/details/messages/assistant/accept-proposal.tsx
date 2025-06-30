@@ -1,10 +1,8 @@
-import {
-  MdOutlineDownloading,
-  MdOutlinePlayArrow,
-  MdPlayArrow,
-} from 'react-icons/md';
+import { MdOutlineDownloading, MdOutlinePlayArrow } from 'react-icons/md';
 import { useAssistantMessageContext } from './assistant-message-context';
 import { useStructuredOutputContext } from './structured-output/context';
+import { useAPIMutation } from '@/server/api/client';
+import { useParams } from 'react-router';
 
 export function AcceptProposal() {
   // get if there are any errors in any of the selected files
@@ -28,6 +26,11 @@ export function AcceptProposal() {
       )
     : false;
 
+  const { mutate: applyProposal } = useAPIMutation(
+    'POST /projects/accept-proposal'
+  );
+  const projectId = useParams().project_id as string;
+
   return (
     <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
       {hasNoFilesAndNoScripts ? (
@@ -40,7 +43,29 @@ export function AcceptProposal() {
       ) : (
         <>
           {!hasIssues && (
-            <button className='font-mono text-sm p-1 px-3 bg-emerald-800 text-emerald-50 rounded-lg flex items-center gap-2'>
+            <button
+              className='font-mono text-sm p-1 px-3 bg-emerald-800 text-emerald-50 rounded-lg flex items-center gap-2'
+              onClick={() => {
+                applyProposal(
+                  {
+                    projectDirname: projectId,
+                    source: 'projects',
+                    proposal: {
+                      messageId: messageContext.message.id,
+                      ...structuredOutputContext.data,
+                    },
+                  },
+                  {
+                    onSuccess(data) {
+                      console.log('Proposal accepted successfully', data);
+                    },
+                    onError(error) {
+                      console.error('Error accepting proposal', error);
+                    },
+                  }
+                );
+              }}
+            >
               <span>
                 <MdOutlineDownloading className='w-5 h-5' />
               </span>
