@@ -6,7 +6,7 @@ import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { noop } from '@/lib/core/noop';
-import { resolveEdits } from '../threads/utils';
+import { resolveEdits, resolveRangeEdits } from '../threads/utils';
 import { ModelResponseStructure } from '@/server/llm/structured_output';
 
 async function applyShellScripts(project: Project, scripts?: string[]) {
@@ -79,6 +79,17 @@ async function applyEditedFiles(
   return await applyReplacedFiles(project, resolved);
 }
 
+async function applyRangedEdits(
+  project: Project,
+  editRanges: ModelResponseStructure['edit_ranges'] = []
+) {
+  if (!editRanges || editRanges.length === 0) {
+    return [];
+  }
+  const resolved = resolveRangeEdits(editRanges, project);
+  return await applyReplacedFiles(project, resolved);
+}
+
 export const acceptProposal = createEndpoint({
   type: 'POST',
   pathname: '/projects/accept-proposal',
@@ -92,6 +103,20 @@ export const acceptProposal = createEndpoint({
         .array(z.object({ path: z.string(), content: z.string() }))
         .optional(),
       delete_files: z.array(z.object({ path: z.string() })).optional(),
+      edit_ranges: z
+        .array(
+          z.object({
+            path: z.string(),
+            edits: z.array(
+              z.object({
+                start: z.number(), // 0-based index
+                end: z.number(), // 0-based index
+                content: z.string(),
+              })
+            ),
+          })
+        )
+        .optional(),
       edit_files: z
         .array(
           z.object({
@@ -110,10 +135,11 @@ export const acceptProposal = createEndpoint({
       project,
       parsed.proposal.shell_scripts || []
     );
-    const [deleted, replaced, edited] = await Promise.all([
+    const [deleted, replaced, edited, ranges] = await Promise.all([
       applyDeletedFiles(project, parsed.proposal.delete_files),
       applyReplacedFiles(project, parsed.proposal.replace_files),
       applyEditedFiles(project, parsed.proposal.edit_files),
+      applyRangedEdits(project, parsed.proposal.edit_ranges || []),
     ]);
 
     // TODO: if the thread has messages after that one, we need to invalidate the metadata of each proposal message
@@ -124,6 +150,7 @@ export const acceptProposal = createEndpoint({
       deleted,
       replaced,
       edited,
+      ranges,
     };
   },
 });

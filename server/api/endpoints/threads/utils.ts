@@ -7,6 +7,7 @@ import { sendWebsocketEvent } from '@/server/websocket/server';
 import { ModelResponseStructure } from '@/server/llm/structured_output';
 import { Project } from '@/plugins/core/server/api/lib/project';
 import { normalizePath } from '../projects/utils';
+import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 export function sendEventEnd(tag: string, threadId: string) {
   sendWebsocketEvent({
@@ -106,6 +107,21 @@ export function createThread({
     workspaces: workspaces,
     context_config: context_config,
   };
+}
+
+export function resolveRangeEdits(
+  edits: ModelResponseStructure['edit_ranges'] = [],
+  project: Project
+) {
+  return edits?.map((range) => {
+    const source =
+      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(range.path)] || '';
+    const newSource = applyRangeEdits(source, range.edits);
+    return {
+      path: range.path,
+      content: newSource,
+    };
+  });
 }
 
 export function resolveEdits(

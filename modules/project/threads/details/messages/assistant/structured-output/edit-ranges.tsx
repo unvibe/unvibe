@@ -20,8 +20,9 @@ export function StructuredOutputEditRanges() {
         return (
           <ThreadDetailsMessageListItemFile
             icon={
-              <span className='w-4 h-4 border-2 border-orange-500 flex items-center justify-center'>
-                <span className='w-2 h-2 rounded-full bg-orange-500' />
+              <span className='w-4 h-4 border-2 border-emerald-600 grid items-center p-px'>
+                <span className='w-full h-0.5 bg-emerald-600' />
+                <span className='w-full h-0.5 bg-emerald-800' />
               </span>
             }
             key={entry.path}
@@ -38,8 +39,11 @@ export function StructuredOutputEditRanges() {
                 : entry.edits.map((edit) => ({
                     start: { line: edit.start - 1, character: 0 },
                     end: {
-                      line: edit.end - 1,
-                      character: 0,
+                      line: edit.end - 1 + edit.content.split('\n').length - 1,
+                      character:
+                        edit.content.split('\n')[
+                          edit.content.split('\n').length - 1
+                        ].length,
                     },
                     properties: { class: 'highlighted-word' },
                   }))

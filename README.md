@@ -1,23 +1,23 @@
 # Unvibe
 
-Write code like in StarTrek.
+Write code like you're in Star Trek.
 
 ## Overview
 
-Unvibe aims to making creating and managing complex projects easy and goal-oriented, without compromising on the quality and correctness of your code.
+Unvibe aims to make creating and managing complex projects easy and goal-oriented, without compromising on code quality and correctness.
 It provides a pluggable architecture & platform for managing code, using already existing tooling and libraries.
 
-when you load up a project in Unvibe it will automatically analyze the tooling required for a good workflow, and provides a robust context for llms to work with.
+When you load up a project in Unvibe, it will automatically analyze the required tooling for a productive workflow and provide a robust context for LLMs to work with.
 
 ### Getting Started
 
-clone the repo in `~/projects` and follow instructions
+Clone the repo to `~/projects` and follow the instructions below.
 
 ```bash
 gh repo clone unvibe/unvibe ~/projects/unvibe
 ```
 
-1. **environment:** First you need to setup ur environment, make sure to add the following to ur `.env`
+1. **Environment:** First, set up your environment. Add the following to your `.env` file:
 
 ```sh
 # for llms use
@@ -39,19 +39,19 @@ AWS_CLOUDFRONT_CDN_URL=
 npm install
 ```
 
-2. **Push Drizzle migrations:**
+3. **Push Drizzle migrations:**
 
 ```bash
 npx drizzle-kit push
 ```
 
-3. **Run the frontend development server:**
+4. **Run the frontend development server:**
 
 ```bash
 npm run dev
 ```
 
-4. **Run the backend server in development mode:**
+5. **Run the backend server in development mode:**
 
 ```bash
 npm run dev:server
