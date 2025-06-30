@@ -4,3 +4,4 @@ export * from './models';
 export * from './threads';
 export * from './projects';
 export * from './home';
+export * from './custom-plugin';

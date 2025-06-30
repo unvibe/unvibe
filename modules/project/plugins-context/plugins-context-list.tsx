@@ -5,13 +5,18 @@ import { ContextItemDetailsHook } from './plugins-hooks';
 import { ContextItemDetailsSystem } from './plugins-system';
 import { ContextItemDetailsTool } from './plugins-tools';
 import { parseContext } from './utils';
+import { useState } from 'react';
+import { SystemAddModal } from './system-add-modal';
 
 export function PluginList() {
   const contextPreview = useProject().context_preview;
+  console.log(contextPreview);
   const parsed = parseContext(contextPreview);
   const _tools = parsed.filter((item) => item.type === 'tool');
   const _systems = parsed.filter((item) => item.type === 'system');
   const _hooks = parsed.filter((item) => item.type === 'hook');
+
+  const [isSystemAddOpen, setIsSystemAddOpen] = useState(false);
 
   return (
     <main className='p-8 max-w-6xl mx-auto'>
@@ -38,7 +43,11 @@ export function PluginList() {
               />
             );
           })}
-          <ContextSectionCardAdd />
+          <ContextSectionCardAdd onClick={() => setIsSystemAddOpen(true)} />
+          <SystemAddModal
+            open={isSystemAddOpen}
+            onClose={() => setIsSystemAddOpen(false)}
+          />
         </Section>
         <Section title='Hooks' description='LLM structured output hooks'>
           {_hooks.map((hook) => {

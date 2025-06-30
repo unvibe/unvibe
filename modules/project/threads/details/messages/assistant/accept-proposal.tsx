@@ -82,7 +82,29 @@ export function AcceptProposal() {
           )}
           {hasIssues && (
             <>
-              <button className='font-mono text-sm p-1 px-3 bg-amber-800 text-amber-50 rounded-lg flex items-center gap-2'>
+              <button
+                className='font-mono text-sm p-1 px-3 bg-amber-800 text-amber-50 rounded-lg flex items-center gap-2'
+                onClick={() => {
+                  applyProposal(
+                    {
+                      projectDirname: projectId,
+                      source: 'projects',
+                      proposal: {
+                        messageId: messageContext.message.id,
+                        ...structuredOutputContext.data,
+                      },
+                    },
+                    {
+                      onSuccess(data) {
+                        console.log('Proposal accepted successfully', data);
+                      },
+                      onError(error) {
+                        console.error('Error accepting proposal', error);
+                      },
+                    }
+                  );
+                }}
+              >
                 <span>
                   <MdOutlineDownloading className='w-5 h-5' />
                 </span>

@@ -120,7 +120,7 @@ export function ContextSectionCard({
   );
 }
 
-export function ContextSectionCardAdd() {
+export function ContextSectionCardAdd({ onClick }: { onClick?: () => void }) {
   return (
     <>
       <button
@@ -129,6 +129,7 @@ export function ContextSectionCardAdd() {
           'border-dashed border-2 border-border hover:bg-background-1/50',
           'flex items-center justify-center text-foreground-2'
         )}
+        onClick={onClick}
       >
         <div className='border-2 border-border border-dashed p-4 rounded-full'>
           <HiPlus className='w-6 h-6' />

@@ -134,10 +134,10 @@ export async function parseProject(
           const customSystemPart = customSystem.find(
             (sys) => sys.key === context_key
           );
-          preview_string = [
-            customSystemPart?.type.toUpperCase(),
-            customSystemPart ? customSystemPart.value : '',
-          ].join('\n');
+          preview_string =
+            baseProject.EXPENSIVE_REFACTOR_LATER_content[
+              customSystemPart?.value || ''
+            ];
         } else {
           const _value = contexts.find((ctx) => ctx.id === plugin_id)
             ?.systemParts[context_key];
