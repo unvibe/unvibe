@@ -6,9 +6,10 @@ import { useProject, useProjectActions } from '@/modules/project/provider';
 import { useAssistantMessageContext } from './assistant-message-context';
 import { DiagnosticMessage } from '@/server/db/schema';
 import { Modal } from '@/modules/ui/modal';
-import { Progress } from '@/modules/ui/progress/progress-circle';
-import { HiPencilSquare } from 'react-icons/hi2';
+// import { Progress } from '@/modules/ui/progress/progress-circle';
+// import { HiPencilSquare } from 'react-icons/hi2';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
+import { TbEdit } from 'react-icons/tb';
 
 const Editor = React.lazy(() =>
   import('@/modules/ui/monaco-editor').then((module) => ({
@@ -16,26 +17,26 @@ const Editor = React.lazy(() =>
   }))
 );
 
-function QualityCheckProgress({
-  progress,
-  type,
-}: {
-  progress: number;
-  type: 'error' | 'warning' | 'idle' | 'success';
-}) {
-  let color = 'text-foreground-2';
+// function QualityCheckProgress({
+//   progress,
+//   type,
+// }: {
+//   progress: number;
+//   type: 'error' | 'warning' | 'idle' | 'success';
+// }) {
+//   let color = 'text-foreground-2';
 
-  if (type === 'warning') {
-    color = 'text-amber-600';
-  } else if (type === 'idle') {
-    color = 'text-foreground-2';
-  } else if (type === 'success') {
-    color = 'text-emerald-600';
-  } else {
-    color = 'text-rose-600';
-  }
-  return <Progress progress={progress} filledClassName={clsx(color)} />;
-}
+//   if (type === 'warning') {
+//     color = 'text-amber-600';
+//   } else if (type === 'idle') {
+//     color = 'text-foreground-2';
+//   } else if (type === 'success') {
+//     color = 'text-emerald-600';
+//   } else {
+//     color = 'text-rose-600';
+//   }
+//   return <Progress progress={progress} filledClassName={clsx(color)} />;
+// }
 
 export interface FileActionProps {
   // props
@@ -158,9 +159,9 @@ export function ThreadDetailsMessageListItemFileActions({
       : 'warning';
   });
 
-  const passedCount = fileResult.filter((result) => result === 'passed').length;
-  const total = fileResult.length;
-  const progress = Math.round((passedCount / total) * 100) || 1;
+  // const passedCount = fileResult.filter((result) => result === 'passed').length;
+  // const total = fileResult.length;
+  // const progress = Math.round((passedCount / total) * 100) || 1;
 
   const collectedDiagnostics = useMemo(() => {
     const array: (DiagnosticMessage & { checkName: string })[] = [];
@@ -216,7 +217,7 @@ export function ThreadDetailsMessageListItemFileActions({
             className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'
             onClick={() => setShowEditModal(true)}
           >
-            <HiPencilSquare className='w-5 h-5' />
+            <TbEdit className='w-5 h-5' />
           </button>
         )}
         {shouldShowDiagnostics && (
@@ -226,7 +227,19 @@ export function ThreadDetailsMessageListItemFileActions({
               setShowDiagnosticsModal(true);
             }}
           >
-            <QualityCheckProgress
+            <div className='w-5 h-5 flex items-center justify-center'>
+              <div
+                className={clsx(
+                  'w-3 h-3 rounded-full',
+                  status === 'warning'
+                    ? 'bg-amber-700'
+                    : status === 'error'
+                      ? 'bg-rose-700'
+                      : 'bg-emerald-700'
+                )}
+              />
+            </div>
+            {/* <QualityCheckProgress
               progress={progress}
               type={
                 fileResult.some((m) => m === 'error')
@@ -235,7 +248,7 @@ export function ThreadDetailsMessageListItemFileActions({
                     ? 'warning'
                     : 'success'
               }
-            />
+            /> */}
           </button>
         )}
       </div>

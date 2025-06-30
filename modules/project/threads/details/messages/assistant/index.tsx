@@ -7,6 +7,7 @@ import {
   StructuredOutput,
   StructuredOutputContextProvider,
 } from './structured-output';
+import { AcceptProposal } from './accept-proposal';
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -52,6 +53,7 @@ export function ThreadDetailsAssistantMessage() {
     <Wrapper>
       <StructuredOutputContextProvider data={value.metadata.content}>
         <StructuredOutput />
+        <AcceptProposal />
       </StructuredOutputContextProvider>
     </Wrapper>
   );

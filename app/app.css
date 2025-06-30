@@ -142,7 +142,7 @@ code {
   max-width: 100%;
   overflow-x: scroll;
   left: 0;
-  @apply absolute p-2 rounded-xl border border-border bg-background-2 text-foreground-2 text-sm whitespace-pre-wrap;
+  @apply absolute p-4 rounded-xl border border-border bg-background-2 text-foreground-1 text-xs whitespace-pre-wrap;
   opacity: 0;
   visibility: hidden;
 }
