@@ -3,9 +3,20 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import devtoolsJson from 'vite-plugin-devtools-json';
+import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), devtoolsJson()],
+  plugins: [
+    tailwindcss(),
+    reactRouter(),
+    tsconfigPaths(),
+    devtoolsJson(),
+    mkcert(),
+  ],
+  server: {
+    https: true,
+    host: 'local.unvibe',
+  },
   ssr: {
     // keeps monaco out of the server bundle so Node never sees the CSS
     noExternal: ['monaco-editor'],

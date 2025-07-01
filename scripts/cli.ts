@@ -1,3 +1,4 @@
+// NOTE: For HTTPS support on https://local.unvibe, vite-plugin-mkcert is used. On first run, it will prompt for trust. See vite.config.ts.
 // scripts/cli.ts
 import { execSync } from 'child_process';
 import fs from 'fs';
