@@ -89,7 +89,16 @@ export async function createMetadata(
     raw: response,
     diagnostics: Object.fromEntries(
       diagnostics.map((hook) => {
-        return [hook.name, JSON.parse(hook.result)];
+        try {
+          return [hook.name, JSON.parse(hook.result)];
+        } catch (error) {
+          console.log(
+            `Hook Run Failed: ${hook.name} diagnostics:`,
+            hook.result,
+            error
+          );
+          return [hook.name, {}];
+        }
       })
     ),
     parsed,

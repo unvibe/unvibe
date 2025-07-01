@@ -189,11 +189,16 @@ export async function runProposalDiagnostics(
       continue;
     }
     const task = async () => {
-      const diagnosticResult = await hook.operations.diagnostic(
-        hookFiles,
-        project.path
-      );
-      return { name: hook.name, result: diagnosticResult };
+      try {
+        const diagnosticResult = await hook.operations.diagnostic(
+          hookFiles,
+          project.path
+        );
+        return { name: hook.name, result: diagnosticResult };
+      } catch (error) {
+        console.error(`Failed to run diagnostic hook ${hook.name}:`, error);
+        return { name: hook.name, result: '{}' };
+      }
     };
 
     hookPromises.push(task());
