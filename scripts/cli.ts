@@ -9,7 +9,7 @@ import path from 'path';
 const GH_REPO = 'unvibe/unvibe';
 const HOME = os.homedir();
 const PROJECT_DIR = path.join(HOME, '.unvibe');
-const LOCAL_DOMAIN = 'local.unvibe';
+const LOCAL_DOMAIN = 'unvibe.io';
 const ENV_FILE = path.join(PROJECT_DIR, '.env.local');
 
 function run(cmd: string, cwd?: string) {
