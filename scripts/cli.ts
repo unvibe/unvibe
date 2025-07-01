@@ -9,6 +9,7 @@ const GH_REPO = 'unvibe/unvibe';
 const HOME = os.homedir();
 const PROJECT_DIR = path.join(HOME, '.unvibe');
 const LOCAL_DOMAIN = 'local.unvibe';
+const ENV_FILE = path.join(PROJECT_DIR, '.env.local');
 
 function run(cmd: string, cwd?: string) {
   console.log(`$ ${cmd}`);
@@ -23,6 +24,12 @@ async function main() {
     // run(`git clone ${REPO_URL} ${PROJECT_DIR}`);
   } else {
     console.log('Project already cloned at ~/.unvibe.');
+  }
+
+  // Create empty .env.local if not exists
+  if (!fs.existsSync(ENV_FILE)) {
+    fs.writeFileSync(ENV_FILE, '', { encoding: 'utf8' });
+    console.log('Created empty .env.local');
   }
 
   run('npm install', PROJECT_DIR);
