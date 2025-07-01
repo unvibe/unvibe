@@ -42,9 +42,9 @@ export const createTool: CreateTool = function createGetFileContentTool({
         if (typeof content !== 'string') return `File not found: ${path}`;
         const lines = content.split(/\r?\n/);
         const lineCount = lines.length;
-        let start =
+        const start =
           typeof range_start === 'number' ? Math.max(1, range_start) : 1;
-        let end =
+        const end =
           typeof range_end === 'number'
             ? Math.min(lineCount, range_end)
             : lineCount;

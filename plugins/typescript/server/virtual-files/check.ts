@@ -43,7 +43,6 @@ export async function check(
     'lib',
     'typescript.js'
   );
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const ts = require(tsPath) as typeof import('typescript');
 
   // --- Group virtual files by nearest tsconfig.json, keeping original file paths ---
@@ -100,7 +99,7 @@ export async function check(
       const content = vmap.get(resolved) ?? ts.sys.readFile(resolved);
       if (content === undefined) return undefined;
       const sf = ts.createSourceFile(resolved, content, languageVersion);
-      // @ts-expect-error
+      // @ts-expect-error -- TypeScript does not expose versioning in the public API
       sf.version = hash(content);
       return sf;
     };
