@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export type ModelResponseStructure = {
+export type StructuredOutput = {
   message: string;
   replace_files?: { path: string; content: string }[];
   delete_files?: { path: string }[];

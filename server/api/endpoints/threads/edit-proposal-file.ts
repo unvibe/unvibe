@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
 import { db } from '@/server/db';
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 import { messages } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { createMetadata } from './continue-utils';
@@ -26,7 +26,7 @@ export const editProposalFile = createEndpoint({
       throw new Error('Message not found');
     }
 
-    const content: ModelResponseStructure = JSON.parse(message.content);
+    const content: StructuredOutput = JSON.parse(message.content);
     const previous = content.replace_files?.find(
       (file) => file.path === parsed.newContentFilePath
     );
@@ -42,7 +42,7 @@ export const editProposalFile = createEndpoint({
       return file;
     });
 
-    const updatedContent: ModelResponseStructure = {
+    const updatedContent: StructuredOutput = {
       ...content,
       replace_files: updatedFiles,
     };

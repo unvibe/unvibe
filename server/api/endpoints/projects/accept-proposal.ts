@@ -7,7 +7,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { noop } from '@/lib/core/noop';
 import { resolveEdits, resolveRangeEdits } from '../threads/utils';
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 
 async function applyShellScripts(project: Project, scripts?: string[]) {
   if (!scripts || scripts.length === 0) {
@@ -70,7 +70,7 @@ async function applyDeletedFiles(
 
 async function applyEditedFiles(
   project: Project,
-  editFiles: ModelResponseStructure['edit_files'] = []
+  editFiles: StructuredOutput['edit_files'] = []
 ) {
   if (!editFiles || editFiles.length === 0) {
     return [];
@@ -81,7 +81,7 @@ async function applyEditedFiles(
 
 async function applyRangedEdits(
   project: Project,
-  editRanges: ModelResponseStructure['edit_ranges'] = []
+  editRanges: StructuredOutput['edit_ranges'] = []
 ) {
   if (!editRanges || editRanges.length === 0) {
     return [];

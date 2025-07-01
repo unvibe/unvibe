@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer, blob } from 'drizzle-orm/sqlite-core';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { ChatCompletionMessageToolCall } from 'openai/resources/index.mjs';
-import { ModelResponseStructure } from '../llm/structured_output';
+import { StructuredOutput } from '../llm/structured_output';
 
 // threads table definition
 export const threads = sqliteTable('threads', {
@@ -27,7 +27,7 @@ export type DiagnosticsByHookName = Record<string, FilesMapDiagnostics>;
 export type StructuredOutputMetadata = {
   raw: string; // the raw JSON string of the structured output
   source_sha1: Record<string, string>; // sha1 hashes of the source files
-  parsed: ModelResponseStructure; // the parsed structured output
+  parsed: StructuredOutput; // the parsed structured output
   diagnostics: DiagnosticsByHookName; // diagnostics for each hook
   resolved_edited_files?: { path: string; content: string }[]; // resolved edited files
   resolved_edited_ranges?: { path: string; content: string }[]; // resolved edited ranges

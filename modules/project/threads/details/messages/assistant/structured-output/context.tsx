@@ -1,4 +1,4 @@
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 import {
   createContext,
   Dispatch,
@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 export interface StructuredOutputContextValue {
-  data: ModelResponseStructure;
+  data: StructuredOutput;
   selection: { path: string; selected: boolean }[];
   setSelection: Dispatch<
     SetStateAction<StructuredOutputContextValue['selection']>
@@ -27,7 +27,7 @@ export function StructuredOutputContextProvider({
   data,
 }: {
   children: React.ReactNode;
-  data: ModelResponseStructure;
+  data: StructuredOutput;
 }) {
   const [selection, setSelection] = useState<
     StructuredOutputContextValue['selection']

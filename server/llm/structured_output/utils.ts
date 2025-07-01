@@ -3,7 +3,7 @@ import {
   AbstractContextAssistantMessage,
   AbstractContextMessage,
 } from '@/server/llm/models/_shared-types';
-import { ModelResponseStructure } from '../structured_output';
+import { StructuredOutput } from '../structured_output';
 import { runTransforms } from './transform';
 
 export async function formatStructuredOutputFiles(
@@ -11,7 +11,7 @@ export async function formatStructuredOutputFiles(
   message: string
 ) {
   try {
-    const json: ModelResponseStructure = JSON.parse(message);
+    const json: StructuredOutput = JSON.parse(message);
     if (json?.replace_files) {
       const newDraft = await runTransforms(project, json?.replace_files);
       const newJSON = { ...json };

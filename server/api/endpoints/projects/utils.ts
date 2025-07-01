@@ -11,7 +11,7 @@ import { noop } from '@/lib/core/noop';
 import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
@@ -131,7 +131,7 @@ export function _parseProject(
 }
 
 export async function runProposalDiagnostics(
-  proposal: ModelResponseStructure,
+  proposal: StructuredOutput,
   project: Project
 ) {
   const plugins = await loadPlugins(project);

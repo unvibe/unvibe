@@ -4,7 +4,7 @@ import { jsonrepair } from 'jsonrepair';
 import { normalizePath, runProposalDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
 import { Project } from '@/plugins/core/server/api/lib/project';
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 export async function createMetadata(
@@ -15,7 +15,7 @@ export async function createMetadata(
   const hash = await sha1(response);
   const repaired = jsonrepair(response);
   const formatted = await formatStructuredOutputFiles(project, repaired);
-  const parsed: ModelResponseStructure = JSON.parse(formatted);
+  const parsed: StructuredOutput = JSON.parse(formatted);
   const diagnostics = await runProposalDiagnostics(parsed, project);
 
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];

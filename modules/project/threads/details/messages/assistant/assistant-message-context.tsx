@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { ThreadDetailsMessageProps } from '../_shared-types';
-import type { ModelResponseStructure } from '@/server/llm/structured_output';
+import type { StructuredOutput } from '@/server/llm/structured_output';
 import { noop } from '@/lib/core/noop';
 import type { Message } from '@/server/db/schema';
 
@@ -31,7 +31,7 @@ type AssistantMessageContext = {
     | {
         type: 'structured';
         threadId: string;
-        content: ModelResponseStructure | string;
+        content: StructuredOutput | string;
         showAction: boolean;
         initialState: StructuredContentState | null;
       };
@@ -44,9 +44,7 @@ export function useAssistantMessageContext() {
   return useContext(AssistantMessageContext) as AssistantMessageContext;
 }
 
-function cleanUp(
-  candidate: ModelResponseStructure | string
-): ModelResponseStructure {
+function cleanUp(candidate: StructuredOutput | string): StructuredOutput {
   if (typeof candidate === 'string') {
     return {
       message: candidate,
@@ -81,7 +79,7 @@ function cleanUp(
 
 function parseMessageContent(
   _content: string | null
-): ModelResponseStructure | string {
+): StructuredOutput | string {
   const content = _content?.trim();
   if (!content) return '';
   try {

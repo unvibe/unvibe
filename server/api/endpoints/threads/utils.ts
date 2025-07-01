@@ -4,7 +4,7 @@ import * as llm from '@/server/llm';
 import { models } from '@/server/llm/models';
 import { Thread } from '@/server/db/schema';
 import { sendWebsocketEvent } from '@/server/websocket/server';
-import { ModelResponseStructure } from '@/server/llm/structured_output';
+import { StructuredOutput } from '@/server/llm/structured_output';
 import { Project } from '@/plugins/core/server/api/lib/project';
 import { normalizePath } from '../projects/utils';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
@@ -110,7 +110,7 @@ export function createThread({
 }
 
 export function resolveRangeEdits(
-  edits: ModelResponseStructure['edit_ranges'] = [],
+  edits: StructuredOutput['edit_ranges'] = [],
   project: Project
 ) {
   return edits?.map((range) => {
@@ -125,7 +125,7 @@ export function resolveRangeEdits(
 }
 
 export function resolveEdits(
-  edits: ModelResponseStructure['edit_files'] = [],
+  edits: StructuredOutput['edit_files'] = [],
   project: Project
 ) {
   return edits?.map((file) => {
