@@ -20,7 +20,7 @@ import {
 export const id = 'openai-chat-completions';
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
+  apiKey: process.env.OPENAI_API_KEY || 'API_KEY_NOT_SET',
 });
 
 function getToolByName(tools: Tools, name: string) {
