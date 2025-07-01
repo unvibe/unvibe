@@ -7,7 +7,6 @@ export function StructuredOutputEditRanges() {
   const metadata = useAssistantMessageContext().message.metadata;
   const edit_ranges = data.edit_ranges || [];
 
-  console.log(metadata?.resolved_edited_ranges);
   // If no edit_ranges, render nothing
   if (!edit_ranges.length) return null;
 

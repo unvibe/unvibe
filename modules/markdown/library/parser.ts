@@ -25,7 +25,6 @@ export async function highlightCode(
   lang: string,
   decorations?: Decorations
 ): Promise<string> {
-  console.log('found decorations', decorations);
   return codeToHtml(code, {
     lang,
     theme: 'github-dark',
