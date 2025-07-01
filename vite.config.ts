@@ -15,7 +15,7 @@ export default defineConfig({
   ],
   server: {
     https: true,
-    host: 'local.unvibe',
+    host: 'local.unvibe.io',
   },
   ssr: {
     // keeps monaco out of the server bundle so Node never sees the CSS
