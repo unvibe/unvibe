@@ -20,7 +20,7 @@ import {
 export const id = 'anthropic';
 
 const client = new OpenAI({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: process.env.ANTHROPIC_API_KEY || 'API_KEY_NOT_SET',
   baseURL: 'https://api.anthropic.com/v1/', // Anthropic API endpoint
 });
 
