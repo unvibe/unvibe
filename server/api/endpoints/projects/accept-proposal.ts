@@ -8,6 +8,7 @@ import path from 'node:path';
 import { noop } from '@/lib/core/noop';
 import { resolveEdits, resolveRangeEdits } from '../threads/utils';
 import { StructuredOutput } from '@/server/llm/structured_output';
+import { runTransforms } from '@/server/llm/structured_output/transform';
 
 async function applyShellScripts(project: Project, scripts?: string[]) {
   if (!scripts || scripts.length === 0) {
@@ -76,7 +77,8 @@ async function applyEditedFiles(
     return [];
   }
   const resolved = resolveEdits(editFiles, project);
-  return await applyReplacedFiles(project, resolved);
+  const formatted = await runTransforms(project, resolved);
+  return await applyReplacedFiles(project, formatted);
 }
 
 async function applyRangedEdits(
@@ -87,7 +89,8 @@ async function applyRangedEdits(
     return [];
   }
   const resolved = resolveRangeEdits(editRanges, project);
-  return await applyReplacedFiles(project, resolved);
+  const formatted = await runTransforms(project, resolved);
+  return await applyReplacedFiles(project, formatted);
 }
 
 export const acceptProposal = createEndpoint({

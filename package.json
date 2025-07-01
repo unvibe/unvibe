@@ -8,7 +8,7 @@
     "dev:client": "react-router dev",
     "start:client": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "dev": "concurrently \"next dev --port=3005\" \"npm run dev:server\"",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:server": "npm run server:nodemon",
     "build": "npm run build:client",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
