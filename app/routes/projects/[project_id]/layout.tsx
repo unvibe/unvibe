@@ -1,7 +1,5 @@
-import { noop } from '@/lib/core/noop';
 import { ProjectLayoutSidebar } from '@/modules/project/layout';
 import { ProjectProvider } from '@/modules/project/provider';
-import type { Project } from '@/plugins/core/server/api/lib/project';
 import { Route } from './+types/layout';
 import { Outlet } from 'react-router';
 import { client } from '@/server/api/client';

@@ -32,12 +32,9 @@ export const createTool: CreateTool = ({ project }) => {
         const out = await runShellCommand(command, {
           cwd: cwd || project.path,
         });
-        return { status: true, stdout: out };
+        return out;
       } catch (error) {
-        return {
-          status: false,
-          error: error instanceof Error ? error.message : String(error),
-        };
+        return error instanceof Error ? error.message : String(error);
       }
     }
   );

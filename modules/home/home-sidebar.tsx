@@ -20,9 +20,12 @@ function SideIcon({
   Icon: IconType;
 }) {
   return (
-    <div
-      className={`p-2.5 bg-background-1 rounded-lg mt-2${active ? ' ring-2 ring-blue-400' : ''}`}
-    >
+    <div className={`p-2.5 bg-background-1 rounded-lg mt-2 relative`}>
+      {active && (
+        <div className='absolute top-1 left-1 bg-blue-500 rounded-full overflow-hidden'>
+          <span className='block w-1.5 h-1.5' />
+        </div>
+      )}
       <Link
         href={href}
         className='text-foreground-2 flex items-center justify-center'
@@ -46,7 +49,6 @@ const NAV_ITEMS = [
   { label: 'Plugins', href: '/home/plugins', Icon: TiPlug },
   { label: 'Themes', href: '/home/themes', Icon: TiBrush },
   { label: 'Environment', href: '/home/environment', Icon: TiCogOutline },
-  { label: 'Docs', href: '/home/docs', Icon: TiDocumentText },
 ];
 
 export function HomeSidebar() {
@@ -59,13 +61,18 @@ export function HomeSidebar() {
             <SideIcon
               href={'/'}
               Icon={TiHomeOutline}
-              active={pathname === '/'}
+              active={pathname.startsWith('/home')}
             />
           </SideIconGroup>
+          <SideIcon
+            href='/docs'
+            Icon={TiDocumentText}
+            active={pathname === '/docs'}
+          />
         </div>
         <div className='border-2 border-border rounded-2xl overflow-hidden w-full bg-background-1'>
           <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>
-            <nav className='flex flex-col gap-1 p-4'>
+            <nav className='flex flex-col gap-1 p-2'>
               {NAV_ITEMS.map((item) => {
                 const isActive =
                   pathname === item.href ||
@@ -76,7 +83,7 @@ export function HomeSidebar() {
                     key={item.href}
                     passHref
                     legacyBehavior
-                    className={`flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-background-2 transition-colors ${isActive ? 'bg-background-2 font-bold' : ''}`}
+                    className={`flex text-sm items-center gap-3 p-2 rounded-lg hover:bg-background-2 transition-colors ${isActive ? 'bg-background-2 font-bold' : ''}`}
                   >
                     <item.Icon className='w-6 h-6 text-foreground-2 shrink-0' />
                     <span>{item.label}</span>
