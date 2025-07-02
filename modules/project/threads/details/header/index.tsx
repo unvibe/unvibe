@@ -5,8 +5,8 @@ import {
 import {
   MdOutlinePushPin,
   MdPushPin,
-  MdOutlineArchive,
-  MdArchive,
+  MdOutlineDelete,
+  MdDelete,
 } from 'react-icons/md';
 import { ComponentProps, useState, useEffect } from 'react';
 import clsx from 'clsx';
@@ -57,6 +57,7 @@ export function ThreadDetailsHeaderActions({
 
   return (
     <div className='flex flex-col items-center justify-end gap-2 w-full bg-background-1 border-2 border-border rounded-2xl p-1'>
+      {/* Trash (delete/archive) button */}
       <ThreadDetailsHeaderButton
         onClick={() => {
           if (!id) return alert('No thread id found');
@@ -74,9 +75,9 @@ export function ThreadDetailsHeaderActions({
         {isPending ? (
           <Spinner className='w-6 h-6' />
         ) : archived ? (
-          <MdArchive className='w-6 h-6 text-foreground-1' />
+          <MdDelete className='w-6 h-6 text-foreground-1' />
         ) : (
-          <MdOutlineArchive className='w-6 h-6 text-foreground-2' />
+          <MdOutlineDelete className='w-6 h-6 text-foreground-2' />
         )}
       </ThreadDetailsHeaderButton>
       {/* Pin button */}
