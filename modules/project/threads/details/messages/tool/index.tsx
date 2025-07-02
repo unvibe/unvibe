@@ -1,4 +1,4 @@
-import { Markdown } from '@/modules/markdown/ui/Markdown.client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
 import clsx from 'clsx';
 import { ThreadDetailsMessageProps } from '../_shared-types';
 

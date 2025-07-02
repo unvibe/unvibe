@@ -52,7 +52,7 @@ export default function ProjectsPage() {
           {filtered.map((project: string) => (
             <Link
               key={project}
-              href={`/projects/${project}`}
+              href={`/projects/${project}/threads`}
               className='flex flex-col items-center justify-center min-w-[180px] min-h-[120px] px-8 py-6 rounded-2xl bg-background-1 hover:bg-background-2 transition-colors font-mono text-lg'
               style={{ flex: '0 1 220px' }}
             >

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Markdown } from '@/modules/markdown/ui/Markdown.client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
 import { ThreadDetailsMessageProps } from '../_shared-types';
 import { HiOutlineDuplicate } from 'react-icons/hi';
 import { copyToClipboard } from '@/lib/browser/copy-to-clipboard';

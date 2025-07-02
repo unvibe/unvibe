@@ -52,6 +52,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Toaster />
         <ScrollRestoration />
         <Scripts />
+        <script>
+          {`
+          const node = document.getElementById('thread-details-message-list')
+          node.scrollTop = node.scrollHeight;
+          `}
+        </script>
       </body>
     </html>
   );

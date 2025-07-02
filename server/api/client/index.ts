@@ -1,5 +1,5 @@
-'use client';
 import {
+  QueryClient,
   useMutation,
   UseMutationOptions,
   useQuery,
@@ -24,6 +24,19 @@ export const getQueryKey = <T extends keyof Client>(
 ) => {
   return [url, config];
 };
+
+export function prefetchAPIQuery<T extends keyof Client>(
+  url: T,
+  queryClient: QueryClient,
+  config?: Client[T]['input']
+) {
+  return queryClient.prefetchQuery<Client[T]['output'], Error>({
+    queryKey: getQueryKey(url, config),
+    queryFn: async () => {
+      return client(url, config);
+    },
+  });
+}
 
 export function useAPIQuery<T extends keyof Client>(
   url: T,

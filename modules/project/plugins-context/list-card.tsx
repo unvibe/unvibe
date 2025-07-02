@@ -6,7 +6,7 @@ import { noop } from '@/lib/core/noop';
 import { stringToHue } from '../system/lib/string-to-hue';
 import { Modal } from '@/modules/ui/modal';
 import { HiPlus } from 'react-icons/hi2';
-import { Markdown } from '@/modules/markdown/ui/Markdown.client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
 import { parseContext } from './utils';
 
 export function PluginIndicator({ name }: { name: string }) {

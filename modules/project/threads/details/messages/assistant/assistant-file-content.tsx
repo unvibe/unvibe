@@ -3,34 +3,24 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useFileDiagnostics } from './assistant-file-actions';
 
-export function MinimalFileContent({
-  content,
-  path,
-}: {
-  content: string;
-  path: string;
-}) {
-  const [highlighted, setHighlighted] = useState(content || '');
-
-  useEffect(() => {
-    const ext = path.split('.').pop() || 'text';
-    highlightCode(content || '', ext).then((result) => {
-      setHighlighted(result);
-    });
-  }, [content, path]);
-
-  return (
-    <div className='rounded-xl max-w-full overflow-hidden relative border border-border'>
-      <pre
-        dangerouslySetInnerHTML={{ __html: highlighted }}
-        className={clsx(
-          'relative text-foreground-1 whitespace-pre-wrap text-xs font-mono max-h-[300px] overflow-hidden',
-          '[&>*]:px-4 [&>*]:pt-3 [&>*]:pb-4 [&>*]:overflow-x-auto'
-        )}
-      />
-    </div>
-  );
+function htmlEscape(text: string) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
+
+function makeFallback(content: string) {
+  const prefix = '<pre><code>';
+  const suffix = '</code></pre>';
+  const lines = content
+    .split('\n')
+    .map((line) => `<span>${htmlEscape(line)}</span>`);
+  return prefix + lines.join('\n') + suffix;
+}
+
 export function ThreadDetailsMessageListItemFileContent({
   data,
   initCodeSnippet,
@@ -49,7 +39,9 @@ export function ThreadDetailsMessageListItemFileContent({
   setSelected?: (selected: boolean) => void;
   decorations?: Decorations;
 }) {
-  const [highlighted, setHighlighted] = useState(data.content || '');
+  const [highlighted, setHighlighted] = useState(
+    makeFallback(data.content || '')
+  );
   const { content, path } = data;
 
   const diagnostics = useFileDiagnostics(data.path);

@@ -1,5 +1,5 @@
 import { ThreadsHome } from '@/modules/project/landing-page/threads-home';
-import { client } from '@/server/api/client/client.server';
+import { client } from '@/server/api/client/index.server';
 import { Route } from './+types/page';
 
 export async function loader() {

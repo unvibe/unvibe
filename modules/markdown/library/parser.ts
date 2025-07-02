@@ -13,7 +13,7 @@ const md = MarkdownIt({
   },
 });
 
-export async function parseMarkdown(markdown: string): Promise<string> {
+export function parseMarkdown(markdown: string): string {
   // markdown-it is synchronous
   return md.render(markdown);
 }

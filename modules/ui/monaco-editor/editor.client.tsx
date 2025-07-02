@@ -1,6 +1,6 @@
 import { shikiToMonaco } from '@shikijs/monaco';
 import Editor from '@monaco-editor/react';
-import { createHighlighter } from 'shiki/bundle/web';
+import { createHighlighter } from 'shiki';
 import { initVimMode } from 'monaco-vim';
 
 export function MonacoEditor({
@@ -29,18 +29,33 @@ export function MonacoEditor({
         // Create the highlighter, it can be reused
         createHighlighter({
           themes: ['github-dark'],
-          langs: ['javascript', 'typescript', 'vue'],
+          langs: ['vue', 'ts', 'js', 'jsx', 'tsx'],
         }).then((highlighter) => {
           // Register the languageIds first. Only registered languages will be highlighted.
           monaco.languages.register({ id: 'vue' });
-          monaco.languages.register({ id: 'typescript' });
+          monaco.languages.register({
+            id: 'typescript',
+            aliases: ['ts', 'tsx'],
+          });
           monaco.languages.register({ id: 'javascript' });
+
+          monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+            jsx: monaco.languages.typescript.JsxEmit.Preserve,
+            target: monaco.languages.typescript.ScriptTarget.ES2020,
+            esModuleInterop: true,
+          });
+
+          // for now let's disable diagnostics
+          monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+            noSemanticValidation: true,
+            noSyntaxValidation: true,
+          });
 
           // Register the themes from Shiki, and provide syntax highlighting for Monaco.
           shikiToMonaco(highlighter, monaco);
           const model = monaco.editor.createModel(
             content || '',
-            undefined,
+            'typescript',
             monaco.Uri.file(fileName)
           );
 

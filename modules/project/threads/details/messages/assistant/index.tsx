@@ -1,6 +1,6 @@
 import { ThreadDetailsMessageProps } from '../_shared-types';
 import { AssistantMessageContextProvider } from './assistant-message-context';
-import { Markdown } from '@/modules/markdown/ui/Markdown.client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
 import clsx from 'clsx';
 import { useAssistantMessageContext } from './assistant-message-context';
 import {

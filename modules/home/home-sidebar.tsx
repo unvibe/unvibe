@@ -44,36 +44,42 @@ function SideIconGroup({ children }: { children: React.ReactNode }) {
   );
 }
 
-const NAV_ITEMS = [
+const HOME_NAV_ITEMS = [
   { label: 'Projects', href: '/home/projects', Icon: TiFolder },
   { label: 'Plugins', href: '/home/plugins', Icon: TiPlug },
   { label: 'Themes', href: '/home/themes', Icon: TiBrush },
   { label: 'Environment', href: '/home/environment', Icon: TiCogOutline },
 ];
 
+const DOCS_NAV_ITEMS = [
+  {
+    label: 'Getting Started',
+    href: '/home/docs/getting-started',
+    Icon: TiDocumentText,
+  },
+];
+
 export function HomeSidebar() {
   const pathname = usePathname();
+  const isHome = pathname.startsWith('/home') && pathname !== '/home/docs';
+  const isDocs = pathname.startsWith('/home/docs');
   return (
     <div className='grid content-start h-screen shrink-0 w-full p-5 py-8'>
       <div className='h-[calc(100vh-4rem)] overflow-hidden flex items-stretch gap-4'>
         <div className='border-2 border-transparent'>
           <SideIconGroup>
             <SideIcon
-              href={'/'}
+              href={'/home/projects'}
               Icon={TiHomeOutline}
-              active={pathname.startsWith('/home')}
+              active={isHome}
             />
           </SideIconGroup>
-          <SideIcon
-            href='/docs'
-            Icon={TiDocumentText}
-            active={pathname === '/docs'}
-          />
+          <SideIcon href='/home/docs' Icon={TiDocumentText} active={isDocs} />
         </div>
         <div className='border-2 border-border rounded-2xl overflow-hidden w-full bg-background-1'>
           <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>
             <nav className='flex flex-col gap-1 p-2'>
-              {NAV_ITEMS.map((item) => {
+              {(isHome ? HOME_NAV_ITEMS : DOCS_NAV_ITEMS).map((item) => {
                 const isActive =
                   pathname === item.href ||
                   pathname.startsWith(item.href + '/');

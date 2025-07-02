@@ -1,4 +1,4 @@
-import { Markdown } from '@/modules/markdown/ui/Markdown.client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
 import { useStructuredOutputContext } from './context';
 
 export function StructuredOutputMessage() {

@@ -44,7 +44,7 @@ export function ThreadDetailsMessageList({
         node.scrollTop = node.scrollHeight;
         timer = window.setTimeout(() => {
           node.scrollTop = node.scrollHeight;
-        }, 200);
+        });
       }
     });
 
@@ -56,11 +56,10 @@ export function ThreadDetailsMessageList({
     };
   }, []);
 
-  // const hasLogs = logs.some((log) => !log.isEnded);
-  const hasLogs = true;
+  const hasLogs = logs.some((log) => !log.isEnded);
 
   return (
-    <div className='relative'>
+    <div className='relative' id='thread-details-message-list'>
       <div
         style={
           {

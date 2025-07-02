@@ -293,7 +293,7 @@ export function ThreadDetailsMessageListItemFileActions({
             </Button>
           </div>
           <Editor
-            fileName={data.path}
+            fileName={data.path.split('/').pop() || 'untitled'}
             content={data.content}
             value={editValue}
             height='80vh'
