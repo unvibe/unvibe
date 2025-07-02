@@ -10,7 +10,7 @@ export default function Page({ params }: Route.ComponentProps) {
         <ThreadDetails id={id} />
       </div>
       <div className='absolute inset-y-0 right-0 p-8 z-50'>
-        <ThreadDetailsHeaderActions />
+        <ThreadDetailsHeaderActions id={id} />
       </div>
     </div>
   );

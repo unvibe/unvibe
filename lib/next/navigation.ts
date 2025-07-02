@@ -19,5 +19,5 @@ export function useParams() {
 
 export function useRouter() {
   const push = useNavigate();
-  return { push };
+  return { push, replace: (href: string) => push(href, { replace: true }) };
 }

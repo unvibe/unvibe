@@ -118,7 +118,7 @@ export function AcceptProposal() {
                   continueThread(
                     {
                       projectId,
-                      prompt: `fix the errors in the proposal {errors}`,
+                      prompt: `fix the errors in the proposal ${JSON.stringify(metadata?.diagnostics, null, 2)}`,
                       threadId: messageContext.message.thread_id,
                       context_config:
                         thread?.thread?.context_config || undefined,
