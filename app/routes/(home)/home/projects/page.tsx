@@ -3,8 +3,9 @@ import { useProjects } from '@/modules/home/useProjects';
 import { TiFolder } from 'react-icons/ti';
 import { useState, useMemo } from 'react';
 import { ProjectAddModal } from './ProjectAddModal';
-import { Button } from '@/modules/ui';
-import { HiPlus } from 'react-icons/hi2';
+import { MdTerminal } from 'react-icons/md';
+import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
 
 export default function ProjectsPage() {
   const projects = useProjects();
@@ -24,44 +25,32 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className='p-10'>
-      <div className='flex flex-col gap-4 max-w-2xl pb-8'>
-        <h1 className='text-3xl font-bold flex-1 flex items-center gap-3'>
-          <span>
-            <TiFolder className='w-8 h-8' />
-          </span>
-          <span>Projects</span>
-        </h1>
-        <div className='flex items-center w-full gap-2 relative py-4'>
-          <input
-            type='text'
-            className='w-full px-4 py-2 rounded-xl bg-background-2 focus:bg-background-3 outline-none border border-border'
-            placeholder='Search projects...'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Button
-            variant='secondary'
-            className='flex items-center justify-center p-2!'
-            title='Add Project'
-            onClick={() => setModalOpen(true)}
-          >
-            <HiPlus className='w-6 h-6' />
-          </Button>
-        </div>
-      </div>
+    <HomeSectionSharedLayout>
+      <HomeSectionSharedHeader
+        Icon={TiFolder}
+        search={search}
+        setSearch={setSearch}
+        onAdd={() => setModalOpen(true)}
+        sectionName='Projects'
+        sectionDescription='Projects are folders read automatically from your `~/projects` directory.
+        and custom folders can be added manually.'
+      />
       <ProjectAddModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onProjectCreated={handleProjectCreated}
       />
+      <div className='flex items-center gap-2 p-1 text-foreground-1 py-4'>
+        <MdTerminal className='w-6 h-6 text-foreground' />
+        <span className='font-mono'>{'~/projects'}</span>
+      </div>
       {filtered && filtered.length > 0 ? (
         <div className='flex flex-wrap gap-2'>
           {filtered.map((project, i) => (
             <Link
               key={project}
               href={`/projects/${project}/threads`}
-              className='flex items-center gap-2 min-w-[300px] p-1 rounded hover:bg-background-2 transition-colors relative'
+              className='flex items-center gap-2 min-w-[300px] p-1 rounded-lg hover:bg-background-2 transition-colors relative'
               style={{ flex: '0 1 220px' }}
             >
               <span className='w-5 h-5 text-foreground-2 shrink-0 bg-border rounded-full' />
@@ -69,7 +58,7 @@ export default function ProjectsPage() {
                 {project}
               </span>
               {i < 3 && (
-                <span className='absolute right-2 top-3 w-2 h-2 rounded-full bg-emerald-600' />
+                <span className='w-2 h-2 rounded-full bg-emerald-600' />
               )}
             </Link>
           ))}
@@ -79,6 +68,6 @@ export default function ProjectsPage() {
           No projects found.
         </div>
       )}
-    </div>
+    </HomeSectionSharedLayout>
   );
 }

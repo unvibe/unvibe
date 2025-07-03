@@ -1,3 +1,5 @@
+import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
 import { useAPIQuery, useAPIMutation } from '@/server/api/client';
 import { useState } from 'react';
 import { TiCogOutline } from 'react-icons/ti';
@@ -25,11 +27,14 @@ export default function EnvironmentPage() {
   if (error)
     return <div className='p-10 text-red-500'>Failed to load environment</div>;
   return (
-    <div className='p-10'>
-      <h1 className='text-3xl font-bold mb-6 flex items-center gap-4'>
-        <TiCogOutline className='w-8 h-8' />
-        Environment Variables
-      </h1>
+    <HomeSectionSharedLayout>
+      <HomeSectionSharedHeader
+        Icon={TiCogOutline}
+        sectionName='Environment'
+        search=''
+        setSearch={() => {}}
+        sectionDescription='Manage environment variables and system settings'
+      />
       <div className='max-w-2xl mx-auto flex flex-col gap-4'>
         {data?.env?.length === 0 && (
           <div className='text-foreground-2 text-center'>
@@ -85,6 +90,6 @@ export default function EnvironmentPage() {
           </div>
         ))}
       </div>
-    </div>
+    </HomeSectionSharedLayout>
   );
 }

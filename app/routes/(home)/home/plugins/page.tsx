@@ -6,6 +6,8 @@ import {
 } from '@/modules/project/plugins-context/list-card';
 import Link from '@/lib/next/link';
 import { useAPIQuery } from '@/server/api/client';
+import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
 
 export default function PluginsPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
@@ -17,11 +19,14 @@ export default function PluginsPage() {
   }
 
   return (
-    <div className='p-10'>
-      <h1 className='text-3xl font-bold mb-6 flex items-center gap-4'>
-        <TiPlug className='w-8 h-8' />
-        Plugins
-      </h1>
+    <HomeSectionSharedLayout>
+      <HomeSectionSharedHeader
+        Icon={TiPlug}
+        sectionDescription='Plugins are extensions that enhance the functionality of Unvibe. You can install, update, and manage plugins from this page.'
+        sectionName='Plugins'
+        search=''
+        setSearch={() => {}}
+      />
       <div className='flex flex-wrap gap-2'>
         {data?.plugins?.map((plugin) => {
           const Icon = getIcon(plugin.id);
@@ -51,6 +56,6 @@ export default function PluginsPage() {
           );
         })}
       </div>
-    </div>
+    </HomeSectionSharedLayout>
   );
 }

@@ -9,6 +9,7 @@ import {
   TiMessage,
   // TiSpannerOutline,
 } from 'react-icons/ti';
+import { FaRegEye } from 'react-icons/fa';
 import { useCallback, useMemo } from 'react';
 import { SidebarToolsList } from '../tools/sidebar-tools-list';
 import { useParams, usePathname } from '@/lib/next/navigation';
@@ -72,6 +73,11 @@ export function ProjectLayoutSidebar() {
             <SidebarIcon href={'/'} Icon={TiHomeOutline} />
           </SidebarIconsGroup>
           <SidebarIconsGroup>
+            <SidebarIcon
+              Icon={FaRegEye}
+              href={url('visual')}
+              active={compUrl('visual')}
+            />
             <SidebarIcon
               Icon={TiMessage}
               href={url('threads')}

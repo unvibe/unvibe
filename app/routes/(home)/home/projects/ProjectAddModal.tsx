@@ -2,6 +2,7 @@ import { Modal } from '@/modules/ui/modal';
 import { Button } from '@/modules/ui/button';
 import { useAPIMutation } from '@/server/api/client';
 import { useState } from 'react';
+import { HiPlus } from 'react-icons/hi2';
 
 export function ProjectAddModal({
   open,
@@ -51,7 +52,9 @@ export function ProjectAddModal({
   if (!open) return null;
   return (
     <Modal onClose={onClose} className='min-w-[400px] p-8'>
-      <h2 className='text-xl font-bold mb-4'>Add Project</h2>
+      <h2 className='text-xl font-semibold pb-4 flex items-center gap-2 text-foreground-1'>
+        <HiPlus className='w-8 h-8' /> New Project
+      </h2>
       <div className='flex gap-3 mb-4'>
         <Button
           variant={mode === 'empty' ? 'primary' : 'secondary'}
