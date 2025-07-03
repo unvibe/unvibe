@@ -60,12 +60,12 @@ export function ThreadDetailsMessageListItemFileContent({
 
     const diagnosticsDecorations = Object.keys(linesMap).map((lineNumber) => ({
       start: {
-        line: Number(lineNumber) - 1,
+        line: Number(lineNumber) >= 0 ? Number(lineNumber) : 0,
         character:
           content?.split('\n')[Number(lineNumber) - 1].search(/\S/) || 0,
       },
       end: {
-        line: Number(lineNumber) - 1,
+        line: Number(lineNumber),
         character: content?.split('\n')[Number(lineNumber) - 1].length || 0,
       },
       properties: {
@@ -83,7 +83,10 @@ export function ThreadDetailsMessageListItemFileContent({
         setHighlighted(result);
       })
       .catch((e) => {
-        console.log(e, allDecorations);
+        console.warn('Decoration failed', e, allDecorations);
+        return highlightCode(content || '', ext).then((result) => {
+          setHighlighted(result);
+        });
       });
   }, [content, path]);
 
