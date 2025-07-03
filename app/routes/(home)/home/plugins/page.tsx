@@ -46,7 +46,9 @@ export default function PluginsPage() {
                   >
                     <Icon className='w-4.5 h-4.5' />
                   </div>
-                  <span className='capitalize text-lg'>{plugin.id}</span>
+                  <span className='capitalize text-lg'>
+                    {plugin.id.replaceAll('-', ' ')}
+                  </span>
                 </div>
                 <div className='py-2 text-foreground-2'>
                   {plugin.description}
