@@ -87,7 +87,31 @@
 - If requesting shell script execution (e.g., setup or environment changes), use the optional `shell_scripts` field with an array of one or more shell command strings in exact order.
 - The `message` field must concisely summarize your analysis, proposed change, or question. Use professional language; markdown is supported here for emphasis or clarity.
 
-## Additional Guidance
+### ⚠️ **Important: How `edit_ranges` Replace Lines**
+
+When using `edit_ranges` with `{start, end, content}`, **both `start` and `end` are inclusive**—meaning all lines from `start` to `end` are fully replaced by your `content`.
+
+- If you are changing a structural block (such as an object definition line), your replacement `content` must repeat the entire beginning of the block (e.g., `export const Plugin: ServerPlugin = {`), not just the body.
+- **Never assume the previous line will remain.** Always include all necessary context in your replacement, especially if replacing the line that starts a code block.
+- Example: If you want to add a property after an object's opening, you must repeat the object's start line in `content`.
+
+**Incorrect:** (would result in invalid TypeScript)
+
+```json
+{ "start": 6, "end": 6, "content": "  metadata: {...}," }
+```
+
+**Correct:**
+
+```json
+{
+  "start": 6,
+  "end": 6,
+  "content": "export const Plugin: ServerPlugin = {\n  metadata: {...},"
+}
+```
+
+This ensures that the replaced block is complete and syntactically correct.
 
 - **Never** output any explanation, commentary, or formatting **outside** the JSON object.
 - All proposals must be atomic and unambiguous; do not suggest partial or incomplete changes.

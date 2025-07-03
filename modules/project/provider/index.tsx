@@ -5,6 +5,10 @@ import { useParams } from '@/lib/next/navigation';
 
 export const ProjectContext = createContext<Project | null>(null);
 
+export function useClientPlugins() {
+  return Object.values(ClientPluginsMap).map((p) => p.Plugin);
+}
+
 export function useProjectActions() {
   const project = useProject();
   const params = useParams();

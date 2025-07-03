@@ -8,14 +8,14 @@ import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path
 // List all available plugins (server-side only, not client plugins)
 function listAvailablePlugins() {
   return Object.values(PluginsMap).map((plugin) => {
+    const p = plugin.Plugin;
     return {
-      id: plugin.Plugin.id,
-      // add more plugin metadata from plugin.Plugin if desired
+      id: p.id,
+      metadata: p.metadata,
     };
   });
 }
 
-// --- THEMES ---
 function listAvailableThemes() {
   return [
     { id: 'unvibe-dark', name: 'Unvibe Dark' },
@@ -87,7 +87,6 @@ export const updateEnvironmentVariable = createEndpoint({
   },
 });
 
-// --- PROJECT CREATION ENDPOINT ---
 import { exec } from 'child_process';
 function runShell(cmd: string, cwd?: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -112,11 +111,18 @@ export const createProject = createEndpoint({
     const projectPath = resolveHomePath(`projects/${safeName}`);
     if (type === 'empty') {
       await fs.mkdir(projectPath, { recursive: true });
-      await fs.writeFile(path.join(projectPath, 'README.md'), `# ${safeName}\n`, 'utf-8');
+      await fs.writeFile(
+        path.join(projectPath, 'README.md'),
+        `# ${safeName}\n`,
+        'utf-8'
+      );
       return { success: true };
     } else if (type === 'github') {
       if (!githubRepo) return { success: false, error: 'Missing repo' };
-      await runShell(`gh repo clone ${githubRepo} ${safeName}`, resolveHomePath('projects'));
+      await runShell(
+        `gh repo clone ${githubRepo} ${safeName}`,
+        resolveHomePath('projects')
+      );
       return { success: true };
     }
     return { success: false, error: 'Unknown type' };

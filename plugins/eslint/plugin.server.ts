@@ -6,6 +6,17 @@ import path from 'node:path';
 import { ServerPlugin } from '../_types/plugin.server';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [
+      {
+        name: 'eslint-lint',
+        rule: '/(\\.ts|\\.tsx|\\.js|\\.jsx)$/',
+        operations: ['diagnostic'],
+      },
+    ],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   sourceCodeHooks: [

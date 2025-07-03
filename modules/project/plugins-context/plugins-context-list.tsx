@@ -10,7 +10,6 @@ import { SystemAddModal } from './system-add-modal';
 
 export function PluginList() {
   const contextPreview = useProject().context_preview;
-  console.log(contextPreview);
   const parsed = parseContext(contextPreview);
   const _tools = parsed.filter((item) => item.type === 'tool');
   const _systems = parsed.filter((item) => item.type === 'system');

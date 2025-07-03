@@ -8,6 +8,11 @@ import { id } from './plugin.shared';
 import { listHomeShellProcesses } from './server/list-shell-processes';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   createContext: async (baseProject) => {

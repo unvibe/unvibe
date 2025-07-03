@@ -1,19 +1,18 @@
 import { TiPlug } from 'react-icons/ti';
-import { useProject, useProjectActions } from '../provider';
+import { useProject, useClientPlugins } from '../provider';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import { HiUserCircle } from 'react-icons/hi2';
 import type { ProjectPlugin } from '@/plugins/core/server/api/lib/project';
 
 export function usePluginsIcons() {
-  const { clientPlugins } = useProjectActions();
+  const clientPlugins = useClientPlugins();
   return (pluginId: string) =>
-    clientPlugins.find((p) => p.Plugin.id === pluginId)?.Plugin?.icon ||
-    HiUserCircle;
+    clientPlugins.find((p) => p.id === pluginId)?.icon || HiUserCircle;
 }
 
 export function SidebarPluginsList() {
   const project = useProject();
-  const { clientPlugins } = useProjectActions();
+  const clientPlugins = useClientPlugins();
   const [core, ...rest] = Object.entries(project.plugins || {}).sort(
     ([, a], [, b]) => {
       return a.id === 'core'
@@ -44,8 +43,7 @@ export function SidebarPluginsList() {
       <div className='grid content-start gap-1 p-2 pt-0'>
         {[core].map(([pKey, pValue]) => {
           const Icon =
-            clientPlugins.find((p) => p.Plugin.id === pValue.id)?.Plugin
-              ?.icon || TiPlug;
+            clientPlugins.find((p) => p.id === pValue.id)?.icon || TiPlug;
           return (
             <div
               key={pKey}
@@ -74,8 +72,7 @@ export function SidebarPluginsList() {
         })}
         {rest.map(([pKey, pValue]) => {
           const Icon =
-            clientPlugins.find((p) => p.Plugin.id === pValue.id)?.Plugin
-              ?.icon || TiPlug;
+            clientPlugins.find((p) => p.id === pValue.id)?.icon || TiPlug;
           return (
             <div
               key={pKey}

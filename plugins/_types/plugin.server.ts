@@ -42,9 +42,16 @@ export type LLMToolModule = {
   render?: Record<string, DynamicUIEntry | DynamicUICallback>;
 };
 
+export type ServerPluginMetadata = {
+  hooks: Array<{ name: string; rule: string; operations: string[] }>;
+  tools: string[];
+  system: string[];
+};
+
 export type ServerPlugin<
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
+  metadata: ServerPluginMetadata;
   id: string;
   detect: (baseProject: BaseProject) => Promise<boolean>;
   setup: (baseProject: BaseProject) => Promise<BaseProject>;

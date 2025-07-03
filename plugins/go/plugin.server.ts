@@ -4,6 +4,22 @@ import { ServerPlugin } from '../_types/plugin.server';
 // import * as tools from './server/tools';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [
+      {
+        name: 'go-check',
+        rule: '/\\.go$/',
+        operations: ['diagnostic'],
+      },
+      {
+        name: 'go-format',
+        rule: '/\\.go$/',
+        operations: ['transform'],
+      },
+    ],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   sourceCodeHooks: [

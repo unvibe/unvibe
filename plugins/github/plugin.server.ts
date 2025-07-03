@@ -10,6 +10,11 @@ const githubRemotePrefix = 'git@github.com:';
 const cache: Record<string, unknown> = {};
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [],
+    tools: Object.keys(tools),
+    system: ['github_info'],
+  },
   id,
   api: {},
   createContext: async () => {

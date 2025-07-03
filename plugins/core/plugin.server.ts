@@ -6,6 +6,11 @@ import { character } from './server/lib/system-parts';
 import { summarizeFilePaths } from './server/lib/summarize-file-paths';
 
 export const Plugin: ServerPlugin<typeof api> = {
+  metadata: {
+    hooks: [],
+    tools: Object.values(tools).map((tool) => tool.config?.name || 'unknown'),
+    system: ['character', 'files_summary', 'os_info'],
+  },
   id,
   api,
   detect: async () => Promise.resolve(true),

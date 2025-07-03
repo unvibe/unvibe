@@ -4,6 +4,17 @@ import { id } from './plugin.shared';
 import { ServerPlugin } from '../_types/plugin.server';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [
+      {
+        name: 'ts-check',
+        rule: '/(\\.ts|\\.tsx|\\.js|\\.jsx)$/',
+        operations: ['diagnostic'],
+      },
+    ],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   sourceCodeHooks: [

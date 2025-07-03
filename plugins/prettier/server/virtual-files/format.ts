@@ -35,19 +35,24 @@ export async function format(
 
     if (await isIgnored(absPath, p)) return vf;
 
-    const dir = path.dirname(absPath);
-    let opts = configCache.get(dir);
-    if (opts === undefined) {
-      opts = await p.resolveConfig(absPath);
-      configCache.set(dir, opts ?? null);
+    try {
+      const dir = path.dirname(absPath);
+      let opts = configCache.get(dir);
+      if (opts === undefined) {
+        opts = await p.resolveConfig(absPath);
+        configCache.set(dir, opts ?? null);
+      }
+
+      const formatted = await p.format(vf.content, {
+        ...opts,
+        filepath: absPath, // lets Prettier infer parser
+      });
+
+      return { ...vf, content: formatted };
+    } catch (error) {
+      console.error(`❌  Prettier formatting failed for ${vf.path}:`, error);
+      return vf; // return original content on error
     }
-
-    const formatted = await p.format(vf.content, {
-      ...opts,
-      filepath: absPath, // lets Prettier infer parser
-    });
-
-    return { ...vf, content: formatted };
   }
 
   return Promise.all(virtualFiles.map(prettify));

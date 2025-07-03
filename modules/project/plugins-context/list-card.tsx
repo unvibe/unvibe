@@ -50,7 +50,8 @@ export function PluginIcon({
     </div>
   );
 }
-function Card(props: ComponentProps<'div'>) {
+
+export function Card(props: ComponentProps<'div'>) {
   return (
     <div
       {...props}

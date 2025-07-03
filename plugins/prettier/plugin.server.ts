@@ -6,6 +6,17 @@ import path from 'node:path';
 import { ServerPlugin } from '../_types/plugin.server';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [
+      {
+        name: 'prettier-format',
+        rule: '/(\\.ts|\\.tsx|\\.js|\\.jsx|\\.json|\\.md|\\.css|\\.scss|\\.html|\\.yaml|\\.yml|\\.graphql|\\.vue|\\.svelte)$/',
+        operations: ['transform'],
+      },
+    ],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   sourceCodeHooks: [

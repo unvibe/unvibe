@@ -3,6 +3,11 @@ import { checkMonorepo } from './server/lib/is-turborepo';
 import { id } from './plugin.shared';
 
 export const Plugin: ServerPlugin = {
+  metadata: {
+    hooks: [],
+    tools: [],
+    system: [],
+  },
   id,
   api: {},
   sourceCodeHooks: [],

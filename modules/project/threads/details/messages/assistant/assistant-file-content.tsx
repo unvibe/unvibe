@@ -50,6 +50,7 @@ export function ThreadDetailsMessageListItemFileContent({
     const ext = path.split('.').pop() || 'text';
 
     const linesMap: Record<number, (typeof diagnostics)[number][]> = {};
+
     diagnostics.forEach((d) => {
       if (!linesMap[d.line]) {
         linesMap[d.line] = [];
@@ -65,7 +66,7 @@ export function ThreadDetailsMessageListItemFileContent({
       },
       end: {
         line: Number(lineNumber) - 1,
-        character: content?.split('\n')[Number(lineNumber) - 1].length || 80,
+        character: content?.split('\n')[Number(lineNumber) - 1].length || 0,
       },
       properties: {
         class: 'error-underline',
@@ -75,13 +76,15 @@ export function ThreadDetailsMessageListItemFileContent({
       },
     }));
 
-    highlightCode(
-      content || '',
-      ext,
-      (decorations || []).concat(diagnosticsDecorations)
-    ).then((result) => {
-      setHighlighted(result);
-    });
+    const allDecorations = (decorations || []).concat(diagnosticsDecorations);
+
+    highlightCode(content || '', ext, allDecorations)
+      .then((result) => {
+        setHighlighted(result);
+      })
+      .catch((e) => {
+        console.log(e, allDecorations);
+      });
   }, [content, path]);
 
   return (

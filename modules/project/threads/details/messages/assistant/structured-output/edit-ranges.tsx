@@ -38,11 +38,13 @@ export function StructuredOutputEditRanges() {
                 : entry.edits.map((edit) => ({
                     start: { line: edit.start - 1, character: 0 },
                     end: {
-                      line: edit.end - 1 + edit.content.split('\n').length - 1,
+                      line: edit.end - 1,
                       character:
-                        edit.content.split('\n')[
-                          edit.content.split('\n').length - 1
-                        ].length,
+                        resolved.content.split('\n')[edit.end - 1]?.length || 0,
+                      // character: 0,
+                      // edit.content.split('\n')[
+                      //   edit.content.split('\n').length - 1
+                      // ].length,
                     },
                     properties: { class: 'highlighted-word' },
                   }))
