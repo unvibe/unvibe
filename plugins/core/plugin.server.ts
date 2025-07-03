@@ -11,6 +11,8 @@ export const Plugin: ServerPlugin<typeof api> = {
     tools: Object.values(tools).map((tool) => tool.config?.name || 'unknown'),
     system: ['character', 'files_summary', 'os_info'],
   },
+  description:
+    'Core plugin: provides basic project context, core system tools (character, file summary, os info), and project-wide utilities.',
   id,
   api,
   detect: async () => Promise.resolve(true),

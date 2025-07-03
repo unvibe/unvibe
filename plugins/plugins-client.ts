@@ -6,3 +6,4 @@ export * as NPMPlugin from './npm/plugin-client';
 export * as GithubPlugin from './github/plugin-client';
 export * as ESLintPlugin from './eslint/plugin-client';
 export * as PrettierPlugin from './prettier/plugin-client';
+export * as TurborepoPlugin from './turborepo/plugin-client';

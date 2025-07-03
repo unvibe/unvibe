@@ -13,6 +13,8 @@ export const Plugin: ServerPlugin = {
     tools: [],
     system: [],
   },
+  description:
+    'Detects the package manager (npm, yarn, pnpm, bun) for Node.js projects and exposes npm-related metadata.',
   id,
   api: {},
   createContext: async (baseProject) => {

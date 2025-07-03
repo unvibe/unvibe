@@ -6,6 +6,7 @@ import type { ProjectPlugin } from '@/plugins/core/server/api/lib/project';
 
 export function usePluginsIcons() {
   const clientPlugins = useClientPlugins();
+  console.log(clientPlugins);
   return (pluginId: string) =>
     clientPlugins.find((p) => p.id === pluginId)?.icon || HiUserCircle;
 }

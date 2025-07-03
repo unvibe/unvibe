@@ -52,6 +52,8 @@ export type ServerPlugin<
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
   metadata: ServerPluginMetadata;
+  /** Short summary of what the plugin does and when it applies */
+  description: string;
   id: string;
   detect: (baseProject: BaseProject) => Promise<boolean>;
   setup: (baseProject: BaseProject) => Promise<BaseProject>;

@@ -12,6 +12,7 @@ function listAvailablePlugins() {
     return {
       id: p.id,
       metadata: p.metadata,
+      description: p.description,
     };
   });
 }
@@ -81,50 +82,8 @@ export const updateEnvironmentVariable = createEndpoint({
     key: z.string(),
     value: z.string(),
   }),
-  handler: async ({ parsed }) => {
-    await setEnvironmentVariable(parsed.key, parsed.value);
+  handler: async ({ key, value }) => {
+    await setEnvironmentVariable(key, value);
     return { success: true };
-  },
-});
-
-import { exec } from 'child_process';
-function runShell(cmd: string, cwd?: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    exec(cmd, { cwd }, (err) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
-}
-
-export const createProject = createEndpoint({
-  type: 'POST',
-  pathname: '/home/create-project',
-  params: z.object({
-    type: z.enum(['empty', 'github']),
-    name: z.string(),
-    githubRepo: z.string().optional(),
-  }),
-  handler: async ({ parsed }) => {
-    const { type, name, githubRepo } = parsed;
-    const safeName = name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const projectPath = resolveHomePath(`projects/${safeName}`);
-    if (type === 'empty') {
-      await fs.mkdir(projectPath, { recursive: true });
-      await fs.writeFile(
-        path.join(projectPath, 'README.md'),
-        `# ${safeName}\n`,
-        'utf-8'
-      );
-      return { success: true };
-    } else if (type === 'github') {
-      if (!githubRepo) return { success: false, error: 'Missing repo' };
-      await runShell(
-        `gh repo clone ${githubRepo} ${safeName}`,
-        resolveHomePath('projects')
-      );
-      return { success: true };
-    }
-    return { success: false, error: 'Unknown type' };
   },
 });

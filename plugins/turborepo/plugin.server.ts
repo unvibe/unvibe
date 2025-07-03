@@ -8,6 +8,8 @@ export const Plugin: ServerPlugin = {
     tools: [],
     system: [],
   },
+  description:
+    'Detects and augments monorepos managed by Turborepo, extracting workspace/project structure.',
   id,
   api: {},
   sourceCodeHooks: [],

@@ -15,6 +15,8 @@ export const Plugin: ServerPlugin<typeof api> = {
     tools: [],
     system: ['git_info'],
   },
+  description:
+    'Detects Git repositories, exposes branch and repo metadata, and enables Git-aware automations.',
   id,
   api,
   createContext: async (baseProject) => {

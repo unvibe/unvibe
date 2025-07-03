@@ -20,6 +20,8 @@ export const Plugin: ServerPlugin = {
     tools: [],
     system: [],
   },
+  description:
+    'Adds Go language support: linting and formatting for .go files, triggered by go.mod or Go source detection.',
   id,
   api: {},
   sourceCodeHooks: [

@@ -1,8 +1,10 @@
 import Link from '@/lib/next/link';
 import { useProjects } from '@/modules/home/useProjects';
-import { TiFolder, TiPlus } from 'react-icons/ti';
+import { TiFolder } from 'react-icons/ti';
 import { useState, useMemo } from 'react';
 import { ProjectAddModal } from './ProjectAddModal';
+import { Button } from '@/modules/ui';
+import { HiPlus } from 'react-icons/hi2';
 
 export default function ProjectsPage() {
   const projects = useProjects();
@@ -23,24 +25,30 @@ export default function ProjectsPage() {
 
   return (
     <div className='p-10'>
-      <div className='flex flex-col items-center mb-10'>
-        <div className='flex items-center justify-center w-full max-w-md mb-6 gap-2 relative'>
-          <h1 className='text-3xl font-bold flex-1 text-center'>Projects</h1>
-          <button
-            className='absolute right-0 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 shadow transition-colors flex items-center justify-center'
+      <div className='flex flex-col gap-4 max-w-2xl pb-8'>
+        <h1 className='text-3xl font-bold flex-1 flex items-center gap-3'>
+          <span>
+            <TiFolder className='w-8 h-8' />
+          </span>
+          <span>Projects</span>
+        </h1>
+        <div className='flex items-center w-full gap-2 relative py-4'>
+          <input
+            type='text'
+            className='w-full px-4 py-2 rounded-xl bg-background-2 focus:bg-background-3 outline-none border border-border'
+            placeholder='Search projects...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button
+            variant='secondary'
+            className='flex items-center justify-center p-2!'
             title='Add Project'
             onClick={() => setModalOpen(true)}
           >
-            <TiPlus className='w-6 h-6' />
-          </button>
+            <HiPlus className='w-6 h-6' />
+          </Button>
         </div>
-        <input
-          type='text'
-          className='w-full max-w-md px-4 py-2 rounded-xl bg-background-2 focus:bg-background-3 transition-colors outline-none text-lg text-center font-mono mb-2 shadow-sm border-none'
-          placeholder='Search projects...'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
       </div>
       <ProjectAddModal
         open={modalOpen}
@@ -48,16 +56,21 @@ export default function ProjectsPage() {
         onProjectCreated={handleProjectCreated}
       />
       {filtered && filtered.length > 0 ? (
-        <div className='flex flex-wrap gap-6 justify-center'>
-          {filtered.map((project: string) => (
+        <div className='flex flex-wrap gap-2'>
+          {filtered.map((project, i) => (
             <Link
               key={project}
               href={`/projects/${project}/threads`}
-              className='flex flex-col items-center justify-center min-w-[180px] min-h-[120px] px-8 py-6 rounded-2xl bg-background-1 hover:bg-background-2 transition-colors font-mono text-lg'
+              className='flex items-center gap-2 min-w-[300px] p-1 rounded hover:bg-background-2 transition-colors relative'
               style={{ flex: '0 1 220px' }}
             >
-              <TiFolder className='w-10 h-10 text-foreground-2 mb-3' />
-              <span className='truncate max-w-full'>{project}</span>
+              <span className='w-5 h-5 text-foreground-2 shrink-0 bg-border rounded-full' />
+              <span className='truncate max-w-full text-lg text-foreground-1'>
+                {project}
+              </span>
+              {i < 3 && (
+                <span className='absolute right-2 top-3 w-2 h-2 rounded-full bg-emerald-600' />
+              )}
             </Link>
           ))}
         </div>

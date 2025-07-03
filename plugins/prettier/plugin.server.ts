@@ -17,6 +17,8 @@ export const Plugin: ServerPlugin = {
     tools: [],
     system: [],
   },
+  description:
+    'Provides code formatting for many filetypes using Prettier, based on project configuration files.',
   id,
   api: {},
   sourceCodeHooks: [
@@ -54,24 +56,7 @@ export const Plugin: ServerPlugin = {
     ) {
       return true;
     }
-
-    const pkgJson = project.paths.find((file) => file.endsWith('package.json'));
-    const pkgJsonPath = pkgJson ? path.join(project.path, pkgJson) : null;
-    if (!pkgJsonPath) return false;
-    const pkgJsonContent = pkgJson
-      ? await fs.readFile(pkgJsonPath, 'utf-8')
-      : null;
-    if (!pkgJsonContent) return false;
-    try {
-      const pkgJsonParsed = JSON.parse(pkgJsonContent);
-      if (pkgJsonParsed && pkgJsonParsed.prettier) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch {
-      return false;
-    }
+    return false;
   },
   setup: async (project) => {
     project.plugins[id] = {

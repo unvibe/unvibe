@@ -15,6 +15,8 @@ export const Plugin: ServerPlugin = {
     tools: [],
     system: [],
   },
+  description:
+    'Provides TypeScript/JavaScript type checking and diagnostics for projects with a tsconfig.json.',
   id,
   api: {},
   sourceCodeHooks: [
