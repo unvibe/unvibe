@@ -1,33 +1,20 @@
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
 import { Button } from '@/modules/ui';
-import { useAPIQuery /* useAPIMutation */ } from '@/server/api/client';
-// import { useState } from 'react';
+import { useAPIQuery } from '@/server/api/client';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
 import { HiPlus } from 'react-icons/hi2';
-// import { HiCheckCircle } from 'react-icons/hi2';
-// import { MdCheckCircle, MdEdit, MdEditAttributes } from 'react-icons/md';
 import { TiCogOutline } from 'react-icons/ti';
+import * as React from 'react';
 
 export default function EnvironmentPage() {
-  const { data, isLoading, error /* refetch*/ } = useAPIQuery('GET /home/info');
-  // const mutation = useAPIMutation('POST /home/env-update');
-  // const [editKey, setEditKey] = useState<string | null>(null);
-  // const [editValue, setEditValue] = useState('');
-  // const [saving, setSaving] = useState(false);
+  const { data, isLoading, error } = useAPIQuery('GET /home/info');
+  const [visibleEnv, setVisibleEnv] = React.useState(data?.env ?? []);
 
-  // const handleSave = async (key: string) => {
-  //   setSaving(true);
-  //   try {
-  //     await mutation.mutateAsync({ key, value: editValue });
-  //     setEditKey(null);
-  //     setEditValue('');
-  //     await refetch();
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
+  React.useEffect(() => {
+    if (data?.env) setVisibleEnv(data.env);
+  }, [data]);
 
   if (isLoading) return <div className='p-10'>Loading environment...</div>;
   if (error)
@@ -37,8 +24,6 @@ export default function EnvironmentPage() {
       <HomeSectionSharedHeader
         Icon={TiCogOutline}
         sectionName='Environment'
-        search=''
-        setSearch={() => {}}
         sectionDescription='Manage environment variables and system settings'
         buttons={
           <Button
@@ -49,9 +34,13 @@ export default function EnvironmentPage() {
             <HiPlus className='w-6 h-6' />
           </Button>
         }
+        values={visibleEnv}
+        setValues={setVisibleEnv}
+        allValues={data?.env ?? []}
+        getSearchString={(envVar) => envVar.key + ' ' + envVar.value}
       />
       <div className='flex flex-wrap gap-4'>
-        {data?.env?.map((envVar: { key: string; value: string }) => (
+        {visibleEnv.map((envVar: { key: string; value: string }) => (
           <div
             key={envVar.key}
             className='flex items-center gap-4 p-4 rounded-xl bg-background-2 min-w-[300px] relative'

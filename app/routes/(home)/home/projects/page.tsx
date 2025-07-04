@@ -1,7 +1,7 @@
 import Link from '@/lib/next/link';
 import { useProjects } from '@/modules/home/useProjects';
 import { TiFolder } from 'react-icons/ti';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { ProjectAddModal } from './ProjectAddModal';
 import { MdTerminal } from 'react-icons/md';
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
@@ -12,16 +12,16 @@ import { BsTerminalPlus } from 'react-icons/bs';
 
 export default function ProjectsPage() {
   const projects = useProjects();
-  const [search, setSearch] = useState('');
+  const [visibleProjects, setVisibleProjects] = useState<string[]>(
+    projects ?? []
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [refreshIdx, setRefreshIdx] = useState(0);
-  const filtered = useMemo(() => {
-    if (!projects) return [];
-    if (!search.trim()) return projects;
-    return projects.filter((p: string) =>
-      p.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [projects, search, refreshIdx]);
+
+  // Reset visibleProjects if actual projects list changes (e.g. after add/delete)
+  useEffect(() => {
+    if (projects) setVisibleProjects(projects);
+  }, [projects, refreshIdx]);
 
   const handleProjectCreated = () => {
     setRefreshIdx((i) => i + 1);
@@ -31,11 +31,8 @@ export default function ProjectsPage() {
     <HomeSectionSharedLayout>
       <HomeSectionSharedHeader
         Icon={TiFolder}
-        search={search}
-        setSearch={setSearch}
         sectionName='Projects'
-        sectionDescription='Projects are folders read automatically from your `~/projects` directory.
-        and custom folders can be added manually.'
+        sectionDescription='Projects are folders read automatically from your `~/projects` directory.\nand custom folders can be added manually.'
         buttons={
           <>
             <Button
@@ -56,6 +53,10 @@ export default function ProjectsPage() {
             </Button>
           </>
         }
+        values={visibleProjects}
+        setValues={setVisibleProjects}
+        allValues={projects ?? []}
+        getSearchString={(name) => name}
       />
       <ProjectAddModal
         open={modalOpen}
@@ -66,9 +67,9 @@ export default function ProjectsPage() {
         <MdTerminal className='w-6 h-6 text-foreground' />
         <span className='font-mono'>{'ls ~/projects'}</span>
       </div>
-      {filtered && filtered.length > 0 ? (
+      {visibleProjects && visibleProjects.length > 0 ? (
         <div className='flex flex-wrap gap-2'>
-          {filtered.map((project, i) => (
+          {visibleProjects.map((project, i) => (
             <Link
               key={project}
               href={`/projects/${project}/threads`}

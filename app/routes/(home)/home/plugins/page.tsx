@@ -10,10 +10,18 @@ import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-head
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
 import { Button } from '@/modules/ui';
 import { HiPlus } from 'react-icons/hi2';
+import * as React from 'react';
 
 export default function PluginsPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
   const getIcon = usePluginsIcons();
+  const [visiblePlugins, setVisiblePlugins] = React.useState(
+    data?.plugins ?? []
+  );
+
+  React.useEffect(() => {
+    if (data?.plugins) setVisiblePlugins(data.plugins);
+  }, [data]);
 
   if (isLoading) return <div className='p-10'>Loading plugins...</div>;
   if (error) {
@@ -26,8 +34,6 @@ export default function PluginsPage() {
         Icon={TiPlug}
         sectionDescription='Plugins are extensions that enhance the functionality of Unvibe. You can install, update, and manage plugins from this page.'
         sectionName='Plugins'
-        search=''
-        setSearch={() => {}}
         buttons={
           <Button
             variant='secondary'
@@ -37,9 +43,15 @@ export default function PluginsPage() {
             <HiPlus className='w-6 h-6' />
           </Button>
         }
+        values={visiblePlugins}
+        setValues={setVisiblePlugins}
+        allValues={data?.plugins ?? []}
+        getSearchString={(plugin) =>
+          plugin.id + ' ' + (plugin.description || '')
+        }
       />
       <div className='flex flex-wrap gap-2'>
-        {data?.plugins?.map((plugin) => {
+        {visiblePlugins.map((plugin) => {
           const Icon = getIcon(plugin.id);
           const style = getPluginStyle(plugin.id);
           return (
