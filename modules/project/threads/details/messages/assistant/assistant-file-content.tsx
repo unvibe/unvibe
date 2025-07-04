@@ -2,6 +2,7 @@ import { Decorations, highlightCode } from '@/modules/markdown/library/parser';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useFileDiagnostics } from './assistant-file-actions';
+import { useTheme } from '@/modules/root-providers/theme';
 
 function htmlEscape(text: string) {
   return String(text)
@@ -39,6 +40,7 @@ export function ThreadDetailsMessageListItemFileContent({
   setSelected?: (selected: boolean) => void;
   decorations?: Decorations;
 }) {
+  const theme = useTheme();
   const [highlighted, setHighlighted] = useState(
     makeFallback(data.content || '')
   );
@@ -78,13 +80,13 @@ export function ThreadDetailsMessageListItemFileContent({
 
     const allDecorations = (decorations || []).concat(diagnosticsDecorations);
 
-    highlightCode(content || '', ext, allDecorations)
+    highlightCode(content || '', ext, theme.shiki, allDecorations)
       .then((result) => {
         setHighlighted(result);
       })
       .catch((e) => {
         console.warn('Decoration failed', e, allDecorations);
-        return highlightCode(content || '', ext).then((result) => {
+        return highlightCode(content || '', ext, theme.shiki).then((result) => {
           setHighlighted(result);
         });
       });

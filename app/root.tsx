@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from 'react-router';
 
 import type { Route } from './+types/root';
@@ -12,44 +13,35 @@ import './app.css';
 import { Provider } from '@/modules/root-providers';
 import { Toaster } from '@/modules/ui/notification';
 import clsx from 'clsx';
+import { ThemeMetaTags } from './themes/meta';
+import { themes } from './themes/registery';
+import defaultTheme from '@/app/themes/src/unvibe/dark/meta';
 
-export const links: Route.LinksFunction = () => [
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-  {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
-  },
-  {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-  },
-];
+export const links: Route.LinksFunction = () => [];
+
+export async function loader() {
+  const selectedTheme = 'unvibe-dark';
+  return {
+    theme: themes.find((theme) => theme.id == selectedTheme) || defaultTheme,
+  };
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useLoaderData<typeof loader>();
   return (
     <html lang='en'>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <link rel='preconnect' href='https://fonts.googleapis.com' />
-        <link
-          rel='preconnect'
-          href='https://fonts.gstatic.com'
-          crossOrigin='anonymous'
-        />
-        <link
-          href='https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap'
-          rel='stylesheet'
-        ></link>
+        <ThemeMetaTags theme={theme} />
         <Meta />
         <Links />
       </head>
-      <body
-        className={clsx(/*prompt.className*/ 'box-border' /*mono.variable*/)}
-      >
-        <Provider>{children}</Provider>
-        <Toaster />
+      <body className={clsx('box-border', 'font-display')}>
+        <Provider theme={theme}>
+          {children}
+          <Toaster />
+        </Provider>
         <ScrollRestoration />
         <Scripts />
         <script>

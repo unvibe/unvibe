@@ -1,21 +1,24 @@
 import MarkdownIt from 'markdown-it-async';
 import { codeToHtml } from 'shiki';
 
-const md = MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  highlight: async (str, lang) => {
-    return await codeToHtml(str, {
-      lang,
-      theme: 'github-dark',
-    });
-  },
-});
+export function parseMarkdown(
+  markdown: string,
+  theme: string
+): Promise<string> {
+  const md = MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true,
+    highlight: async (str, lang) => {
+      return await codeToHtml(str, {
+        lang,
+        theme,
+      });
+    },
+  });
 
-export function parseMarkdown(markdown: string): string {
   // markdown-it is synchronous
-  return md.render(markdown);
+  return md.renderAsync(markdown);
 }
 
 export type Decorations = Parameters<typeof codeToHtml>[1]['decorations'];
@@ -23,11 +26,12 @@ export type Decorations = Parameters<typeof codeToHtml>[1]['decorations'];
 export async function highlightCode(
   code: string,
   lang: string,
+  theme: string,
   decorations?: Decorations
 ): Promise<string> {
   return codeToHtml(code, {
     lang,
-    theme: 'github-dark',
+    theme,
     decorations,
   });
 }

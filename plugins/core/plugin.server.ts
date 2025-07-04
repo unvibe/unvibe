@@ -30,7 +30,10 @@ export const Plugin: ServerPlugin<typeof api> = {
       tools,
       systemParts: {
         character,
-        files_summary: summarizeFilePaths(project.paths),
+        files_summary: [
+          `project full path: ${project.path}`,
+          summarizeFilePaths(project.paths),
+        ].join('\n\n'),
         os_info: JSON.stringify({
           platform: process.platform,
           arch: process.arch,

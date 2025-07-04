@@ -1,7 +1,14 @@
+import { Theme } from '~/themes/type';
 import { ReactQueryProvider } from './react-query';
+import { ThemeProvider } from './theme';
 
 export function Provider({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
-  return <ReactQueryProvider>{children}</ReactQueryProvider>;
+  theme,
+}: Readonly<{ children: React.ReactNode; theme: Theme }>) {
+  return (
+    <ReactQueryProvider>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </ReactQueryProvider>
+  );
 }

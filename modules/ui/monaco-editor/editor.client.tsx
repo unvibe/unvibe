@@ -2,6 +2,7 @@ import { shikiToMonaco } from '@shikijs/monaco';
 import Editor from '@monaco-editor/react';
 import { createHighlighter } from 'shiki';
 import { initVimMode } from 'monaco-vim';
+import { useTheme } from '@/modules/root-providers/theme';
 
 export function MonacoEditor({
   content,
@@ -16,11 +17,12 @@ export function MonacoEditor({
   onChange?: (value: string) => void;
   value?: string;
 }) {
+  const theme = useTheme();
   return (
     <Editor
       height={height}
       defaultValue={content}
-      theme='github-dark'
+      theme={theme.shiki}
       value={value}
       onChange={(value) => {
         onChange?.(value || '');
@@ -28,7 +30,7 @@ export function MonacoEditor({
       onMount={(editor, monaco) => {
         // Create the highlighter, it can be reused
         createHighlighter({
-          themes: ['github-dark'],
+          themes: [theme.shiki],
           langs: ['vue', 'ts', 'js', 'jsx', 'tsx'],
         }).then((highlighter) => {
           // Register the languageIds first. Only registered languages will be highlighted.

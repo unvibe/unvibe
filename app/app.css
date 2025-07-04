@@ -5,36 +5,6 @@ if you want to add more colors, check the usage of .success and how it is used
 */
 @import 'tailwindcss';
 
-/* light theme */
-:root {
-  color-scheme: light;
-  --background: #ffffff;
-  --background-1: #f9f9f9;
-  --background-2: #f0f0f0;
-  --border: #e0e0e0;
-  --border-1: #d0d0d0;
-  --border-2: #c0c0c0;
-  --foreground: #171717;
-  --foreground-1: #333;
-  --foreground-2: #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  /* dark theme */
-  :root {
-    color-scheme: dark;
-    --background: #181818;
-    --background-1: #1c1c1c;
-    --background-2: #2c2c2c;
-    --border: #3a3a3a;
-    --border-1: #303030;
-    --border-2: #2a2a2a;
-    --foreground: #d5d5d5;
-    --foreground-1: #a4a4a4;
-    --foreground-2: #8a8a8a;
-  }
-}
-
 /* apply theme to tailwind config to be used in classNames */
 @theme inline {
   --color-background: var(--background);
@@ -46,14 +16,14 @@ if you want to add more colors, check the usage of .success and how it is used
   --color-border: var(--border);
   --color-border-1: var(--border-1);
   --color-border-2: var(--border-2);
-  --font-mono: 'Source Code Pro', 'Courier New', Courier, monospace;
+  --font-mono: var(--font-code);
+  --font-display: var(--font-ui);
 }
 
 /* default body styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Prompt', Arial, Helvetica, sans-serif;
   box-sizing: border-box;
 }
 
@@ -96,18 +66,17 @@ body {
   list-style-type: decimal;
 }
 .markdown-body code {
-  border-radius: 0.5rem;
   padding: 0.2rem 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   overflow-x: auto;
-  background-color: var(--color-background-1);
+  /* background-color: var(--color-background-1); */
 }
 .markdown-body pre {
   overflow: hidden;
   max-width: 100%;
-  border: 1px solid var(--border-1);
-  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
 }
 .markdown-body pre code {
   display: block;

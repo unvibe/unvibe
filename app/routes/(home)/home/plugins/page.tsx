@@ -32,7 +32,7 @@ export default function PluginsPage() {
           const Icon = getIcon(plugin.id);
           const style = getPluginStyle(plugin.id);
           return (
-            <Card key={plugin.id} className='pb-5!'>
+            <Card key={plugin.id} className='pb-5! min-w-[300px]'>
               <Link
                 key={plugin.id}
                 href={`/home/plugins/list/${plugin.id}`}

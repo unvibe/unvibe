@@ -1,14 +1,30 @@
 import { noop } from '@/lib/core/noop';
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
-import { useAPIQuery } from '@/server/api/client';
+import { Markdown } from '@/modules/markdown/ui/Markdown';
+import { ThemeProvider, useTheme } from '@/modules/root-providers/theme';
+import { HiCheckCircle } from 'react-icons/hi2';
 import { TiBrush } from 'react-icons/ti';
+import { themes } from '~/themes/registery';
+
+const snippet = `\`\`\`tsx
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+
+export function SampleComponent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <Button onClick={() => setCount(count + 1)}>
+      Increment {count}
+    </Button>
+  );
+}
+\`\`\`
+`;
 
 export default function ThemesPage() {
-  const { data, isLoading, error } = useAPIQuery('GET /home/info');
-  if (isLoading) return <div className='p-10'>Loading themes...</div>;
-  if (error)
-    return <div className='p-10 text-red-500'>Failed to load themes</div>;
+  const currentTheme = useTheme();
   return (
     <HomeSectionSharedLayout>
       <HomeSectionSharedHeader
@@ -18,15 +34,33 @@ export default function ThemesPage() {
         sectionName='Themes'
         sectionDescription='Themes allow you to customize the appearance of Unvibe. You can create, edit, and delete themes from this page.'
       />
-      <div className='flex flex-wrap gap-4'>
-        {data?.themes?.map((theme: { id: string; name: string }) => (
-          <div
-            key={theme.id}
-            className='rounded-4xl bg-background-1 hover:bg-background-2 transition-colors px-10 py-8 flex flex-col items-center justify-center min-w-[180px] min-h-[120px] font-mono text-lg cursor-pointer'
-          >
-            <span className='text-blue-500 font-bold'>{theme.name}</span>
-            <span className='text-sm text-foreground-2'>{theme.id}</span>
-          </div>
+      <div className='grid grid-cols-2 2xl:grid-cols-3 gap-4'>
+        {themes.map((theme) => (
+          <ThemeProvider key={theme.name} theme={theme}>
+            <div
+              className='rounded-xl bg-background-2 flex gap-3 flex-col w-full font-mono cursor-pointer p-5 relative'
+              style={theme.cssVariables}
+            >
+              <div className='absolute top-5 right-5 bg-background w-8 h-8 rounded-full'>
+                {currentTheme.name === theme.name ? (
+                  <HiCheckCircle className='w-8 h-8 text-green-500' />
+                ) : (
+                  <div className='bg-background w-8 h-8 rounded-full' />
+                )}
+              </div>
+              <div className='text-foreground'>{theme.name}</div>
+              <div className='flex items-center gap-px'>
+                {Object.keys(theme.cssVariables).map((key) => (
+                  <span
+                    key={key}
+                    style={{ backgroundColor: `var(${key})` }}
+                    className='w-5 h-5 rounded'
+                  />
+                ))}
+              </div>
+              <Markdown initialHTML={snippet} text={snippet} />
+            </div>
+          </ThemeProvider>
         ))}
       </div>
     </HomeSectionSharedLayout>

@@ -42,7 +42,7 @@ export default function ProjectsPage() {
       />
       <div className='flex items-center gap-2 p-1 text-foreground-1 py-4'>
         <MdTerminal className='w-6 h-6 text-foreground' />
-        <span className='font-mono'>{'~/projects'}</span>
+        <span className='font-mono'>{'ls ~/projects'}</span>
       </div>
       {filtered && filtered.length > 0 ? (
         <div className='flex flex-wrap gap-2'>

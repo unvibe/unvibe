@@ -1,6 +1,5 @@
 import { Modal } from '@/modules/ui/modal';
 import { Button } from '@/modules/ui/button';
-import { useAPIMutation } from '@/server/api/client';
 import { useState } from 'react';
 import { HiPlus } from 'react-icons/hi2';
 
@@ -17,23 +16,12 @@ export function ProjectAddModal({
   const [name, setName] = useState('');
   const [githubRepo, setGithubRepo] = useState('');
   const [loading, setLoading] = useState(false);
-  const mutation = useAPIMutation('POST /home/create-project');
   const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async () => {
     setLoading(true);
     setError(null);
     try {
-      if (mode === 'empty') {
-        await mutation.mutateAsync({ type: 'empty', name });
-      } else {
-        if (!githubRepo) {
-          setError('GitHub repo is required');
-          setLoading(false);
-          return;
-        }
-        await mutation.mutateAsync({ type: 'github', name, githubRepo });
-      }
       setName('');
       setGithubRepo('');
       onClose();
