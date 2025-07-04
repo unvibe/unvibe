@@ -6,7 +6,7 @@ import { ThemeProvider, useTheme } from '@/modules/root-providers/theme';
 import { Button } from '@/modules/ui';
 import { HiCheckCircle, HiPlus } from 'react-icons/hi2';
 import { TiBrush } from 'react-icons/ti';
-import { themes } from '~/themes/registery';
+import { themes } from '@/themes/registery';
 
 const snippet = `\`\`\`tsx
 import { Button } from '@/components/ui/button';
@@ -73,7 +73,7 @@ export default function ThemesPage() {
                       <span
                         key={key}
                         style={{ backgroundColor: `var(${key})` }}
-                        className='w-5 h-5 rounded border border-border-2'
+                        className='w-5 h-5 rounded-lg border border-border not-first:-ms-2'
                       />
                     ))}
                 </div>

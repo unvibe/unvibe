@@ -1,4 +1,4 @@
-import { Theme } from '~/themes/type';
+import { Theme } from '@/themes/type';
 
 export default {
   id: 'unvibe-light',

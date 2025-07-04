@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { Theme } from '~/themes/type';
+import { Theme } from '@/themes/type';
 import Cookie from 'js-cookie';
 
 type SetTheme = (theme: Theme) => void;

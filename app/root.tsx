@@ -13,8 +13,8 @@ import './app.css';
 import { Provider } from '@/modules/root-providers';
 import { Toaster } from '@/modules/ui/notification';
 import clsx from 'clsx';
-import { themes } from './themes/registery';
-import defaultTheme from '@/app/themes/src/unvibe/dark/meta';
+import { themes } from '../themes/registery';
+import defaultTheme from '@/themes/src/unvibe/dark';
 import cookie from 'cookie';
 
 export const links: Route.LinksFunction = () => [];

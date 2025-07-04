@@ -1,4 +1,4 @@
-import { Theme } from '~/themes/type';
+import { Theme } from '@/themes/type';
 import { ReactQueryProvider } from './react-query';
 import { ThemeProvider } from './theme';
 
