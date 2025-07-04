@@ -58,28 +58,6 @@ export default function Page({ loaderData }: Route.ComponentProps) {
             <ThreadInputBox
               isPending={false}
               placeholder='Continue the conversation...'
-              // onSubmit={({
-              //   prompt,
-              //   images,
-              //   search_enabled,
-              //   clearAttachments,
-              // }) => {
-              // continueThread(
-              //   {
-              //     threadId,
-              //     prompt,
-              //     projectId,
-              //     search_enabled,
-              //     images,
-              //   },
-              //   {
-              //     onSuccess() {
-              //       clearAttachments();
-              //       refetch();
-              //     },
-              //   }
-              // );
-              // }}
             />
           </div>
         </div>

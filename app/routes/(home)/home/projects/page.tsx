@@ -6,6 +6,9 @@ import { ProjectAddModal } from './ProjectAddModal';
 import { MdTerminal } from 'react-icons/md';
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
+import { Button } from '@/modules/ui';
+import { HiPlus } from 'react-icons/hi2';
+import { BsTerminalPlus } from 'react-icons/bs';
 
 export default function ProjectsPage() {
   const projects = useProjects();
@@ -30,10 +33,29 @@ export default function ProjectsPage() {
         Icon={TiFolder}
         search={search}
         setSearch={setSearch}
-        onAdd={() => setModalOpen(true)}
         sectionName='Projects'
         sectionDescription='Projects are folders read automatically from your `~/projects` directory.
         and custom folders can be added manually.'
+        buttons={
+          <>
+            <Button
+              variant='secondary'
+              className='flex items-center justify-center p-2!'
+              title='Add Project'
+              onClick={() => setModalOpen(true)}
+            >
+              <HiPlus className='w-6 h-6' />
+            </Button>
+            <Button
+              variant='secondary'
+              className='flex items-center justify-center p-2!'
+              title='Add Project'
+              onClick={() => setModalOpen(true)}
+            >
+              <BsTerminalPlus className='w-6 h-6' />
+            </Button>
+          </>
+        }
       />
       <ProjectAddModal
         open={modalOpen}

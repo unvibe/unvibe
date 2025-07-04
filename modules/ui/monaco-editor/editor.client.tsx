@@ -17,7 +17,7 @@ export function MonacoEditor({
   onChange?: (value: string) => void;
   value?: string;
 }) {
-  const theme = useTheme();
+  const [theme] = useTheme();
   return (
     <Editor
       height={height}

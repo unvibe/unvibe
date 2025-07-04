@@ -1,21 +1,20 @@
-import { HiMagnifyingGlass, HiPlus } from 'react-icons/hi2';
-import { Button } from '../ui';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 import { IconType } from 'react-icons/lib';
 
 export function HomeSectionSharedHeader({
   Icon,
+  buttons = null,
   sectionDescription,
   sectionName,
   search,
   setSearch,
-  onAdd,
 }: {
   Icon: IconType;
+  buttons?: React.ReactNode;
   search: string;
   sectionDescription?: string;
   sectionName: string;
   setSearch: (value: string) => void;
-  onAdd?: () => void;
 }) {
   return (
     <div className='flex flex-col gap-4 pb-8'>
@@ -39,23 +38,7 @@ export function HomeSectionSharedHeader({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Button
-          variant='secondary'
-          className='flex items-center justify-center p-2!'
-          title='Add Project'
-          onClick={onAdd}
-        >
-          <HiPlus className='w-6 h-6' />
-        </Button>
-        {/* <div className='w-0 border-r border-border h-6 mx-2' />
-          <Button
-            variant='secondary'
-            className='flex items-center justify-center p-2!'
-            title='Add Project'
-            onClick={() => setModalOpen(true)}
-          >
-            <HiOutlineCog6Tooth className='w-6 h-6' />
-          </Button> */}
+        {buttons}
       </div>
     </div>
   );

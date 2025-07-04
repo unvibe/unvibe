@@ -40,7 +40,7 @@ export function ThreadDetailsMessageListItemFileContent({
   setSelected?: (selected: boolean) => void;
   decorations?: Decorations;
 }) {
-  const theme = useTheme();
+  const [theme] = useTheme();
   const [highlighted, setHighlighted] = useState(
     makeFallback(data.content || '')
   );

@@ -1,9 +1,11 @@
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
+import { Button } from '@/modules/ui';
 import { useAPIQuery /* useAPIMutation */ } from '@/server/api/client';
 // import { useState } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
+import { HiPlus } from 'react-icons/hi2';
 // import { HiCheckCircle } from 'react-icons/hi2';
 // import { MdCheckCircle, MdEdit, MdEditAttributes } from 'react-icons/md';
 import { TiCogOutline } from 'react-icons/ti';
@@ -38,6 +40,15 @@ export default function EnvironmentPage() {
         search=''
         setSearch={() => {}}
         sectionDescription='Manage environment variables and system settings'
+        buttons={
+          <Button
+            variant='secondary'
+            className='flex items-center justify-center p-2!'
+            title='Add Project'
+          >
+            <HiPlus className='w-6 h-6' />
+          </Button>
+        }
       />
       <div className='flex flex-wrap gap-4'>
         {data?.env?.map((envVar: { key: string; value: string }) => (

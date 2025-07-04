@@ -8,6 +8,8 @@ import Link from '@/lib/next/link';
 import { useAPIQuery } from '@/server/api/client';
 import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
+import { Button } from '@/modules/ui';
+import { HiPlus } from 'react-icons/hi2';
 
 export default function PluginsPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
@@ -26,6 +28,15 @@ export default function PluginsPage() {
         sectionName='Plugins'
         search=''
         setSearch={() => {}}
+        buttons={
+          <Button
+            variant='secondary'
+            className='flex items-center justify-center p-2!'
+            title='Add Project'
+          >
+            <HiPlus className='w-6 h-6' />
+          </Button>
+        }
       />
       <div className='flex flex-wrap gap-2'>
         {data?.plugins?.map((plugin) => {

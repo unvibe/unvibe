@@ -8,6 +8,7 @@ export function SidebarFilesList() {
   const files = project?.paths || [];
   const projectName = project.path.split('/').pop();
 
+  const tree = makeTree(files).children['.'];
   return (
     <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>
       <div className='flex justify-between items-center sticky top-0 bg-background-1 p-2 z-10 max-w-full'>
@@ -25,7 +26,7 @@ export function SidebarFilesList() {
         </button>
       </div>
       <div className='grid content-start gap-1 p-2 pt-0 max-w-full overflow-x-auto'>
-        <RenderTree tree={makeTree(files)} level={0} name={projectName} />
+        <RenderTree tree={tree} level={1} name={projectName} />
       </div>
     </div>
   );

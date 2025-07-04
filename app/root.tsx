@@ -13,14 +13,16 @@ import './app.css';
 import { Provider } from '@/modules/root-providers';
 import { Toaster } from '@/modules/ui/notification';
 import clsx from 'clsx';
-import { ThemeMetaTags } from './themes/meta';
 import { themes } from './themes/registery';
 import defaultTheme from '@/app/themes/src/unvibe/dark/meta';
+import cookie from 'cookie';
 
 export const links: Route.LinksFunction = () => [];
 
-export async function loader() {
-  const selectedTheme = 'unvibe-dark';
+export async function loader({ request }: Route.LoaderArgs) {
+  const cookieHeader = request.headers.get('Cookie');
+  const parsed = cookie.parse(cookieHeader || '');
+  const selectedTheme = parsed.theme || 'unvibe-dark';
   return {
     theme: themes.find((theme) => theme.id == selectedTheme) || defaultTheme,
   };
@@ -33,7 +35,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <ThemeMetaTags theme={theme} />
         <Meta />
         <Links />
       </head>

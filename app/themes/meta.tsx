@@ -7,6 +7,7 @@ export function ThemeMetaTags({ theme }: { theme: Theme }) {
         if (item.type === 'link') {
           return (
             <link
+              className={`__${theme.id}_meta`}
               key={index}
               rel={item.rel}
               href={item.href}
@@ -15,11 +16,13 @@ export function ThemeMetaTags({ theme }: { theme: Theme }) {
           );
         }
         if (item.type === 'meta') {
-          return <meta key={index} {...item} />;
+          return (
+            <meta key={index} className={`__${theme.id}_meta`} {...item} />
+          );
         }
         return null;
       })}
-      <style>{`
+      <style id={`__${theme.id}_root_style`}>{`
           :root {
             color-scheme: ${theme.colorScheme};
             ${Object.entries(theme.cssVariables)
