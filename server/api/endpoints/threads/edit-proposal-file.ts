@@ -5,7 +5,7 @@ import { StructuredOutput } from '@/server/llm/structured_output';
 import { messages } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { createMetadata } from './continue-utils';
-import { parseProject } from '@/plugins/core/server/api';
+import { parseProject } from '@/server/project/parse';
 import { allPlugins } from './utils';
 
 export const editProposalFile = createEndpoint({

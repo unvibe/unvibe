@@ -4,7 +4,7 @@ import { createEndpoint } from '../../create-endpoint';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import simpleGit from 'simple-git';
-import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path';
+import { resolveHomePath } from '@/server/project/utils';
 
 export const diffContent = createEndpoint({
   type: 'POST',

@@ -6,13 +6,17 @@ import {
   SourceCodeTransformHook,
   VirtualFile,
 } from '@/plugins/_types/plugin.server';
-import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path';
+import { resolveHomePath } from '@/server/project/utils';
 import { noop } from '@/lib/core/noop';
 import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
+import { parseProject } from '@/server/project/parse';
+
+export { runScript as _runScript } from '@/plugins/core/server/api/run-script';
+export { killScript as _killScript } from '@/plugins/core/server/api/kill-script';
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
 
@@ -27,9 +31,6 @@ export async function loadPlugins(project: Project) {
     )
   );
 }
-
-export const _runScript = PluginsMap.CorePlugin.Plugin.api.runScript;
-export const _killScript = PluginsMap.CorePlugin.Plugin.api.killScript;
 
 export async function _packageManagerCommands(
   packages: {
@@ -120,14 +121,10 @@ export async function _modifyFiles(
 }
 
 export function _parseProject(
-  source: Parameters<typeof PluginsMap.CorePlugin.Plugin.api.parseProject>[0],
-  path: Parameters<typeof PluginsMap.CorePlugin.Plugin.api.parseProject>[1]
+  source: Parameters<typeof parseProject>[0],
+  path: Parameters<typeof parseProject>[1]
 ) {
-  return PluginsMap.CorePlugin.Plugin.api.parseProject(
-    source,
-    path,
-    allPlugins
-  );
+  return parseProject(source, path, allPlugins);
 }
 
 export async function runProposalDiagnostics(

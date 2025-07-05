@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { listLocal } from '@/plugins/core/server/api';
+import { listLocal } from '@/plugins/core/server/api/list-local';
 
 export const listProjects = createEndpoint({
   type: 'GET',

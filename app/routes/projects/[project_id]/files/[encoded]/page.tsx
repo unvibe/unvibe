@@ -1,5 +1,5 @@
 import { ThreadInputBox } from '@/modules/project/threads/thread-input-box';
-import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path';
+import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Route } from './+types/page';

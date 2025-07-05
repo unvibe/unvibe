@@ -1,5 +1,5 @@
 import { noop } from '@/lib/core/noop';
-import { resolveHomePath } from './lib/resolve-home-path';
+import { resolveHomePath } from '@/server/project/utils';
 import { runShellCommand } from './lib/run-shell-command';
 
 async function listLocalSource(rootFromHome: string): Promise<string[]> {

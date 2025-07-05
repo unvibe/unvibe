@@ -1,7 +1,5 @@
 import * as virtualFiles from './server/virtual-files';
 import { id } from './plugin.shared';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
 import { ServerPlugin } from '../_types/plugin.server';
 
@@ -20,7 +18,6 @@ export const Plugin: ServerPlugin = {
   description:
     'Provides code formatting for many filetypes using Prettier, based on project configuration files.',
   id,
-  api: {},
   sourceCodeHooks: [
     {
       name: 'prettier-format',

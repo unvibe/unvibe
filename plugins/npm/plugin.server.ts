@@ -16,7 +16,6 @@ export const Plugin: ServerPlugin = {
   description:
     'Detects the package manager (npm, yarn, pnpm, bun) for Node.js projects and exposes npm-related metadata.',
   id,
-  api: {},
   createContext: async (baseProject) => {
     const packageManager = baseProject.plugins[id]?.info?.packageManager;
     return {

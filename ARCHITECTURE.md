@@ -42,13 +42,13 @@ Unvibe aims to make creating and managing complex projects easy, goal-oriented, 
 
 ## 2. High-level Folders
 
-| Folder     | Purpose                                                |
-| ---------- | ------------------------------------------------------ |
-| `app/`     | React Router app entry, routes, pages, layouts         |
-| `modules/` | UI modules/components, layouts, providers, threads     |
-| `server/`  | Backend: APIs, WebSocket, core logic, DB, LLM runners  |
-| `plugins/` | Modular plugins (server/client), each in own folder    |
-| `lib/`     | Shared utilities                                       |
+| Folder     | Purpose                                               |
+| ---------- | ----------------------------------------------------- |
+| `app/`     | React Router app entry, routes, pages, layouts        |
+| `modules/` | UI modules/components, layouts, providers, threads    |
+| `server/`  | Backend: APIs, WebSocket, core logic, DB, LLM runners |
+| `plugins/` | Modular plugins (server/client), each in own folder   |
+| `lib/`     | Shared utilities                                      |
 
 ---
 
@@ -223,7 +223,6 @@ export const Plugin: ServerPlugin = {
     /* ... */
   },
   createContext: async (project) => ({ tools: {}, systemParts: {} }),
-  api: {},
 };
 ```
 
@@ -286,10 +285,10 @@ All significant changes, questions, or analyses are proposed using a structured 
   "message": "Summary of the proposed change.",
   "proposal_id": "unique_snake_case_identifier",
   "proposed_files": {
-    "add": [ { "path": "string", "content": "string" } ],
-    "remove": [ { "path": "string" } ]
+    "add": [{ "path": "string", "content": "string" }],
+    "remove": [{ "path": "string" }]
   },
-  "shell_script_exec_request": [ "optional_shell_command" ]
+  "shell_script_exec_request": ["optional_shell_command"]
 }
 ```
 
@@ -301,21 +300,22 @@ All significant changes, questions, or analyses are proposed using a structured 
 
 ## 17. Glossary
 
-| Term/Acronym      | Definition                                                                 |
-|-------------------|----------------------------------------------------------------------------|
-| LLM               | Large Language Model                                                        |
-| Plugin            | Modular extension point, adds features, tools, or UI                        |
-| Proposal          | Structured JSON object describing a change, question, or analysis           |
-| Type Safety       | Guarantee that data structures and contracts are consistent and validated    |
-| WebSocket         | Protocol for real-time, bidirectional communication                         |
-| Drizzle-ORM       | TypeScript ORM for SQL databases                                            |
-| Thread            | Conversation flow (messages, actions) between users and/or LLM logic        |
+| Term/Acronym | Definition                                                                |
+| ------------ | ------------------------------------------------------------------------- |
+| LLM          | Large Language Model                                                      |
+| Plugin       | Modular extension point, adds features, tools, or UI                      |
+| Proposal     | Structured JSON object describing a change, question, or analysis         |
+| Type Safety  | Guarantee that data structures and contracts are consistent and validated |
+| WebSocket    | Protocol for real-time, bidirectional communication                       |
+| Drizzle-ORM  | TypeScript ORM for SQL databases                                          |
+| Thread       | Conversation flow (messages, actions) between users and/or LLM logic      |
 
 ---
 
 ## 18. Roadmap & Open Questions
 
 ### Roadmap (as of now):
+
 - Expand plugin marketplace for code analysis, generation, and tooling
 - Broaden LLM provider support and capabilities
 - Enhance proposal review workflows (e.g. via UI)
@@ -323,6 +323,7 @@ All significant changes, questions, or analyses are proposed using a structured 
 - Add more real-world project templates and extensible blueprints
 
 ### Open Questions
+
 - How to best scale type safety as plugins proliferate?
 - What are the most valuable new workflows to automate?
 - How can real-time collaboration be further improved?
@@ -331,6 +332,7 @@ All significant changes, questions, or analyses are proposed using a structured 
 ---
 
 **See also:**
+
 - `plugins/README.md` (plugin patterns and examples)
 - `plugins/_types/` (type contracts)
 - `plugins/core` (canonical plugin)

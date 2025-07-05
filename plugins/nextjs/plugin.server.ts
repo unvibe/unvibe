@@ -13,5 +13,4 @@ export const Plugin: ServerPlugin = {
   detect: async () => false,
   setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
-  api: {},
 };

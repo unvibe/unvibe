@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db, schema } from '@/server/db';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
-import { parseProject } from '@/plugins/core/server/api';
+import { parseProject } from '@/server/project/parse';
 import { Context } from '@/server/llm';
 import * as llm from '@/server/llm';
 import {

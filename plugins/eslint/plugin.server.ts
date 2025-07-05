@@ -20,7 +20,6 @@ export const Plugin: ServerPlugin = {
   description:
     'Adds ESLint linting for JavaScript and TypeScript files if ESLint config is found in the project.',
   id,
-  api: {},
   sourceCodeHooks: [
     {
       name: 'eslint-lint',

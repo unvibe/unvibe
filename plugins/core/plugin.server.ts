@@ -1,11 +1,11 @@
 import { ServerPlugin } from '../_types/plugin.server';
-import * as api from './server/api';
 import * as tools from './server/tools';
 import { id } from './plugin.shared';
 import { character } from './server/lib/system-parts';
 import { summarizeFilePaths } from './server/lib/summarize-file-paths';
 
-export const Plugin: ServerPlugin<typeof api> = {
+export const Plugin: ServerPlugin = {
+  id,
   metadata: {
     hooks: [],
     tools: Object.values(tools).map((tool) => tool.config?.name || 'unknown'),
@@ -13,8 +13,6 @@ export const Plugin: ServerPlugin<typeof api> = {
   },
   description:
     'Core plugin: provides basic project context, core system tools (character, file summary, os info), and project-wide utilities.',
-  id,
-  api,
   detect: async () => Promise.resolve(true),
   setup: async (project) => {
     project.plugins[id] = {

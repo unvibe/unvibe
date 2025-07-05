@@ -18,12 +18,11 @@ export const Plugin: ServerPlugin = {
   description:
     'Augments GitHub repositories: exposes repo metadata, fetches issues, and enables GitHub-aware actions.',
   id,
-  api: {},
   createContext: async () => {
     return {
       tools,
       systemParts: {
-        github_info: `This Git repository is connected to Github, \"gh\" CLI is installed, so use that for any Github-related operations.`,
+        github_info: `This Git repository is connected to Github, "gh" CLI is installed, so use that for any Github-related operations.`,
       },
     };
   },

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path';
+import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 

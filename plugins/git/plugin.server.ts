@@ -1,6 +1,4 @@
 import { ServerPlugin } from '../_types/plugin.server';
-// import * as tools from './server/tools';
-import * as api from './server/api';
 import simpleGit from 'simple-git';
 import { id } from './plugin.shared';
 import { noop } from '@/lib/core/noop';
@@ -9,7 +7,7 @@ const githubRemotePrefix = 'git@github.com:';
 
 const cache: Record<string, boolean> = {};
 
-export const Plugin: ServerPlugin<typeof api> = {
+export const Plugin: ServerPlugin = {
   metadata: {
     hooks: [],
     tools: [],
@@ -18,7 +16,6 @@ export const Plugin: ServerPlugin<typeof api> = {
   description:
     'Detects Git repositories, exposes branch and repo metadata, and enables Git-aware automations.',
   id,
-  api,
   createContext: async (baseProject) => {
     return {
       tools: {},

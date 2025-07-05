@@ -1,11 +1,8 @@
-import { noop } from '@/lib/core/noop';
 import fs from 'node:fs';
-import fsp from 'node:fs/promises';
 import path from 'node:path';
-import ignore, { Ignore } from 'ignore';
-// import mime from 'mime';
+import { noop } from '@/lib/core/noop';
 
-const defaultIgnore = `
+export const defaultIgnore = `
 ###############################################################################
 #  🌍  GLOBAL OPERATING‑SYSTEM FILES
 ###############################################################################
@@ -317,71 +314,11 @@ font‑cache‑*
 ###############################################################################
 #  Feel free to delete any section you don’t need.
 `;
-/* ------------------------------------------------------------------ */
-/* ⚡️  tiny, pre-built lookup set for extensions we never read         */
-/* ------------------------------------------------------------------ */
-const BINARY_EXTS: ReadonlySet<string> = new Set([
-  'png',
-  'jpg',
-  'jpeg',
-  'gif',
-  'svg',
-  'pdf',
-  'zip',
-  'tar',
-  'gz',
-  'bz2',
-  'xz',
-  '7z',
-  'rar',
-  'exe',
-  'dll',
-  'so',
-  'class',
-  'db',
-  'ttf',
-  'otf',
-  'woff',
-  'woff2',
-  'ico',
-  'mov',
-  'mp4',
-  'avi',
-  'mkv',
-  'webm',
-  'mp3',
-  'wav',
-  'flac',
-  'ogg',
-  'pkl',
-  'bin',
-  'wasm',
-  'proto',
-  'pb',
-  'h5',
-  'sqlite',
-  'sqlite3',
-  'csv',
-  'psd',
-  'xcf',
-  'raw',
-  'apk',
-  'ipa',
-  'dmg',
-  'iso',
-  'img',
-]);
 
-const ext = (f: string) => {
-  const i = f.lastIndexOf('.');
-  return i < 0 ? '' : f.slice(i + 1).toLowerCase();
-};
-const isBinary = (f: string) => BINARY_EXTS.has(ext(f));
-// const isText = (f: string) => mime.getType(f)?.startsWith('text/') ?? false;
 /* ------------------------------------------------------------------ */
 /* ⚡️  baseline ignore rules are loaded synchronously *once*           */
 /* ------------------------------------------------------------------ */
-function loadBasePatterns(rootDir: string): string[] {
+export function loadBasePatterns(rootDir: string): string[] {
   const patterns: string[] = [];
   try {
     patterns.push(...defaultIgnore.split(/\r?\n/));
@@ -398,80 +335,4 @@ function loadBasePatterns(rootDir: string): string[] {
     /* no project-level .gitignore */
   }
   return patterns;
-}
-
-/* ------------------------------------------------------------------ */
-/* ⚡️  non-recursive, queue-based walk – avoids deep call stacks       */
-/* ------------------------------------------------------------------ */
-export async function getFlatFilesRecursively(
-  rootDir: string
-): Promise<Record<string, string>> {
-  const out: Record<string, string> = {};
-  const basePatterns = loadBasePatterns(rootDir);
-  const rootIg = ignore().add(basePatterns);
-
-  /** BFS queue so we don’t blow the call-stack on huge repos */
-  const queue: Array<{ dir: string; ig: Ignore; relPrefix: string }> = [
-    { dir: rootDir, ig: rootIg, relPrefix: '' },
-  ];
-
-  while (queue.length) {
-    const { dir, ig, relPrefix } = queue.pop()!;
-
-    /* ---------- absorb .gitignore *in that directory* (if any) ------ */
-    let nestedIg = ig;
-    const gitignorePath = path.join(dir, '.gitignore');
-    try {
-      const txt = await fsp.readFile(gitignorePath, 'utf8');
-      if (txt.trim()) {
-        const addPrefix = relPrefix ? `${relPrefix}/` : '';
-        const local = txt
-          .split(/\r?\n/)
-          .map((l) => (l && !l.startsWith('#') ? addPrefix + l : l));
-        nestedIg = ignore().add([...basePatterns, ...local]);
-      }
-    } catch {
-      /* no local .gitignore – perfectly fine */
-    }
-
-    /* ---------------- read the directory entries in one syscall ----- */
-    const entries = await fsp.readdir(dir, { withFileTypes: true });
-
-    /* bulk process files first – cheap filter, then optional content read */
-    const nextReads: Promise<unknown>[] = [];
-    for (const ent of entries) {
-      if (ent.name === '.git' || ent.name === '.gitignore') continue; // early bail-out
-
-      const abs = path.join(dir, ent.name);
-      const rel = `${relPrefix}${ent.name}`;
-      if (nestedIg.ignores(rel)) continue;
-
-      if (ent.isDirectory()) {
-        queue.push({ dir: abs, ig: nestedIg, relPrefix: `${rel}/` });
-      } else {
-        const key = `./${rel}`;
-        if (isBinary(ent.name)) {
-          out[key] = '';
-        } else {
-          const stat = await fsp.stat(abs);
-          // if it's larger than 1MB, skip it
-          if (stat.size > 1024 * 1024) {
-            out[key] = '';
-          } else {
-            nextReads.push(
-              fsp
-                .readFile(abs, 'utf8')
-                .then((txt) => {
-                  out[key] = txt;
-                })
-                .catch(noop)
-            );
-          }
-        }
-      }
-    }
-    /* one await per directory keeps concurrency high but fds sane */
-    if (nextReads.length) await Promise.all(nextReads);
-  }
-  return out;
 }

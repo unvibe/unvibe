@@ -11,7 +11,6 @@ export const Plugin: ServerPlugin = {
   description:
     'Detects and augments monorepos managed by Turborepo, extracting workspace/project structure.',
   id,
-  api: {},
   sourceCodeHooks: [],
   createContext: async () => {
     return {

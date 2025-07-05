@@ -48,9 +48,7 @@ export type ServerPluginMetadata = {
   system: string[];
 };
 
-export type ServerPlugin<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = {
+export type ServerPlugin = {
   metadata: ServerPluginMetadata;
   /** Short summary of what the plugin does and when it applies */
   description: string;
@@ -62,5 +60,4 @@ export type ServerPlugin<
     systemParts: Record<string, string>;
   }>;
   sourceCodeHooks?: SourceCodeHook[];
-  api: T;
 };

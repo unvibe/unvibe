@@ -2,14 +2,15 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { startWebsocketServer } from './websocket/server';
-import { cache } from '@/plugins/core/server/api';
+import { cache } from '@/server/project/parse';
 import { api } from './api';
+import { baseURL } from './api/constants';
 
 const app = new Hono();
 
 app.use('*', cors());
 
-app.all('/api/v2/*', async (c) => {
+app.all(`${baseURL}/*`, async (c) => {
   // This is a placeholder for the /api/v2/* route
   // You can implement your logic here or forward it to another service
   const request = c.req.raw;

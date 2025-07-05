@@ -3,7 +3,6 @@ import { z } from 'zod';
 import * as PluginsMap from '@/plugins/plugins.server';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { resolveHomePath } from '@/plugins/core/server/api/lib/resolve-home-path';
 
 // List all available plugins (server-side only, not client plugins)
 function listAvailablePlugins() {
@@ -82,7 +81,8 @@ export const updateEnvironmentVariable = createEndpoint({
     key: z.string(),
     value: z.string(),
   }),
-  handler: async ({ key, value }) => {
+  handler: async ({ parsed }) => {
+    const { key, value } = parsed;
     await setEnvironmentVariable(key, value);
     return { success: true };
   },

@@ -1,7 +1,7 @@
 import { createEndpoint } from '../create-endpoint';
 import { z } from 'zod';
 import * as PluginsMap from '@/plugins/plugins.server';
-import { parseProject } from '@/plugins/core/server/api';
+import { parseProject } from '@/server/project/parse';
 import { Project } from '@/plugins/core/server/api/lib/project';
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
@@ -43,7 +43,9 @@ export const callTool = createEndpoint({
       })
       .flat();
 
-    const target = pluginsWithTools.find((entry) => entry.toolMod.config.name === tool);
+    const target = pluginsWithTools.find(
+      (entry) => entry.toolMod.config.name === tool
+    );
 
     if (!target) {
       return {

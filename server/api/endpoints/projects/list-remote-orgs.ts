@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { _killScript, _parseProject, PluginsMap } from './utils';
+import {
+  getCurrentUsername,
+  getOrgs,
+} from '@/plugins/core/server/api/list-remote';
 
 export const listRemoteOrgs = createEndpoint({
   type: 'GET',
@@ -8,8 +11,8 @@ export const listRemoteOrgs = createEndpoint({
   params: z.object({}),
   handler: async () => {
     const [result, remoteUsername] = await Promise.all([
-      PluginsMap.CorePlugin.Plugin.api.getOrgs(),
-      PluginsMap.CorePlugin.Plugin.api.getCurrentUsername(),
+      getOrgs(),
+      getCurrentUsername(),
     ]);
     if (remoteUsername) {
       result.unshift(remoteUsername);
