@@ -222,12 +222,7 @@ export function ThreadDetailsMessageListItemFileActions({
           </button>
         )}
         {shouldShowDiagnostics && (
-          <button
-            className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'
-            onClick={() => {
-              setShowDiagnosticsModal(true);
-            }}
-          >
+          <button className='p-2 bg-background-1/50 text-foreground-2 rounded-xl flex items-center gap-1'>
             <Tooltip
               content={collectedDiagnostics.map((d) => d.message).join('\n')}
             >
@@ -244,16 +239,6 @@ export function ThreadDetailsMessageListItemFileActions({
                 />
               </div>
             </Tooltip>
-            {/* <QualityCheckProgress
-              progress={progress}
-              type={
-                fileResult.some((m) => m === 'error')
-                  ? 'error'
-                  : fileResult.some((m) => m === 'warning')
-                    ? 'warning'
-                    : 'success'
-              }
-            /> */}
           </button>
         )}
       </div>
