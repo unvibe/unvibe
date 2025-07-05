@@ -31,7 +31,7 @@ export function MonacoEditor({
         // Create the highlighter, it can be reused
         createHighlighter({
           themes: [theme.shiki],
-          langs: ['vue', 'ts', 'js', 'jsx', 'tsx'],
+          langs: ['vue', 'ts', 'js', 'jsx', 'tsx', 'md'],
         }).then((highlighter) => {
           // Register the languageIds first. Only registered languages will be highlighted.
           monaco.languages.register({ id: 'vue' });
@@ -40,6 +40,7 @@ export function MonacoEditor({
             aliases: ['ts', 'tsx'],
           });
           monaco.languages.register({ id: 'javascript' });
+          monaco.languages.register({ id: 'markdown' });
 
           monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
             jsx: monaco.languages.typescript.JsxEmit.Preserve,

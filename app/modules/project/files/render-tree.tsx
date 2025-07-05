@@ -201,7 +201,7 @@ export function RenderTree({
                     <span className='brightness-50'>
                       <TiDocument className='w-5 h-5' />
                     </span>
-                    <span className='text-sm'>{child.name}</span>
+                    <span>{child.name}</span>
                   </li>
                 </Link>
               );

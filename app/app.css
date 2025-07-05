@@ -95,6 +95,7 @@ code {
 
 /*
 ? enable this when you fix why the first rendered block has no .line class
+*/
 code {
   counter-reset: step;
   counter-increment: step 0;
@@ -109,7 +110,6 @@ code .line::before {
   text-align: right;
   color: rgba(115, 138, 148, 0.4);
 }
-*/
 
 .highlighted-word {
   @apply bg-emerald-500/10;
@@ -128,9 +128,10 @@ code .line::before {
   content: attr(data-title);
   z-index: 99999;
   bottom: 100%;
-  max-width: 100%;
+  max-width: 600px;
   overflow-x: scroll;
   left: 0;
+  min-width: 300px;
   @apply absolute p-4 rounded-xl border border-border bg-background-2 text-foreground-1 text-xs whitespace-pre-wrap;
   opacity: 0;
   visibility: hidden;

@@ -9,10 +9,7 @@ import {
   RunOutput,
   Tools,
 } from '../models/_shared-types';
-import {
-  FunctionCall,
-  GoogleGenAI,
-} from '@google/genai';
+import { FunctionCall, GoogleGenAI } from '@google/genai';
 import {
   logCallStart,
   logCallResponse,
@@ -50,15 +47,21 @@ export function fromGeminiMessageToAbstractContextMessage(
   if (message.role === 'user') {
     // If there is a functionResponse part, this is a tool call result.
     const functionResponse = message.parts.find(
-      (part): part is { functionResponse: { name: string; response: Record<string, unknown> } } =>
-        typeof part === 'object' && 'functionResponse' in part
+      (
+        part
+      ): part is {
+        functionResponse: { name: string; response: Record<string, unknown> };
+      } => typeof part === 'object' && 'functionResponse' in part
     );
     if (functionResponse) {
       // Tool result (functionResponse)
       return {
         role: 'tool',
         index: 0,
-        content: JSON.stringify({ name: functionResponse.functionResponse.name, response: functionResponse.functionResponse.response }),
+        content: JSON.stringify({
+          name: functionResponse.functionResponse.name,
+          response: functionResponse.functionResponse.response,
+        }),
         call_id: '', // Might be available in future, not exposed by Gemini part.
       };
     }
@@ -67,7 +70,10 @@ export function fromGeminiMessageToAbstractContextMessage(
     const images_urls: string[] = [];
     for (const part of message.parts) {
       if ('text' in part) text += part.text;
-      if ('inlineData' in part && part.inlineData.mimeType.startsWith('image/')) {
+      if (
+        'inlineData' in part &&
+        part.inlineData.mimeType.startsWith('image/')
+      ) {
         images_urls.push(part.inlineData.data);
       }
     }
@@ -99,7 +105,10 @@ export function fromGeminiMessageToAbstractContextMessage(
  * Future-proof: if the message includes a tool_calls or extra tool parts property, serialize as extra text parts.
  */
 function normalizeContextUserMessage(
-  message: AbstractContextUserMessage & { tool_calls?: unknown[]; extra_parts?: GeminiContentBlock[] }
+  message: AbstractContextUserMessage & {
+    tool_calls?: unknown[];
+    extra_parts?: GeminiContentBlock[];
+  }
 ): GeminiMessage {
   const parts: GeminiContentBlock[] = [];
 
@@ -121,8 +130,13 @@ function normalizeContextUserMessage(
       parts.push({ text: `[Tool call]: ${JSON.stringify(toolCall)}` });
     }
   }
-  if (Array.isArray((message as { extra_parts?: GeminiContentBlock[] }).extra_parts)) {
-    for (const p of (message as { extra_parts: GeminiContentBlock[] }).extra_parts!) {
+  if (
+    Array.isArray(
+      (message as { extra_parts?: GeminiContentBlock[] }).extra_parts
+    )
+  ) {
+    for (const p of (message as { extra_parts: GeminiContentBlock[] })
+      .extra_parts!) {
       parts.push(p);
     }
   }
@@ -147,7 +161,10 @@ function normalizeContextAssistantMessage(
 function normalizeContextToolMessage(
   message: AbstractContextToolMessage
 ): GeminiMessage {
-  let functionResult: { name?: string; response?: Record<string, unknown> } | null = null;
+  let functionResult: {
+    name?: string;
+    response?: Record<string, unknown>;
+  } | null = null;
   try {
     const parsed = JSON.parse(message.content) as {
       name?: string;

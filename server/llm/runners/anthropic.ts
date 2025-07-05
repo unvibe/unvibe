@@ -337,7 +337,7 @@ async function run(
       response: response.choices[0].message.content,
     };
   } catch (error) {
-    console.log('llm.runners.openai-chat-completion:', error);
+    console.log('llm.runners.anthropic:', error);
     logCallError({
       tag,
       modelId: MODEL_CONFIG.id,
