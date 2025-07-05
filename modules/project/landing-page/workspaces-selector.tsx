@@ -1,6 +1,6 @@
 // import {
 //   Project,
-// } from '@/plugins/core/server/api/lib/project';
+// } from '@/server/project/types';
 // import clsx from 'clsx';
 
 // function getWorkspaces(project: TypescriptMonorepo) {

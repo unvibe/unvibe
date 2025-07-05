@@ -1,4 +1,4 @@
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 
 type DynamicUIText = {
   type: 'text';

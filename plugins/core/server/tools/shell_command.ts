@@ -1,6 +1,6 @@
 import { make, CreateTool } from '@/plugins/_types/tools';
 import * as llm from '@/server/llm';
-import { runShellCommand } from '../api/lib/run-shell-command';
+import { runShellCommand } from '../../../../lib/server/run-shell-command';
 
 export const config = make({
   name: 'shell_command',

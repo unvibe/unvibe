@@ -1,4 +1,4 @@
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { _parseProject } from './utils';
 import { createEndpoint } from '../../create-endpoint';
 import { z } from 'zod';

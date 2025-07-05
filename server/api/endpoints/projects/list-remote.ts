@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { listRemote as _listRemote } from '@/plugins/core/server/api/list-remote';
+import { listRemote as _listRemote } from './utils';
 
 export const listRemote = createEndpoint({
   type: 'GET',

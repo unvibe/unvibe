@@ -7,7 +7,7 @@ import {
   AbstractSystemMessage,
   ToolDefinition,
 } from '../models/_shared-types';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { loadPlugins } from '../structured_output/transform';
 import { structuredOutputInstructions } from '../structured_output';
 import { db } from '@/server/db';

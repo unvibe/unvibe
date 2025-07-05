@@ -14,7 +14,7 @@ import { useScriptsStore } from './store';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { Modal } from '@/modules/ui/modal';
-import type { ProcessMetadata } from '@/plugins/core/server/api';
+import type { ProcessMetadata } from '@/server/project/EXPERIMENTAL_scripts';
 
 function ScriptButton({
   script,

@@ -1,7 +1,8 @@
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import path from 'node:path';
 import simpleGit from 'simple-git';
 import fs from 'node:fs/promises';
+import { noop } from '@/lib/core/noop';
 
 export async function gitListBranches(project: Project): Promise<string[]> {
   const git = simpleGit({
@@ -104,13 +105,17 @@ export async function gitDiffDraft(
     const diff = await git.diff(['--no-index', resolvedFilePath, tempFilePath]);
     try {
       await fs.unlink(tempFilePath);
-    } catch {}
+    } catch {
+      noop();
+    }
     return { diff, fileExists };
   } catch (error) {
     // clear any temp files
     try {
       await fs.unlink(tempPath);
-    } catch {}
+    } catch {
+      noop();
+    }
     if (error instanceof Error) {
       return {
         diff: '',

@@ -2,7 +2,7 @@ import { TiPlug } from 'react-icons/ti';
 import { useProject, useClientPlugins } from '../provider';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import { HiUserCircle } from 'react-icons/hi2';
-import type { ProjectPlugin } from '@/plugins/core/server/api/lib/project';
+import type { ProjectPlugin } from '@/server/project/types';
 
 export function usePluginsIcons() {
   const clientPlugins = useClientPlugins();

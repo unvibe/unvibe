@@ -1,4 +1,4 @@
-import type { Project } from '@/plugins/core/server/api/lib/project';
+import type { Project } from '@/server/project/types';
 import { createContext, useContext, useMemo } from 'react';
 import * as ClientPluginsMap from '@/plugins/plugins-client';
 import { useParams } from '@/lib/next/navigation';

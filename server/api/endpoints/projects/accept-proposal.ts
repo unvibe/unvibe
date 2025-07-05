@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { _parseProject } from './utils';
-import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command';
+import { runShellCommand } from '@/lib/server/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { noop } from '@/lib/core/noop';

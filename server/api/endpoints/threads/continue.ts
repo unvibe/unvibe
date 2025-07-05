@@ -19,7 +19,7 @@ import {
   sendEventStart,
 } from './utils';
 import { Message, StructuredOutputMetadata, Thread } from '@/server/db/schema';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { createMetadata } from './continue-utils';
 
 async function loadThreadAndMessages(threadId: string) {

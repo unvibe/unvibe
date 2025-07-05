@@ -1,5 +1,7 @@
+// kill-script.ts
+import { Project } from './types';
+import { noop } from '@/lib/core/noop/index';
 import { spawn } from 'node:child_process';
-import { Project } from './lib/project';
 import { v4 as uuid } from 'uuid';
 import { sendWebsocketEvent } from '@/server/websocket/server';
 
@@ -64,4 +66,35 @@ export function runScript(project: Project, command: string, args?: string[]) {
   });
 
   return metadata;
+}
+/**
+ * Kill a running script (child process) for a given project and process.
+ * @param project The project object.
+ * @param processMetadata The process metadata object.
+ * @returns Success (true) if killed, false otherwise.
+ */
+export async function killScript(
+  project: Project,
+  processMetadata: ProcessMetadata
+): Promise<boolean> {
+  if (
+    !processMetadata ||
+    processMetadata.state !== 'running' ||
+    !processMetadata.pid
+  )
+    return false;
+  try {
+    process.kill(processMetadata.pid, 'SIGTERM');
+    processMetadata.state = 'stopped';
+    // Optionally update the store if this is a tracked process
+    if (store[project.path]?.pid === processMetadata.pid) {
+      store[project.path].state = 'stopped';
+    }
+    sendScriptWebsocketEvent(processMetadata);
+    return true;
+  } catch (err) {
+    // Already dead or no permission
+    noop(err);
+    return false;
+  }
 }

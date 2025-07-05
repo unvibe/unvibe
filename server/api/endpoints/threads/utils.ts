@@ -5,7 +5,7 @@ import { models } from '@/server/llm/models';
 import { Thread } from '@/server/db/schema';
 import { sendWebsocketEvent } from '@/server/websocket/server';
 import { StructuredOutput } from '@/server/llm/structured_output';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { normalizePath } from '../projects/utils';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 

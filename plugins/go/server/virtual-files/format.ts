@@ -1,10 +1,13 @@
-import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command';
+import { runShellCommand } from '@/lib/server/run-shell-command';
 import type { VirtualFile } from '@/plugins/_types/plugin.server';
 import path from 'path';
 import fs from 'fs/promises';
 
 // Format Go files in place using 'go fmt', then reload their content
-export async function format(virtualFiles: VirtualFile[], projectRoot: string): Promise<VirtualFile[]> {
+export async function format(
+  virtualFiles: VirtualFile[],
+  projectRoot: string
+): Promise<VirtualFile[]> {
   // Write virtual files to disk before formatting
   const written: string[] = [];
   try {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { StructuredChatMessage } from '@/server/websocket/types';
-import type { ProcessMetadata } from '@/plugins/core/server/api';
+import type { ProcessMetadata } from '@/server/project/EXPERIMENTAL_scripts';
 import { immer } from 'zustand/middleware/immer';
 import { socket } from '@/lib/react/useSocket';
 

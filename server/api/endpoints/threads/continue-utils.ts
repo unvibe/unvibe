@@ -3,7 +3,7 @@ import { sha1 } from '@/lib/core/hash/sha1';
 import { jsonrepair } from 'jsonrepair';
 import { normalizePath, runProposalDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 import { runTransforms } from '@/server/llm/structured_output/transform';

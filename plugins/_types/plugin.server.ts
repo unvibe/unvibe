@@ -1,4 +1,4 @@
-import { BaseProject } from '../core/server/api/lib/project';
+import { BaseProject } from '@/server/project/types';
 import { DynamicUICallback, DynamicUIEntry } from '@/lib/core/dynamic-ui/types';
 import { CreateTool, ToolConfig, ToolParametersDefinition } from './tools';
 

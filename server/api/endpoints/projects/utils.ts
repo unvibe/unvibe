@@ -1,5 +1,5 @@
 import * as PluginsMap from '@/plugins/plugins.server';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import {
   SourceCodeDiagnosticHook,
   SourceCodeHook,
@@ -8,15 +8,69 @@ import {
 } from '@/plugins/_types/plugin.server';
 import { resolveHomePath } from '@/server/project/utils';
 import { noop } from '@/lib/core/noop';
-import { runShellCommand } from '@/plugins/core/server/api/lib/run-shell-command';
+import { runShellCommand } from '@/lib/server/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 import { parseProject } from '@/server/project/parse';
+export {
+  runScript as _runScript,
+  killScript as _killScript,
+} from '@/server/project/EXPERIMENTAL_scripts';
 
-export { runScript as _runScript } from '@/plugins/core/server/api/run-script';
-export { killScript as _killScript } from '@/plugins/core/server/api/kill-script';
+export async function getCurrentUsername(): Promise<string | null> {
+  try {
+    const output = await runShellCommand('gh api user --jq .login');
+    return output.trim();
+  } catch {
+    return null;
+  }
+}
+
+export async function getOrgs(): Promise<string[]> {
+  try {
+    const output = await runShellCommand("gh api user/orgs --jq '.[].login'");
+    return output
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+async function getReposForOwner(owner: string): Promise<string[]> {
+  try {
+    const output = await runShellCommand(
+      `gh repo list ${owner} --json name --jq '.[].name'`
+    );
+    return output
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+export async function listRemote(): Promise<Record<string, string[]>> {
+  const result: Record<string, string[]> = {};
+  const username = await getCurrentUsername();
+  if (username) {
+    result[username] = await getReposForOwner(username);
+  }
+  const orgs = await getOrgs();
+  for (const org of orgs) {
+    result[org] = await getReposForOwner(org);
+  }
+  return result;
+}
+
+export async function importRemoteProject(url: string): Promise<boolean> {
+  // Placeholder for actual import logic
+  return !!url;
+}
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
 

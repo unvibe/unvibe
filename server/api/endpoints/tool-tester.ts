@@ -2,7 +2,7 @@ import { createEndpoint } from '../create-endpoint';
 import { z } from 'zod';
 import * as PluginsMap from '@/plugins/plugins.server';
 import { parseProject } from '@/server/project/parse';
-import { Project } from '@/plugins/core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 
 const allPlugins = Object.values(PluginsMap).map((plugin) => plugin.Plugin);
 
