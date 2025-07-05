@@ -36,7 +36,7 @@ export function ThreadDetailsMessageListItemFile({
   }, []);
 
   return (
-    <div className='grid border border-border rounded-2xl'>
+    <div className='grid border border-border rounded-2xl overflow-hidden'>
       <ThreadDetailsMessageListItemFileActions
         data={data}
         icon={icon}
