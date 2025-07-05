@@ -1,10 +1,12 @@
 // Incremental project scanner with hash/stat cache and concurrency pool
 import fsp from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
 import { FileCache, updateCacheEntry } from './cache';
 import { loadBasePatterns } from './ignored';
 import ignore, { Ignore } from 'ignore';
 import { noop } from '@/lib/core/noop';
+import { isBinary, resolveHomePath } from './utils';
 
 // Simple concurrency pool
 function concurrencyPool<T>(
@@ -49,13 +51,13 @@ function concurrencyPool<T>(
   });
 }
 
-// Dummy binary check
-function isBinary(filename: string): boolean {
-  // You may want a smarter check or import your util
-  return /\.(png|jpg|jpeg|gif|svg|pdf|zip|tar|gz|bz2|xz|7z|rar|exe|dll|so|class|db|ttf|otf|woff|woff2|ico|mov|mp4|avi|mkv|webm|mp3|wav|flac|ogg|pkl|bin|wasm|proto|pb|h5|sqlite|sqlite3|csv|psd|xcf|raw|apk|ipa|dmg|iso|img)$/i.test(
-    filename
-  );
-}
+// // Dummy binary check
+// function isBinary(filename: string): boolean {
+//   // You may want a smarter check or import your util
+//   return /\.(png|jpg|jpeg|gif|svg|pdf|zip|tar|gz|bz2|xz|7z|rar|exe|dll|so|class|db|ttf|otf|woff|woff2|ico|mov|mp4|avi|mkv|webm|mp3|wav|flac|ogg|pkl|bin|wasm|proto|pb|h5|sqlite|sqlite3|csv|psd|xcf|raw|apk|ipa|dmg|iso|img)$/i.test(
+//     filename
+//   );
+// }
 
 export async function scanProjectFilesWithCache(
   rootDir: string,
@@ -135,5 +137,21 @@ export async function scanProjectFilesWithCache(
     }
     if (fileTasks.length) await concurrencyPool(concurrency, fileTasks);
   }
+  // save entry to root cache
+  const rootsPath = resolveHomePath('.unvibe/.unvibe-cache/roots.json');
+  const exists = await fs.existsSync(rootsPath);
+  const roots = exists ? await fsp.readFile(rootsPath, 'utf8') : '{}';
+  const rootsJson = roots ? JSON.parse(roots) : {};
+
+  try {
+    rootsJson[rootDir] = await fs.statSync(rootDir).mtimeMs;
+    await fsp.writeFile(rootsPath, JSON.stringify(rootsJson), 'utf8');
+  } catch (error) {
+    console.warn(
+      error,
+      `Warning: Could not stat project root directory ${rootDir}. Skipping cache update.`
+    );
+  }
+
   return out;
 }
