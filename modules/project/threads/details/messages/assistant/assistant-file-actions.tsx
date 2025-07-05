@@ -10,6 +10,7 @@ import { Modal } from '@/modules/ui/modal';
 // import { HiPencilSquare } from 'react-icons/hi2';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { TbEdit } from 'react-icons/tb';
+import { Tooltip } from '@/modules/ui/tooltip';
 
 const Editor = React.lazy(() =>
   import('@/modules/ui/monaco-editor').then((module) => ({
@@ -227,18 +228,22 @@ export function ThreadDetailsMessageListItemFileActions({
               setShowDiagnosticsModal(true);
             }}
           >
-            <div className='w-5 h-5 flex items-center justify-center'>
-              <div
-                className={clsx(
-                  'w-3 h-3 rounded-full',
-                  status === 'warning'
-                    ? 'bg-amber-700'
-                    : status === 'error'
-                      ? 'bg-rose-700'
-                      : 'bg-emerald-700'
-                )}
-              />
-            </div>
+            <Tooltip
+              content={collectedDiagnostics.map((d) => d.message).join('\n')}
+            >
+              <div className='w-5 h-5 flex items-center justify-center'>
+                <div
+                  className={clsx(
+                    'w-3 h-3 rounded-full',
+                    status === 'warning'
+                      ? 'bg-amber-600'
+                      : status === 'error'
+                        ? 'bg-rose-700'
+                        : 'bg-emerald-700'
+                  )}
+                />
+              </div>
+            </Tooltip>
             {/* <QualityCheckProgress
               progress={progress}
               type={

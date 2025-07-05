@@ -20,12 +20,12 @@ export function StructuredOutputEditFiles() {
         });
         return (
           <ThreadDetailsMessageListItemFile
+            key={'edit_files' + edit.path + i.toString()}
             icon={
               <span className='w-4 h-4 border-2 border-emerald-600 flex items-center justify-center'>
                 <span className='w-2 h-2 rounded-full bg-emerald-600' />
               </span>
             }
-            key={edit.path + i.toString()}
             data={resolved ?? edit}
             type='remove'
             decorations={
@@ -33,14 +33,14 @@ export function StructuredOutputEditFiles() {
                 ? undefined
                 : [
                     {
-                      start: { line: edit.insert_at - 1, character: 0 },
+                      start: { line: edit.insert_at, character: 0 },
                       end: {
-                        line:
-                          edit.insert_at -
-                          1 +
-                          edit.content.split('\n').length -
-                          1,
-                        character: 0,
+                        line: edit.content.split('\n').length,
+                        character:
+                          edit.content.split('\n').length === edit.insert_at
+                            ? edit.content.split('\n')[edit.insert_at - 1]
+                                .length
+                            : 0,
                       },
                       properties: { class: 'highlighted-word' },
                     },

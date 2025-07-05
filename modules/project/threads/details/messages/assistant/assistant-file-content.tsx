@@ -22,6 +22,34 @@ function makeFallback(content: string) {
   return prefix + lines.join('\n') + suffix;
 }
 
+function mergeDecorations(
+  decorations: Decorations,
+  diagnosticsDecorations: Decorations
+): Decorations {
+  if (!decorations && !diagnosticsDecorations) {
+    return [];
+  } else if (!decorations) {
+    return diagnosticsDecorations;
+  } else if (!diagnosticsDecorations) {
+    return decorations;
+  } else if (decorations.length === 0) {
+    return diagnosticsDecorations;
+  } else if (diagnosticsDecorations.length === 0) {
+    return decorations;
+  } else {
+    // now we merge the two arrays
+    // let's opt in a bad (quadratic) solution for now
+    // so we merge the two arrays and each iteration we check if the ranges overlap
+    const merged = [...decorations, ...diagnosticsDecorations].map(
+      (decoration) => {
+        return decoration;
+      }
+    );
+
+    return merged;
+  }
+}
+
 export function ThreadDetailsMessageListItemFileContent({
   data,
   initCodeSnippet,
@@ -60,15 +88,21 @@ export function ThreadDetailsMessageListItemFileContent({
       linesMap[d.line].push(d);
     });
 
+    console.log({
+      linesMap,
+      content: content?.split('\n'),
+      diagnostics,
+      decorations,
+    });
+
     const diagnosticsDecorations = Object.keys(linesMap).map((lineNumber) => ({
       start: {
         line: Number(lineNumber) >= 0 ? Number(lineNumber) : 0,
-        character:
-          content?.split('\n')[Number(lineNumber) - 1].search(/\S/) || 0,
+        character: 0,
       },
       end: {
         line: Number(lineNumber),
-        character: content?.split('\n')[Number(lineNumber) - 1].length || 0,
+        character: content?.split('\n')[Number(lineNumber)].length || 0,
       },
       properties: {
         class: 'error-underline',
@@ -78,7 +112,10 @@ export function ThreadDetailsMessageListItemFileContent({
       },
     }));
 
-    const allDecorations = (decorations || []).concat(diagnosticsDecorations);
+    const allDecorations = mergeDecorations(
+      decorations,
+      diagnosticsDecorations
+    );
 
     highlightCode(content || '', ext, theme.shiki, allDecorations)
       .then((result) => {

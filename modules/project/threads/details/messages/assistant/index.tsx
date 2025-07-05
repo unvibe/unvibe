@@ -70,10 +70,7 @@ export function ThreadDetailsAssistantMessage() {
     return (
       <Wrapper copyableContent={value.metadata.content}>
         <div className={clsx('flex items-center gap-2 text-xs')}>
-          <Markdown
-            initialHTML={value.metadata.content}
-            text={value.metadata.content}
-          />
+          <Markdown text={value.metadata.content} />
         </div>
       </Wrapper>
     );

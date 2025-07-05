@@ -12,7 +12,7 @@ export function StructuredOutputEditRanges() {
 
   return (
     <>
-      {edit_ranges.map((entry) => {
+      {edit_ranges.map((entry, i) => {
         const resolved = metadata?.resolved_edited_ranges?.find((r) => {
           return r.path === entry.path;
         });
@@ -24,7 +24,7 @@ export function StructuredOutputEditRanges() {
                 <span className='w-full h-0.5 bg-emerald-800' />
               </span>
             }
-            key={entry.path}
+            key={'edit-ranges' + entry.path + String(i)}
             data={{
               path: entry.path,
               content:
