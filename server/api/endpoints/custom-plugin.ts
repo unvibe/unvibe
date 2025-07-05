@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createEndpoint } from '../create-endpoint';
 import { db, schema } from '@/server/db';
+import { eq, and } from 'drizzle-orm';
 
 // 1. new-system: Fully implemented, supports 'raw' and 'file' types
 export const newSystem = createEndpoint({
@@ -21,6 +22,27 @@ export const newSystem = createEndpoint({
       value: parsed.value,
     });
     return { message: 'Custom system part created' };
+  },
+});
+
+// Remove a custom system part
+export const removeSystem = createEndpoint({
+  type: 'POST',
+  pathname: '/custom-plugin/remove-system',
+  params: z.object({
+    projectId: z.string(),
+    key: z.string(),
+  }),
+  handler: async ({ parsed }) => {
+    await db
+      .delete(schema.customSystemParts)
+      .where(
+        and(
+          eq(schema.customSystemParts.project_id, parsed.projectId),
+          eq(schema.customSystemParts.key, parsed.key)
+        )
+      );
+    return { message: 'Custom system part removed' };
   },
 });
 

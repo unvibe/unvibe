@@ -3,13 +3,16 @@ import { useProject } from '../provider';
 import { useState } from 'react';
 import { useAPIMutation } from '@/server/api/client';
 import { useParams } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function SystemAddModal({
   open,
   onClose,
+  queryKeyToRefetch,
 }: {
   open: boolean;
   onClose: () => void;
+  queryKeyToRefetch?: unknown[];
 }) {
   const project = useProject();
   const [type, setType] = useState<'raw' | 'file'>('raw');
@@ -18,6 +21,7 @@ export function SystemAddModal({
   const [fileQuery, setFileQuery] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const projectId = useParams().project_id as string;
+  const queryClient = useQueryClient();
 
   const fileOptions = project.paths.filter((p) => p.includes(fileQuery));
 
@@ -32,6 +36,10 @@ export function SystemAddModal({
       setKey('');
       setValue('');
       setFileQuery('');
+      onClose();
+      // Refetch project context so UI updates
+      if (queryKeyToRefetch)
+        queryClient.invalidateQueries({ queryKey: queryKeyToRefetch });
     },
     onError: () => {
       setMessage(error?.message || 'Failed to add system instruction');
@@ -58,76 +66,69 @@ export function SystemAddModal({
           <label className='flex items-center gap-1'>
             <input
               type='radio'
+              name='type'
+              value='raw'
               checked={type === 'raw'}
               onChange={() => setType('raw')}
-              className='accent-blue-600'
             />
             Raw
           </label>
           <label className='flex items-center gap-1'>
             <input
               type='radio'
+              name='type'
+              value='file'
               checked={type === 'file'}
               onChange={() => setType('file')}
-              className='accent-blue-600'
             />
             File
           </label>
         </div>
         <div className='mb-3'>
           <input
-            className='w-full border px-2 py-1 rounded mb-2'
-            placeholder='Key'
+            className='w-full border rounded p-2'
+            placeholder='Key (name)'
             value={key}
             onChange={(e) => setKey(e.target.value)}
             required
           />
         </div>
         {type === 'file' ? (
-          <div className='mb-3'>
-            <input
-              className='w-full border px-2 py-1 rounded mb-1'
-              placeholder='Start typing to search files...'
-              value={fileQuery}
-              onChange={(e) => setFileQuery(e.target.value)}
-              list='project-file-list'
-              required
-            />
-            <datalist id='project-file-list'>
-              {fileOptions.map((f) => (
-                <option key={f} value={f} />
-              ))}
-            </datalist>
-          </div>
+          <input
+            className='w-full border rounded p-2 mb-2'
+            placeholder='File path...'
+            value={fileQuery}
+            onChange={(e) => setFileQuery(e.target.value)}
+            required
+            list='system-file-options'
+          />
         ) : (
-          <div className='mb-3'>
-            <textarea
-              className='w-full border px-2 py-1 rounded'
-              placeholder='Description/value'
-              rows={4}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              required
-            />
-          </div>
+          <textarea
+            className='w-full border rounded p-2 mb-2'
+            placeholder='System prompt...'
+            value={value}
+            required
+            onChange={(e) => setValue(e.target.value)}
+            rows={5}
+          />
         )}
-        <div className='flex gap-2 mt-2'>
-          <button
-            type='submit'
-            className='bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-60'
-            disabled={loading}
-          >
-            {loading ? 'Adding...' : 'Add'}
-          </button>
-          <button
-            className='text-gray-500 px-4 py-2 rounded'
-            type='button'
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-        </div>
-        {message && <div className='mt-2 text-sm text-blue-700'>{message}</div>}
+        {type === 'file' && (
+          <datalist id='system-file-options'>
+            {fileOptions.map((f) => (
+              <option value={f} key={f} />
+            ))}
+          </datalist>
+        )}
+        <button
+          type='submit'
+          className='px-4 py-2 bg-blue-600 text-white rounded shadow disabled:opacity-40'
+          disabled={loading}
+        >
+          Add
+        </button>
+        {message && (
+          <div className='mt-2 text-center text-blue-700'>{message}</div>
+        )}
       </form>
     </Modal>
   );

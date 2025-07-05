@@ -78,7 +78,7 @@ body {
   overflow: hidden;
   max-width: 100%;
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
 }
 .markdown-body pre code {
   display: block;

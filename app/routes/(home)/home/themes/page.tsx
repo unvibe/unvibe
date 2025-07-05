@@ -85,13 +85,13 @@ export default function ThemesPage() {
         {filteredThemes.map((theme) => (
           <ThemeProvider key={theme.name} theme={theme}>
             <button
-              className='rounded-xl text-left bg-background-2 flex gap-3 flex-col w-full font-mono cursor-pointer p-5 relative'
+              className='rounded-3xl text-left bg-background-2 flex gap-3 flex-col w-full font-mono cursor-pointer p-5 relative'
               style={theme.cssVariables}
               onClick={() => setCurrentTheme(theme)}
             >
               <div className='absolute top-5 right-5 bg-background w-8 h-8 rounded-full'>
                 {currentTheme.name === theme.name ? (
-                  <HiCheckCircle className='w-8 h-8 text-green-500' />
+                  <HiCheckCircle className='w-8 h-8 text-foreground-2' />
                 ) : (
                   <div className='bg-background w-8 h-8 rounded-full' />
                 )}

@@ -7,6 +7,7 @@ import { ContextItemDetailsTool } from './plugins-tools';
 import { parseContext } from './utils';
 import { useState } from 'react';
 import { SystemAddModal } from './system-add-modal';
+import { getQueryKey } from '@/server/api/client';
 
 export function PluginList() {
   const contextPreview = useProject().context_preview;
@@ -16,6 +17,8 @@ export function PluginList() {
   const _hooks = parsed.filter((item) => item.type === 'hook');
 
   const [isSystemAddOpen, setIsSystemAddOpen] = useState(false);
+  // Use getQueryKey for the context fetch
+  const contextQueryKey = getQueryKey('GET /projects/parse-project');
 
   return (
     <main className='p-8 max-w-6xl mx-auto'>
@@ -38,7 +41,13 @@ export function PluginList() {
               <ContextSectionCard
                 key={system._key}
                 data={system}
-                ViewModal={<ContextItemDetailsSystem data={system} />}
+                ViewModal={
+                  <ContextItemDetailsSystem
+                    data={system}
+                    queryKeyToRefetch={contextQueryKey}
+                    onRemove={() => setIsSystemAddOpen(false)}
+                  />
+                }
               />
             );
           })}
@@ -46,6 +55,7 @@ export function PluginList() {
           <SystemAddModal
             open={isSystemAddOpen}
             onClose={() => setIsSystemAddOpen(false)}
+            queryKeyToRefetch={contextQueryKey}
           />
         </Section>
         <Section title='Hooks' description='LLM structured output hooks'>
@@ -58,7 +68,6 @@ export function PluginList() {
               />
             );
           })}
-          <ContextSectionCardAdd />
         </Section>
       </div>
     </main>

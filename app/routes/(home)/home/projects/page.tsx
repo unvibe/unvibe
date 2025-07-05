@@ -32,7 +32,7 @@ export default function ProjectsPage() {
       <HomeSectionSharedHeader
         Icon={TiFolder}
         sectionName='Projects'
-        sectionDescription='Projects are folders read automatically from your `~/projects` directory.\nand custom folders can be added manually.'
+        sectionDescription='Projects are folders read automatically from your `~/projects` directory. and custom folders can be added manually.'
         buttons={
           <>
             <Button
