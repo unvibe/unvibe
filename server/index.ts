@@ -2,7 +2,6 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { startWebsocketServer } from './websocket/server';
-import { cache } from '@/server/project/parse';
 import { api } from './api';
 import { baseURL } from './api/constants';
 
@@ -37,7 +36,6 @@ app.all(`${baseURL}/*`, async (c) => {
         parsed: parsed as never,
         request,
       });
-      for (const member in cache) delete cache[member];
       return c.json(result);
     } catch (error) {
       // bad request

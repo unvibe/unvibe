@@ -1,23 +1,38 @@
 import { BaseProject, Project } from '@/server/project/types';
-import { walk } from './walk';
 import { resolveHomePath } from './utils';
 import path from 'node:path';
 import type { ServerPlugin } from '@/plugins/_types/plugin.server';
 import { db } from '@/server/db';
+import { scanProjectFilesWithCache } from './scan-and-cache';
+import type { FileCache } from './cache';
+import fs from 'node:fs/promises';
 
-export const cache: Record<string, Record<string, string>> = {};
-
-async function getFiles(projectPath: string) {
-  if (cache[projectPath]) {
-    console.log('Plugin.Core:\t', 'Using cached files');
-    return cache[projectPath];
+// Load and persist cache for each project directory
+async function loadCache(projectPath: string): Promise<FileCache> {
+  const base64 = Buffer.from(projectPath).toString('base64');
+  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
+  // ensure cache directory exists
+  await fs.mkdir(cacheDir, { recursive: true });
+  const cachePath = path.join(cacheDir, `${base64}.json`);
+  try {
+    const content = await fs.readFile(cachePath, 'utf8');
+    return JSON.parse(content);
+  } catch {
+    return {};
   }
+}
 
-  const filesWithContent = await walk(projectPath);
-
-  cache[projectPath] = filesWithContent;
-
-  return filesWithContent;
+async function saveCache(projectPath: string, cache: FileCache) {
+  const base64 = Buffer.from(projectPath).toString('base64');
+  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
+  // ensure cache directory exists
+  await fs.mkdir(cacheDir, { recursive: true });
+  // save cache to a file named after the base64-encoded project path
+  await fs.writeFile(
+    path.join(cacheDir, `${base64}.json`),
+    JSON.stringify(cache),
+    'utf8'
+  );
 }
 
 export async function parseProject(
@@ -27,7 +42,19 @@ export async function parseProject(
 ): Promise<Project> {
   const sourcePath = resolveHomePath(source);
   const projectPath = path.join(sourcePath, projectDirName);
-  const filesWithContent = await getFiles(projectPath);
+
+  // --- Load file cache, scan for changes, persist cache ---
+  const fileCache = await loadCache(projectPath);
+  const updatedCache = await scanProjectFilesWithCache(projectPath, fileCache);
+  await saveCache(projectPath, updatedCache);
+
+  // Only non-binary, non-empty-content files are included in EXPENSIVE_REFACTOR_LATER_content
+  const filesWithContent: Record<string, string> = {};
+  for (const [file, entry] of Object.entries(updatedCache)) {
+    if (entry.content !== undefined && entry.content !== null) {
+      filesWithContent[file] = entry.content;
+    }
+  }
   const size = Object.values(filesWithContent).join('').length;
   const files = Object.keys(filesWithContent);
 
