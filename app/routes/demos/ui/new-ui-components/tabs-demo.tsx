@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Tabs } from '@/modules/ui/tabs';
-import { Badge } from '@/modules/ui/badge';
+import { Tabs } from '@/lib/ui/tabs';
+import { Badge } from '@/lib/ui/badge';
 
 export default function TabsDemo() {
   const [tabIndex] = useState(0);

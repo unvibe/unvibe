@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Button } from '@/modules/ui/button';
-import { Alert } from '@/modules/ui/alert';
-import { PixelArchiveIcon } from '@/modules/ui/pixel-icons';
+import { Button } from '@/lib/ui/button';
+import { Alert } from '@/lib/ui/alert';
+import { PixelArchiveIcon } from '@/lib/ui/pixel-icons';
 import { useAPIMutation } from '@/server/api/client';
 
 interface UploadedFile {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Checkbox } from '@/modules/ui/input/checkbox';
+import { Checkbox } from '@/lib/ui/input/checkbox';
 
 export default function CheckboxDemo() {
   const [isChecked, setIsChecked] = useState(false);

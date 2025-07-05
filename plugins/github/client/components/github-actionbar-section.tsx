@@ -1,6 +1,6 @@
 import { SiGithub } from 'react-icons/si';
 import { id } from '../../plugin.shared';
-import { useProject } from '@/modules/project/provider';
+import { useProject } from '~/modules/project/provider';
 
 export function GithubActionbarSection() {
   // ! refactor this

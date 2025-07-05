@@ -1,4 +1,4 @@
-import { useTheme } from '@/modules/root-providers/theme';
+import { useTheme } from '~/modules/root-providers/theme';
 import { Outlet } from 'react-router';
 import { ThemeMetaTags } from '@/themes/meta';
 

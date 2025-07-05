@@ -1,4 +1,4 @@
-import { ThreadInputBox } from '@/modules/project/threads/thread-input-box';
+import { ThreadInputBox } from '~/modules/project/threads/thread-input-box';
 import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,7 +7,7 @@ import React from 'react';
 import { client } from '@/server/api/client';
 
 const Editor = React.lazy(() =>
-  import('@/modules/ui/monaco-editor').then((module) => ({
+  import('@/lib/ui/monaco-editor').then((module) => ({
     default: module.MonacoEditor,
   }))
 );

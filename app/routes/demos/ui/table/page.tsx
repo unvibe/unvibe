@@ -5,7 +5,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/modules/ui/table';
+} from '@/lib/ui/table';
 
 export default function TableDemo() {
   return (

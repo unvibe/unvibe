@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pagination } from '@/modules/ui/pagination';
+import { Pagination } from '@/lib/ui/pagination';
 
 export default function PaginationDemo() {
   const [paginationPage, setPaginationPage] = useState(2);

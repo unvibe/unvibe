@@ -1,4 +1,4 @@
-import { Breadcrumbs } from '@/modules/ui/breadcrumbs';
+import { Breadcrumbs } from '@/lib/ui/breadcrumbs';
 
 export default function BreadcrumbsDemo() {
   return (

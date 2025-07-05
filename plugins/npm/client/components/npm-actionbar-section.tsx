@@ -1,19 +1,19 @@
 import { SiNpm } from 'react-icons/si';
 import { id } from '../../plugin.shared';
-import { useProject, useProjectActions } from '@/modules/project/provider';
+import { useProject, useProjectActions } from '~/modules/project/provider';
 import {
   MdOutlinePlayCircle,
   MdOutlineRefresh,
   MdOutlineStopCircle,
   MdOutlineVisibility,
 } from 'react-icons/md';
-import { Alert } from '@/modules/ui/alert';
+import { Alert } from '@/lib/ui/alert';
 import { useAPIMutation } from '@/server/api/client';
 import { getScriptsSyntax } from '../lib/pm-scripts-syntax';
 import { useScriptsStore } from './store';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { Modal } from '@/modules/ui/modal';
+import { Modal } from '@/lib/ui/modal';
 import type { ProcessMetadata } from '@/server/project/EXPERIMENTAL_scripts';
 
 function ScriptButton({

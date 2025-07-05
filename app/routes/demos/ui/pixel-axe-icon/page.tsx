@@ -8,7 +8,7 @@ import {
   PixelMusicIcon,
   PixelHeartIcon,
   PixelChatIcon,
-} from '@/modules/ui/pixel-icons';
+} from '@/lib/ui/pixel-icons';
 
 export default function PixelAxeIconDemo() {
   return (

@@ -1,5 +1,5 @@
-import { Modal } from '@/modules/ui/modal';
-import { Button } from '@/modules/ui/button';
+import { Modal } from '@/lib/ui/modal';
+import { Button } from '@/lib/ui/button';
 import { useState } from 'react';
 import { HiPlus } from 'react-icons/hi2';
 

@@ -1,4 +1,4 @@
-import { ProfileCard } from '@/modules/ui/profile-card';
+import { ProfileCard } from '@/lib/ui/profile-card';
 
 export default function ProfileDemo() {
   return (

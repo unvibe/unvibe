@@ -1,4 +1,4 @@
-import { Badge } from '@/modules/ui/badge';
+import { Badge } from '@/lib/ui/badge';
 
 export default function BadgeDemo() {
   return (

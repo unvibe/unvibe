@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RadioGroup } from '@/modules/ui/input/radio';
+import { RadioGroup } from '@/lib/ui/input/radio';
 
 export default function RadioDemo() {
   const radioOptions = [

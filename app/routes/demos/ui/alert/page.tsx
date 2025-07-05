@@ -1,4 +1,4 @@
-import { Alert } from '@/modules/ui/alert';
+import { Alert } from '@/lib/ui/alert';
 
 export default function AlertDemo() {
   return (

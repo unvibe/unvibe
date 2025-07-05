@@ -1,4 +1,4 @@
-import { HomeSidebar } from '@/modules/home/home-sidebar';
+import { HomeSidebar } from '~/modules/home/home-sidebar';
 import { Outlet } from 'react-router';
 
 export default function Layout() {

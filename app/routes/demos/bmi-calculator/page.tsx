@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Button } from '@/modules/ui/button';
-import TextInput from '@/modules/ui/input/text';
+import { Button } from '@/lib/ui/button';
+import TextInput from '@/lib/ui/input/text';
 
 function BMIResult({ bmi, category }: { bmi: string; category: string }) {
   return (

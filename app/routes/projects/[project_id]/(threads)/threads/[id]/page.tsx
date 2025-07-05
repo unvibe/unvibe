@@ -1,5 +1,5 @@
-import { ThreadDetails } from '@/modules/project/threads/details';
-import { ThreadDetailsHeaderActions } from '@/modules/project/threads/details/header';
+import { ThreadDetails } from '~/modules/project/threads/details';
+import { ThreadDetailsHeaderActions } from '~/modules/project/threads/details/header';
 import { Route } from './+types/page';
 import { prefetchAPIQuery as prefetchAPIQuery_at_browser } from '@/server/api/client';
 import { prefetchAPIQuery as prefetchAPIQuery_at_server } from '@/server/api/client/index.server';

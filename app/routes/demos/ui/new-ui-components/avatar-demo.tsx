@@ -1,4 +1,4 @@
-import { Avatar } from '@/modules/ui/avatar';
+import { Avatar } from '@/lib/ui/avatar';
 
 export default function AvatarDemo() {
   return (

@@ -1,8 +1,8 @@
-import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
-import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
-import { Markdown } from '@/modules/markdown/ui/Markdown';
-import { ThemeProvider, useTheme } from '@/modules/root-providers/theme';
-import { Button } from '@/modules/ui';
+import { HomeSectionSharedHeader } from '~/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layout';
+import { Markdown } from '~/modules/markdown/ui/Markdown';
+import { ThemeProvider, useTheme } from '~/modules/root-providers/theme';
+import { Button } from '@/lib/ui';
 import { HiCheckCircle, HiPlus } from 'react-icons/hi2';
 import { TiBrush } from 'react-icons/ti';
 import { themes } from '@/themes/registery';

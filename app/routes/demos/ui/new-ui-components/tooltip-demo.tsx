@@ -1,5 +1,5 @@
-import { Button } from '@/modules/ui/button';
-import { Tooltip } from '@/modules/ui/tooltip';
+import { Button } from '@/lib/ui/button';
+import { Tooltip } from '@/lib/ui/tooltip';
 
 export default function TooltipDemo() {
   return (

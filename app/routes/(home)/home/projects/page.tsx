@@ -1,12 +1,12 @@
 import Link from '@/lib/next/link';
-import { useProjects } from '@/modules/home/useProjects';
+import { useProjects } from '~/modules/home/useProjects';
 import { TiFolder } from 'react-icons/ti';
 import { useState, useEffect } from 'react';
 import { ProjectAddModal } from './ProjectAddModal';
 import { MdTerminal } from 'react-icons/md';
-import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
-import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
-import { Button } from '@/modules/ui';
+import { HomeSectionSharedHeader } from '~/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layout';
+import { Button } from '@/lib/ui';
 import { HiPlus } from 'react-icons/hi2';
 import { BsTerminalPlus } from 'react-icons/bs';
 

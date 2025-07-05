@@ -10,8 +10,8 @@ import {
 
 import type { Route } from './+types/root';
 import './app.css';
-import { Provider } from '@/modules/root-providers';
-import { Toaster } from '@/modules/ui/notification';
+import { Provider } from '~/modules/root-providers';
+import { Toaster } from '@/lib/ui/notification';
 import clsx from 'clsx';
 import { themes } from '../themes/registery';
 import defaultTheme from '@/themes/src/unvibe/dark';

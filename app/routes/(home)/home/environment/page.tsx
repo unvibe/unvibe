@@ -1,6 +1,6 @@
-import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
-import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
-import { Button } from '@/modules/ui';
+import { HomeSectionSharedHeader } from '~/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layout';
+import { Button } from '@/lib/ui';
 import { useAPIQuery } from '@/server/api/client';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';

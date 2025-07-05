@@ -1,5 +1,5 @@
-import { ThreadDetails } from '@/modules/project/threads/details';
-import { ThreadDetailsHeaderActions } from '@/modules/project/threads/details/header';
+import { ThreadDetails } from '~/modules/project/threads/details';
+import { ThreadDetailsHeaderActions } from '~/modules/project/threads/details/header';
 import { Route } from './+types/page';
 
 export default function Page({ params }: Route.ComponentProps) {

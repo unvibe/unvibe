@@ -1,4 +1,4 @@
-import { Tag } from '@/modules/ui/tag';
+import { Tag } from '@/lib/ui/tag';
 
 export default function TagDemo() {
   return (

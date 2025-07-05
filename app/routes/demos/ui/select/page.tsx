@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Select } from '@/modules/ui/select';
+import { Select } from '@/lib/ui/select';
 
 export default function SelectDemo() {
   const options = [

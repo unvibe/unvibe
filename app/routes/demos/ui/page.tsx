@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { EditableText } from '@/modules/ui';
+import { EditableText } from '@/lib/ui';
 
 export default function UILibraryLanding() {
   const [demoValue, setDemoValue] = useState('I am an editable text!');

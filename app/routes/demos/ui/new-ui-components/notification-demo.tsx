@@ -1,4 +1,4 @@
-import { Button } from '@/modules/ui/button';
+import { Button } from '@/lib/ui/button';
 import toast from 'react-hot-toast';
 
 export default function NotificationDemo() {

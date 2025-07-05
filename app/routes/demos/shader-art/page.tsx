@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShaderCanvas } from '@/modules/ui/canvas/ShaderCanvas';
+import { ShaderCanvas } from '@/lib/ui/canvas/ShaderCanvas';
 
 const fragmentShader = `
 precision mediump float;

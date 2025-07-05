@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AutogrowTextarea } from '@/modules/ui';
+import { AutogrowTextarea } from '@/lib/ui';
 
 export default function AutogrowTextareaDemoPage() {
   const [value, setValue] = useState('Type here...\nAnd watch me grow!');

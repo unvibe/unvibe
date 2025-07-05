@@ -1,6 +1,6 @@
-import { Button } from '@/modules/ui/button';
-import { Popover } from '@/modules/ui/popover';
-import { Badge } from '@/modules/ui/badge';
+import { Button } from '@/lib/ui/button';
+import { Popover } from '@/lib/ui/popover';
+import { Badge } from '@/lib/ui/badge';
 
 export default function PopoverDemo() {
   return (

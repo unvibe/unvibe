@@ -1,4 +1,4 @@
-import { text } from '@/modules/ui/text';
+import { text } from '@/lib/ui/text';
 
 export default function TextDemo() {
   return (

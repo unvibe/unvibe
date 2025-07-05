@@ -1,5 +1,5 @@
-import { ProjectLayoutSidebar } from '@/modules/project/layout';
-import { ProjectProvider } from '@/modules/project/provider';
+import { ProjectLayoutSidebar } from '~/modules/project/layout';
+import { ProjectProvider } from '~/modules/project/provider';
 import { Route } from './+types/layout';
 import { Outlet } from 'react-router';
 import { client } from '@/server/api/client';

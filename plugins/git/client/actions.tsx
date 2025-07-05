@@ -1,6 +1,6 @@
-import { Button } from '@/modules/ui';
-import { Code } from '@/modules/ui/code/base';
-import { Modal } from '@/modules/ui/modal';
+import { Button } from '@/lib/ui';
+import { Code } from '@/lib/ui/code/base';
+import { Modal } from '@/lib/ui/modal';
 import { FileActionProps } from '@/plugins/_types/plugin-client';
 import { useAPIMutation } from '@/server/api/client';
 import { useEffect, useState } from 'react';

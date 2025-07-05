@@ -1,4 +1,4 @@
-import { Button } from '@/modules/ui/button';
+import { Button } from '@/lib/ui/button';
 
 export default function ButtonsDemo() {
   return (

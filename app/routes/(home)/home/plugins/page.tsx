@@ -1,14 +1,14 @@
 import { TiPlug } from 'react-icons/ti';
-import { usePluginsIcons } from '@/modules/project/plugins-context/sidebar-plugins-list';
+import { usePluginsIcons } from '~/modules/project/plugins-context/sidebar-plugins-list';
 import {
   Card,
   getPluginStyle,
-} from '@/modules/project/plugins-context/list-card';
+} from '~/modules/project/plugins-context/list-card';
 import Link from '@/lib/next/link';
 import { useAPIQuery } from '@/server/api/client';
-import { HomeSectionSharedHeader } from '@/modules/home/home-section-shared-header';
-import { HomeSectionSharedLayout } from '@/modules/home/home-section-shared-layout';
-import { Button } from '@/modules/ui';
+import { HomeSectionSharedHeader } from '~/modules/home/home-section-shared-header';
+import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layout';
+import { Button } from '@/lib/ui';
 import { HiPlus } from 'react-icons/hi2';
 import * as React from 'react';
 

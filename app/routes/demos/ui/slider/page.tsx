@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Slider } from '@/modules/ui/input/slider';
+import { Slider } from '@/lib/ui/input/slider';
 
 export default function SliderDemo() {
   const [sliderValue, setSliderValue] = useState(60);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Switch } from '@/modules/ui/switch';
+import { Switch } from '@/lib/ui/switch';
 
 export default function SwitchDemo() {
   const [switchOn, setSwitchOn] = useState(false);
