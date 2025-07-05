@@ -65,7 +65,10 @@ export const createTool: CreateTool = ({ project }) => {
         try {
           await fs.unlink(tempFile);
         } catch {
-          /* ignore */
+          console.log(
+            'tools.node_scratch_pad: Failed to cleanup temp file:',
+            tempFile
+          );
         }
         return error instanceof Error ? error.message : String(error);
       }

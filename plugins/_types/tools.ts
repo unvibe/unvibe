@@ -1,4 +1,4 @@
-import { Project } from '../core/server/api/lib/project';
+import { Project } from '@/server/project/types';
 import { ToolDefinition } from '@/server/llm/models/_shared-types';
 import { JSONSchema7 } from 'json-schema';
 

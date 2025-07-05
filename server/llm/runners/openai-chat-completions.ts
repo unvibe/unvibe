@@ -75,23 +75,23 @@ async function resolveToolCalls(
     const callbackResultPromise = safelyRunToolCallback(() => callback(args));
 
     return async () => {
-      let callbackResult = await callbackResultPromise;
+      let toolResult = await callbackResultPromise;
 
-      if (callbackResult == null || typeof callbackResult === 'undefined') {
-        callbackResult = `Empty result -- needs debugging`;
+      if (toolResult == null || typeof toolResult === 'undefined') {
+        toolResult = `Empty result -- needs debugging`;
       }
-      if (typeof callbackResult !== 'string') {
+      if (typeof toolResult !== 'string') {
         try {
-          callbackResult = JSON.stringify(callbackResult, null, 2);
+          toolResult = JSON.stringify(toolResult, null, 2);
         } catch {
-          callbackResult = String(callbackResult);
+          toolResult = String(toolResult);
         }
       }
 
       return {
         id,
         name: toolCall.function.name,
-        result: callbackResult,
+        result: toolResult,
       };
     };
   }) as (() => Promise<{ id: string; result: unknown; name: string }>)[];

@@ -38,7 +38,7 @@ function fromThreadMessageToAbstractContextMessage(
     return {
       role: 'tool',
       index: message.index,
-      content: message.content as string,
+      content: message.content || '',
       call_id: message.tool_call_id as string,
     };
   } else if (message.role === 'assistant') {
