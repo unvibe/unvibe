@@ -7,12 +7,13 @@ import { scanProjectFilesWithCache } from './scan-and-cache';
 import type { FileCache } from './cache';
 import fs from 'node:fs/promises';
 
+const CACHE_DIR = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
+
 // Load and persist cache for each project directory
 async function loadCache(projectPath: string): Promise<FileCache> {
   const base64 = Buffer.from(projectPath).toString('base64');
-  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
-  await fs.mkdir(cacheDir, { recursive: true });
-  const cachePath = path.join(cacheDir, `${base64}.json`);
+  await fs.mkdir(CACHE_DIR, { recursive: true });
+  const cachePath = path.join(CACHE_DIR, `${base64}.json`);
   try {
     const content = await fs.readFile(cachePath, 'utf8');
     return JSON.parse(content);
@@ -23,10 +24,9 @@ async function loadCache(projectPath: string): Promise<FileCache> {
 
 async function saveCache(projectPath: string, cache: FileCache) {
   const base64 = Buffer.from(projectPath).toString('base64');
-  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
-  await fs.mkdir(cacheDir, { recursive: true });
+  await fs.mkdir(CACHE_DIR, { recursive: true });
   await fs.writeFile(
-    path.join(cacheDir, `${base64}.json`),
+    path.join(CACHE_DIR, `${base64}.json`),
     JSON.stringify(cache),
     'utf8'
   );
@@ -37,9 +37,8 @@ async function loadDerivedCache(
   projectPath: string
 ): Promise<Partial<Project> | null> {
   const base64 = Buffer.from(projectPath).toString('base64');
-  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
-  await fs.mkdir(cacheDir, { recursive: true });
-  const cachePath = path.join(cacheDir, `${base64}.derived.json`);
+  await fs.mkdir(CACHE_DIR, { recursive: true });
+  const cachePath = path.join(CACHE_DIR, `${base64}.derived.json`);
   try {
     const content = await fs.readFile(cachePath, 'utf8');
     return JSON.parse(content);
@@ -53,20 +52,18 @@ async function saveDerivedCache(
   derived: Partial<Project>
 ) {
   const base64 = Buffer.from(projectPath).toString('base64');
-  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
-  await fs.mkdir(cacheDir, { recursive: true });
+  await fs.mkdir(CACHE_DIR, { recursive: true });
   await fs.writeFile(
-    path.join(cacheDir, `${base64}.derived.json`),
+    path.join(CACHE_DIR, `${base64}.derived.json`),
     JSON.stringify(derived),
     'utf8'
   );
 }
 
 async function eagerShouldReturnCache(projectPath: string) {
-  const cacheDir = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
   const DIR_CACHE_NAME = 'roots.json';
   try {
-    const roots = await fs.readFile(path.join(cacheDir, DIR_CACHE_NAME), {
+    const roots = await fs.readFile(path.join(CACHE_DIR, DIR_CACHE_NAME), {
       encoding: 'utf8',
     });
     const json = roots ? JSON.parse(roots) : {};
@@ -105,23 +102,21 @@ export async function parseProject(
         where: (table, { eq }) => eq(table.project_id, projectDirName),
       });
       // Patch context_preview for 'system/custom/*' entries
-      const context_preview = derived.context_preview.map(
-        (entry) => {
-          if (entry.key.startsWith('system/custom/')) {
-            const context_key = entry.key.split('/')[2];
-            const customSystemPart = customSystem.find(
-              (sys) => sys.key === context_key
-            );
-            let preview_string = '';
-            if (customSystemPart) {
-              preview_string = _files[customSystemPart.value]?.content || '';
-            }
-            return { ...entry, preview_string };
-          } else {
-            return entry;
+      const context_preview = derived.context_preview.map((entry) => {
+        if (entry.key.startsWith('system/custom/')) {
+          const context_key = entry.key.split('/')[2];
+          const customSystemPart = customSystem.find(
+            (sys) => sys.key === context_key
+          );
+          let preview_string = '';
+          if (customSystemPart) {
+            preview_string = _files[customSystemPart.value]?.content || '';
           }
+          return { ...entry, preview_string };
+        } else {
+          return entry;
         }
-      );
+      });
       return {
         ...derived,
         context_preview,
