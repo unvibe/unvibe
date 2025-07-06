@@ -3,6 +3,7 @@ import UnvibeLight from './src/unvibe/light';
 import ColorfulLight from './src/colorful/light';
 import ColorfulDark from './src/colorful/dark';
 import GruvboxDark from './src/gruvbox/dark';
+import GruvboxLight from './src/gruvbox/light';
 
 export const themes = [
   UnvibeDark,
@@ -10,4 +11,5 @@ export const themes = [
   ColorfulDark,
   ColorfulLight,
   GruvboxDark,
+  GruvboxLight,
 ];
