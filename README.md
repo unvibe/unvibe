@@ -1,58 +1,66 @@
 # Unvibe
 
-Write code like you're in Star Trek.
+> **Your local AI coding copilot, powered by plugins**
 
-## Overview
+## Quick Start
 
-Unvibe aims to make creating and managing complex projects easy and goal-oriented, without compromising on code quality and correctness.
-It provides a pluggable architecture & platform for managing code, using already existing tooling and libraries.
-
-When you load up a project in Unvibe, it will automatically analyze the required tooling for a productive workflow and provide a robust context for LLMs to work with.
-
-### Getting Started
-
-Clone the repo to `~/projects` and follow the instructions below.
+Just run:
 
 ```bash
-gh repo clone unvibe/unvibe ~/projects/unvibe
+npx unvibe
 ```
 
-1. **Environment:** First, set up your environment. Add the following to your `.env` file:
+No install, no configuration. Unvibe launches a local web app and you’re ready to go!
 
-```sh
-# for llms use
-OPENAI_API_KEY= # Your OpenAI API key
-GEMENI_API_KEY= # Your Gemeni API key
-ANTHROPIC_API_KEY= # Your Anthropic API key
+---
 
-# for hosting images
-AWS_ACCESS_KEY_ID=
-AWS_ACCESS_SECRET_KEY=
-AWS_S3_BUCKET=
-AWS_S3_REGION=
-AWS_CLOUDFRONT_CDN_URL=
-```
+## What is Unvibe?
 
-2. **Install dependencies:**
+Unvibe is a local web application that brings LLM (AI assistant) workflows directly to your projects and files. It runs on your machine, with _the same read access as you_—so it can see your code, docs, and project structure. When writing or changing files, Unvibe **always asks for your permission first**.
 
-```bash
-npm install
-```
+Key features:
 
-3. **Push Drizzle migrations:**
+- **Local-first:** Your code and data never leave your machine by default
+- **Web-based UI:** Clean, focused experience in your browser
+- **Plugin-powered:** Add context, tools, and smarts with plugins (detects frameworks, linters, docs, test tools, and more)
+- **Extensible:** Add your own tools and plugins, or use the growing library
 
-```bash
-npx drizzle-kit push
-```
+---
 
-4. **Run the frontend development server:**
+## Why Unvibe?
 
-```bash
-npm run dev
-```
+- **Pluggable LLM system:** Easily enhance the AI’s abilities by enabling/disabling plugins
+- **Smarter context:** Plugins automatically detect your tech stack and project files, giving the AI deeper insight
+- **Tools at your fingertips:** Run diagnostics, codegen, tests, or custom tools—right from the UI
+- **Privacy-first:** Unvibe only writes files or runs scripts with your explicit permission
+- **Works with your workflow:** Designed for real projects, real code, and real privacy
 
-5. **Run the backend server in development mode:**
+---
 
-```bash
-npm run dev:server
-```
+## What can I do with Unvibe?
+
+- Chat with an LLM about your codebase (it can read your files!)
+- Run plugin-powered code analysis, diagnostics, and project-specific checks
+- Use tools for searching, editing, running tests, generating code, and more
+- Add plugins for new frameworks, utilities, or custom workflows
+
+---
+
+## How does it work?
+
+- Launches a local webapp UI
+- Scans your project and detects tech/tools with plugins
+- LLM context is built dynamically from your actual files plus plugin knowledge
+- All file writes and commands require your approval
+
+---
+
+## Want to go deeper?
+
+- Check the [CONTRIBUTING.md](./CONTRIBUTING.md) (for plugin authors and core contributors)
+- Explore [ARCHITECTURE.md](./ARCHITECTURE.md) for a technical deep dive
+- See `plugins/README.md` for plugin patterns
+
+---
+
+**Unvibe: Local AI that works for you—on your code, your terms.**

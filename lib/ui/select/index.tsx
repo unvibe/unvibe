@@ -20,6 +20,8 @@ interface SelectProps {
   value?: string;
   onChange?: (value: string) => void;
   style?: React.CSSProperties;
+  trigger?: string;
+  chevron?: string;
 }
 
 function isGroupedOptions(
@@ -75,6 +77,11 @@ const SelectValueDisplay: React.FC<{
   );
 };
 
+const defaultTrigger = clsx(
+  'hover:bg-background-2 hover:border-foreground transition-colors duration-200 ease-in-out font-semibold text-foreground-2',
+  'rounded-xl border-2 border-border bg-background-2 py-2 px-3 text-sm leading-none shadow-sm'
+);
+
 export const Select: React.FC<SelectProps> = ({
   label,
   options,
@@ -82,6 +89,8 @@ export const Select: React.FC<SelectProps> = ({
   value,
   onChange,
   style,
+  trigger = defaultTrigger,
+  chevron = 'w-5 h-5',
 }) => {
   const selectValue = value && value !== '' ? value : undefined;
 
@@ -95,12 +104,15 @@ export const Select: React.FC<SelectProps> = ({
       <SelectPrimitive.Root value={selectValue} onValueChange={onChange}>
         <SelectPrimitive.Trigger
           className={clsx(
-            'flex items-center justify-between rounded-xl border-2 border-border bg-background-2 py-2 px-3 text-sm leading-none shadow-sm focus:outline-none focus:border-foreground',
-            'hover:bg-background-2 hover:border-foreground transition-colors duration-200 ease-in-out font-semibold text-foreground-2',
-            'text-foreground cursor-pointer gap-2'
+            'flex items-center justify-between focus:outline-none focus:border-foreground',
+            'cursor-pointer gap-2',
+            trigger
           )}
         >
-          <SelectPrimitive.Value placeholder={placeholder}>
+          <SelectPrimitive.Value
+            placeholder={placeholder}
+            className='overflow-ellipsis'
+          >
             <SelectValueDisplay
               value={selectValue}
               options={options}
@@ -108,8 +120,8 @@ export const Select: React.FC<SelectProps> = ({
             />
           </SelectPrimitive.Value>
           <SelectPrimitive.Icon className='text-foreground-2 flex gap-1'>
-            {selectValue && <HiMiniCheckCircle className='w-5 h-5' />}
-            <ChevronDownIcon className='w-5 h-5 ' />
+            {/* {selectValue && <HiMiniCheckCircle className='w-5 h-5' />} */}
+            <ChevronDownIcon className={chevron} />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>

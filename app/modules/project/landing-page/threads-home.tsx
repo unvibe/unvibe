@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import ModelsSelector from './models-selector';
 import { StartThreadInput } from './start-thread';
 import {
   ClientEndpointsMap,
@@ -10,14 +8,7 @@ import { useParams, useRouter } from '@/lib/next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Thread } from '@/server/db/schema';
 
-export function ThreadsHome({
-  models,
-}: {
-  models: ClientEndpointsMap['GET /models']['output'];
-}) {
-  const [selectedModel, setSelectedModel] = useState(
-    models.DEFAULT_MODEL.MODEL_CONFIG.id
-  );
+export function ThreadsHome() {
   const params = useParams();
   const projectId =
     typeof params.project_id === 'string' ? params.project_id : '';
@@ -131,63 +122,54 @@ export function ThreadsHome({
 
   const router = useRouter();
   return (
-    <>
-      <div className='absolute top-0 left-0 z-10 p-8'>
-        <ModelsSelector
-          value={selectedModel}
-          onChange={setSelectedModel}
-          models={models.models}
-        />
-      </div>
-
-      <div className='max-w-8xl relative'>
-        <h1 className='text-3xl pb-8 font-bold font-mono'>
-          Beep Boop! Let&apos;s Build Something Together
-        </h1>
-        <StartThreadInput
-          isPending={isPending || isCreatingThread}
-          onSubmit={({
-            prompt,
-            images,
-            search_enabled,
-            contextConfig,
-            clearAttachments,
-            setPrompt,
-          }) => {
-            const id = crypto.randomUUID();
-            createThread(
-              {
-                id,
-                context_config: contextConfig,
-                model_id: selectedModel,
-                projectId,
-                prompt,
-              },
-              {
-                onSuccess({ id }) {
-                  router.push(`/projects/${projectId}/threads/${id}`);
-                  mutate(
-                    {
-                      projectId,
-                      threadId: id,
-                      prompt,
-                      images,
-                      search_enabled,
-                      context_config: contextConfig,
+    <div className='max-w-8xl relative'>
+      <h1 className='text-3xl pb-8 font-bold font-mono'>
+        Beep Boop! Let&apos;s Build Something Together
+      </h1>
+      <StartThreadInput
+        isPending={isPending || isCreatingThread}
+        onSubmit={({
+          prompt,
+          images,
+          search_enabled,
+          contextConfig,
+          clearAttachments,
+          setPrompt,
+          model_id,
+        }) => {
+          const id = crypto.randomUUID();
+          createThread(
+            {
+              id,
+              context_config: contextConfig,
+              model_id,
+              projectId,
+              prompt,
+            },
+            {
+              onSuccess({ id }) {
+                router.push(`/projects/${projectId}/threads/${id}`);
+                mutate(
+                  {
+                    projectId,
+                    threadId: id,
+                    prompt,
+                    images,
+                    search_enabled,
+                    context_config: contextConfig,
+                  },
+                  {
+                    onSuccess() {
+                      clearAttachments();
+                      setPrompt('');
                     },
-                    {
-                      onSuccess() {
-                        clearAttachments();
-                        setPrompt('');
-                      },
-                    }
-                  );
-                },
-              }
-            );
-          }}
-        />
-      </div>
-    </>
+                  }
+                );
+              },
+            }
+          );
+        }}
+      />
+    </div>
   );
 }

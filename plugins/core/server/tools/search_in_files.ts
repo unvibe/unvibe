@@ -69,7 +69,7 @@ export const createTool: CreateTool = ({ project }) => {
       symbol,
       matchMode = 'contains',
       caseSensitive = false,
-      subFolders,
+      subFolders = [],
     }) => {
       /* ------------------------------------------------------------------ */
       /* 0. Validation                                                      */

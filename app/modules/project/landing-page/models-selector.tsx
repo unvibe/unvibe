@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, SelectOption, SelectGroup } from '../../../../lib/ui/select';
+import { Select, SelectOption, SelectGroup } from '@/lib/ui/select';
 import {
   SiAnthropic,
   SiGooglegemini,
@@ -61,11 +61,18 @@ function groupModelsByProvider(models: Model[]): SelectGroup[] {
   }));
 }
 
+const DEFAULT_STYLE: React.CSSProperties = {
+  minWidth: '200px',
+};
+
 export const ModelsSelector: React.FC<{
   value?: string;
   onChange?: (modelId: string) => void;
   models?: Model[];
-}> = ({ value, onChange, models }) => {
+  trigger?: string;
+  chevron?: string;
+  style?: React.CSSProperties;
+}> = ({ value, onChange, models, trigger, style = DEFAULT_STYLE, chevron }) => {
   const groupedOptions = groupModelsByProvider(models || []);
 
   return (
@@ -74,7 +81,9 @@ export const ModelsSelector: React.FC<{
       onChange={onChange}
       options={groupedOptions}
       placeholder='Select a model'
-      style={{ minWidth: 200 }}
+      style={style}
+      trigger={trigger}
+      chevron={chevron}
     />
   );
 };

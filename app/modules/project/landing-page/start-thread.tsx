@@ -5,16 +5,20 @@ import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import { HiChevronDown } from 'react-icons/hi2';
 import { useProject } from '../provider';
 import { StartThreadContextModal } from './start-thread-context-modal';
+import ModelsSelector from './models-selector';
+import { useLLMModels } from '~/modules/root-providers/llm-models';
 
 export function StartThreadInput({
   onSubmit,
   isPending,
   placeholder = 'Make a BMI calculator',
   initialContextConfig,
+  currentModelId,
 }: {
   isPending: boolean;
   placeholder?: string;
   initialContextConfig?: Record<string, boolean>;
+  currentModelId?: string;
   onSubmit: (value: {
     prompt: string;
     images: string[];
@@ -22,11 +26,13 @@ export function StartThreadInput({
     clearAttachments: () => void;
     setPrompt: (value: string) => void;
     contextConfig: Record<string, boolean>;
+    model_id: string;
   }) => void;
 }) {
   const [prompt, setPrompt] = useState('');
   const [showContextModal, setShowContextModal] = useState(false);
   const project = useProject();
+  const models = useLLMModels();
 
   const colors = useMemo(() => {
     return Object.values(project.plugins)
@@ -64,6 +70,13 @@ export function StartThreadInput({
     },
     []
   );
+  const [selectedModel, setSelectedModel] = useState(
+    currentModelId || models.DEFAULT_MODEL.MODEL_CONFIG.id
+  );
+
+  useEffect(() => {
+    setSelectedModel(currentModelId || models.DEFAULT_MODEL.MODEL_CONFIG.id);
+  }, [currentModelId]);
 
   return (
     <>
@@ -74,7 +87,12 @@ export function StartThreadInput({
         disableInput={isPending}
         placeholder={placeholder}
         onSubmit={(value) => {
-          onSubmit({ ...value, contextConfig, setPrompt });
+          onSubmit({
+            ...value,
+            contextConfig,
+            setPrompt,
+            model_id: selectedModel,
+          });
         }}
       >
         <button
@@ -97,6 +115,14 @@ export function StartThreadInput({
             <HiChevronDown className='w-4 h-4' />
           </span>
         </button>
+        <ModelsSelector
+          trigger='text-xs bg-background-2 rounded-full p-2 overflow-hidden overflow-ellipsis font-display font-normal'
+          chevron='w-4 h-4 text-foreground-2'
+          models={models.models}
+          value={selectedModel}
+          onChange={setSelectedModel}
+          style={{}}
+        />
       </ThreadInputBox>
       {showContextModal && (
         <StartThreadContextModal

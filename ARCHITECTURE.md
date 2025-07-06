@@ -216,12 +216,10 @@ const { data } = useAPIQuery('GET /threads/details', { id });
 import type { ServerPlugin } from '../_types/plugin.server';
 export const Plugin: ServerPlugin = {
   id: 'my-plugin',
-  detect: async (project) => {
-    /* ... */
-  },
-  setup: async (project) => {
-    /* ... */
-  },
+  description: 'Short summary',
+  metadata: { hooks: [], tools: [], system: [] },
+  detect: async (project) => true,
+  setup: async (project) => project,
   createContext: async (project) => ({ tools: {}, systemParts: {} }),
 };
 ```
@@ -270,45 +268,49 @@ export const Plugin: ServerPlugin = {
 
 ---
 
-## 16. Proposal Workflow (JSON-based Change System)
+## 16. Structured Output Workflow (JSON-based Change System)
 
-All significant changes, questions, or analyses are proposed using a structured JSON object. This ensures:
+All significant changes, questions, or analyses are made using a structured output JSON object. This ensures:
 
-- **Type safety**: Each proposal abides by a strict schema, facilitating validation and automation.
-- **Atomicity**: Each proposal is self-contained and unambiguous.
-- **Traceability**: Proposals can be tracked, versioned, and discussed.
+- **Type safety**: Each structured output abides by a strict schema, facilitating validation and automation.
+- **Atomicity**: Each structured output is self-contained and unambiguous.
+- **Traceability**: Structured outputs can be tracked, versioned, and discussed.
 
 **Example structure:**
 
 ```json
 {
   "message": "Summary of the proposed change.",
-  "proposal_id": "unique_snake_case_identifier",
-  "proposed_files": {
-    "add": [{ "path": "string", "content": "string" }],
-    "remove": [{ "path": "string" }]
-  },
-  "shell_script_exec_request": ["optional_shell_command"]
+  "replace_files": [{ "path": "string", "content": "string" }],
+  "delete_files": [{ "path": "string" }],
+  "edit_ranges": [
+    {
+      "path": "string",
+      "edits": [{ "start": 10, "end": 12, "content": "..." }]
+    }
+  ],
+  "shell_scripts": ["optional_shell_command"]
 }
 ```
 
-- Only files listed in `add` or `remove` are affected.
+- Only files listed in `replace_files` or `delete_files` are affected.
 - Shell script execution must be explicitly requested.
-- All proposals are reviewed, merged, or discussed via this system (including LLM-driven ones).
+- All structured outputs are reviewed, merged, or discussed via this system (including LLM-driven ones).
+- See [`server/llm/structured_output/instructions.md`](./server/llm/structured_output/instructions.md) for the schema and requirements.
 
 ---
 
 ## 17. Glossary
 
-| Term/Acronym | Definition                                                                |
-| ------------ | ------------------------------------------------------------------------- |
-| LLM          | Large Language Model                                                      |
-| Plugin       | Modular extension point, adds features, tools, or UI                      |
-| Proposal     | Structured JSON object describing a change, question, or analysis         |
-| Type Safety  | Guarantee that data structures and contracts are consistent and validated |
-| WebSocket    | Protocol for real-time, bidirectional communication                       |
-| Drizzle-ORM  | TypeScript ORM for SQL databases                                          |
-| Thread       | Conversation flow (messages, actions) between users and/or LLM logic      |
+| Term/Acronym      | Definition                                                                |
+| ----------------- | ------------------------------------------------------------------------- |
+| LLM               | Large Language Model                                                      |
+| Plugin            | Modular extension point, adds features, tools, or UI                      |
+| Structured Output | Structured JSON object describing a change, question, or analysis         |
+| Type Safety       | Guarantee that data structures and contracts are consistent and validated |
+| WebSocket         | Protocol for real-time, bidirectional communication                       |
+| Drizzle-ORM       | TypeScript ORM for SQL databases                                          |
+| Thread            | Conversation flow (messages, actions) between users and/or LLM logic      |
 
 ---
 
@@ -318,7 +320,7 @@ All significant changes, questions, or analyses are proposed using a structured 
 
 - Expand plugin marketplace for code analysis, generation, and tooling
 - Broaden LLM provider support and capabilities
-- Enhance proposal review workflows (e.g. via UI)
+- Enhance structured output review workflows (e.g. via UI)
 - Improve onboarding and documentation for contributors and LLMs
 - Add more real-world project templates and extensible blueprints
 
@@ -336,3 +338,4 @@ All significant changes, questions, or analyses are proposed using a structured 
 - `plugins/README.md` (plugin patterns and examples)
 - `plugins/_types/` (type contracts)
 - `plugins/core` (canonical plugin)
+- `server/llm/structured_output/instructions.md` (structured output schema and requirements)

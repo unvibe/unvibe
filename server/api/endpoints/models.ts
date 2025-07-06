@@ -15,6 +15,7 @@ export const listModels = createEndpoint({
   handler: async () => {
     return {
       DEFAULT_MODEL: llm.models.ChatGPT4_1,
+      raw: llm.models,
       models: Object.values(llm.models).map((model) => {
         const runner = model.MODEL_CONFIG.defaultRunner;
         return {

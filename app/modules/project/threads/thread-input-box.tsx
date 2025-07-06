@@ -46,7 +46,7 @@ function PrimarySendButton({
       disabled={disabled}
       onClick={onClick}
       className={
-        'bg-background-2 text-foreground rounded-xl p-2 border-2 border-border-2 shadow shadow-black disabled:opacity-50 flex items-center gap-2 transition-colors duration-150 ' +
+        'bg-background-2 text-foreground rounded-xl p-2.5 disabled:opacity-50 flex items-center gap-2 transition-colors duration-150 ' +
         (disabled
           ? 'cursor-default'
           : 'cursor-pointer hover:bg-background-2 hover:shadow-md')
@@ -288,13 +288,13 @@ export function ThreadInputBox({
               <div className='flex items-center' style={{ minWidth: 0 }}></div>
             )}
           </div>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-1'>
             {/* Right: search, upload images, submit button */}
             <button
               type='button'
               onClick={() => setIsSearchMode((m) => !m)}
               className={clsx(
-                'rounded-xl p-2 border-2 shadow transition-colors duration-150',
+                'rounded-xl p-2.5 transition-colors duration-150',
                 'cursor-pointer disabled:cursor-default',
                 isSearchMode
                   ? clsx(
@@ -310,7 +310,7 @@ export function ThreadInputBox({
             <button
               type='button'
               onClick={() => fileInputRef.current?.click()}
-              className='bg-background-2 text-foreground rounded-xl p-2 border-2 border-border-2 shadow transition-colors duration-150 cursor-pointer hover:bg-background-2 hover:shadow-md disabled:cursor-default'
+              className='bg-background-2 text-foreground rounded-xl p-2.5 transition-colors duration-150 cursor-pointer disabled:cursor-default'
               aria-label='Add images'
               disabled={disableInput || isPending}
             >

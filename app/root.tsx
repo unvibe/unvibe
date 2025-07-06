@@ -17,6 +17,7 @@ import { themes } from '../themes/registery';
 import defaultTheme from '@/themes/src/unvibe/dark';
 import cookie from 'cookie';
 import { ThemeMetaTags } from '@/themes/meta';
+import { client } from '@/server/api/client';
 
 export const links: Route.LinksFunction = () => [];
 
@@ -24,13 +25,15 @@ export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get('Cookie');
   const parsed = cookie.parse(cookieHeader || '');
   const selectedTheme = parsed.theme || 'unvibe-dark';
+  const models = await client('GET /models');
   return {
     theme: themes.find((theme) => theme.id == selectedTheme) || defaultTheme,
+    llmModels: models,
   };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme } = useLoaderData<typeof loader>();
+  const { theme, llmModels } = useLoaderData<typeof loader>();
   return (
     <html lang='en'>
       <head>
@@ -40,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className={clsx('box-border', 'font-display')}>
-        <Provider theme={theme}>
+        <Provider theme={theme} models={llmModels}>
           {children}
           <Toaster />
         </Provider>
