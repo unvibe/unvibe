@@ -35,7 +35,7 @@ export default [
         '/projects/:project_id/archive/:id',
         'routes/projects/[project_id]/(threads)/archive/[id]/page.tsx'
       ),
-      // files
+      // files mode
       route(
         '/projects/:project_id/files',
         'routes/projects/[project_id]/files/page.tsx'
@@ -43,6 +43,11 @@ export default [
       route(
         '/projects/:project_id/files/:encoded',
         'routes/projects/[project_id]/files/[encoded]/page.tsx'
+      ),
+      // visual mode
+      route(
+        '/projects/:project_id/visual',
+        'routes/projects/[project_id]/visual/page.tsx'
       ),
       // plugins
       route(

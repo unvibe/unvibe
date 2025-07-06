@@ -16,6 +16,7 @@ import clsx from 'clsx';
 import { themes } from '../themes/registery';
 import defaultTheme from '@/themes/src/unvibe/dark';
 import cookie from 'cookie';
+import { ThemeMetaTags } from '@/themes/meta';
 
 export const links: Route.LinksFunction = () => [];
 
@@ -60,7 +61,7 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;
@@ -78,6 +79,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <main className='pt-16 p-4 container mx-auto'>
+      {loaderData?.theme && <ThemeMetaTags theme={loaderData?.theme} />}
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (

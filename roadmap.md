@@ -9,8 +9,6 @@
 - [ ] home/env -> show all available envs in sections
 - [ ] home/provider -> detect if no env vars set if so show a modal with full explaination
 
-- [ ] project/visual-mode -> send to v\*
-- [ ] project/files-mode -> send to v\*
 - [ ] project/context/addTool -> send to v\*
 - [ ] project/context/addHook -> send to v\*
 
@@ -19,7 +17,6 @@
 
 - [ ] project/sidebar-list -> on card hover show edit title and delete thread buttons
 
-- [ ] project/threads/input -> send search enabled queries to v\*
 - [ ] project/threads/input -> make image input only show if env is setup & model supports it
 - [ ] project/threads/input -> make context hooks works internally (currently toggles are noop)
 - [ ] project/threads/models -> show models based on setup envs / enable ollama etc

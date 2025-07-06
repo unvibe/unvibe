@@ -1,10 +1,12 @@
-import { ThreadInputBox } from '~/modules/project/threads/thread-input-box';
 import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Route } from './+types/page';
 import React from 'react';
 import { client } from '@/server/api/client';
+import { StartThreadInput } from '~/modules/project/landing-page/start-thread';
+import { noop } from '@/lib/core/noop';
+import { MdInfoOutline } from 'react-icons/md';
 
 const Editor = React.lazy(() =>
   import('@/lib/ui/monaco-editor').then((module) => ({
@@ -50,21 +52,29 @@ export default function Page({ loaderData }: Route.ComponentProps) {
   }, []);
 
   return (
-    <div className='overflow-hidden h-full w-full max-w-full max-h-full'>
-      <div className='w-full h-full overflow-hidden flex items-stretch max-w-full'>
-        <div className='w-[40%] overflow-hidden border-r-2 border-dashed border-border h-full relative'>
-          <div></div>
-          <div className='absolute bottom-6 inset-x-0 p-2'>
-            <ThreadInputBox
-              isPending={false}
-              placeholder='Continue the conversation...'
-            />
+    <div className='overflow-hidden h-full w-full max-w-full max-h-full flex items-stretch'>
+      <div className='w-full h-full overflow-hidden flex items-stretch max-w-5xl'>
+        {isClient && (
+          <Editor key={filePath} content={content} fileName={filePath} />
+        )}
+      </div>
+      <div className='w-full p-8 grid content-between h-[100vh] overflow-y-auto overflow-x-hidden max-w-xl relative'>
+        <div className='h-[calc(100dvh-4rem)] flex items-center justify-center'>
+          <div className='flex gap-3 font-mono items-center bg-background-2 p-1 rounded-2xl border border-border pr-4'>
+            <div className='p-2 rounded-xl bg-background-1/50'>
+              <MdInfoOutline className='w-5 h-5 text-amber-600' />
+            </div>
+            <span className='text-sm'>
+              File threads workflow is coming soon.
+            </span>
           </div>
         </div>
-        <div className='w-[60%] h-full overflow-auto'>
-          {isClient && (
-            <Editor key={filePath} content={content} fileName={filePath} />
-          )}
+        <div className='pointer-events-none opacity-30 absolute bottom-8 inset-x-8'>
+          <StartThreadInput
+            isPending={false}
+            onSubmit={noop}
+            placeholder='Start a thread about this file...'
+          />
         </div>
       </div>
     </div>
