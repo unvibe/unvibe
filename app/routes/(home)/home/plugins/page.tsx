@@ -11,10 +11,12 @@ import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layo
 import { Button } from '@/lib/ui';
 import { HiPlus } from 'react-icons/hi2';
 import * as React from 'react';
+import { ComingSoonModal } from '~/modules/modals/coming-soon';
 
 export default function PluginsPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
   const getIcon = usePluginsIcons();
+  const [isComingSoonOpen, setIsComingSoonOpen] = React.useState(false);
   const [visiblePlugins, setVisiblePlugins] = React.useState(
     data?.plugins ?? []
   );
@@ -39,6 +41,7 @@ export default function PluginsPage() {
             variant='secondary'
             className='flex items-center justify-center p-2!'
             title='Add Project'
+            onClick={() => setIsComingSoonOpen(true)}
           >
             <HiPlus className='w-6 h-6' />
           </Button>
@@ -81,6 +84,11 @@ export default function PluginsPage() {
           );
         })}
       </div>
+      <ComingSoonModal
+        onClose={() => setIsComingSoonOpen(false)}
+        open={isComingSoonOpen}
+        featureHint='Add new plugin'
+      />
     </HomeSectionSharedLayout>
   );
 }

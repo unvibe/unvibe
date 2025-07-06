@@ -7,6 +7,7 @@ import { HiCheckCircle, HiPlus } from 'react-icons/hi2';
 import { TiBrush } from 'react-icons/ti';
 import { themes } from '@/themes/registery';
 import * as React from 'react';
+import { ComingSoonModal } from '~/modules/modals/coming-soon';
 
 const snippet = `\`\`\`tsx
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ export default function ThemesPage() {
   const [currentTheme, setCurrentTheme] = useTheme();
   const [filter, setFilter] = React.useState<'all' | 'light' | 'dark'>('dark');
   const [visibleThemes, setVisibleThemes] = React.useState(themes);
+  const [isComingSoonOpen, setIsComingSoonOpen] = React.useState(false);
 
   // Filter themes based on the selected color scheme
   const filteredThemes =
@@ -51,6 +53,7 @@ export default function ThemesPage() {
               variant='secondary'
               className='flex items-center justify-center p-2!'
               title='Add Project'
+              onClick={() => setIsComingSoonOpen(true)}
             >
               <HiPlus className='w-6 h-6' />
             </Button>
@@ -120,6 +123,11 @@ export default function ThemesPage() {
           </ThemeProvider>
         ))}
       </div>
+      <ComingSoonModal
+        onClose={() => setIsComingSoonOpen(false)}
+        open={isComingSoonOpen}
+        featureHint='Add new plugin'
+      />
     </HomeSectionSharedLayout>
   );
 }
