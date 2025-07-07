@@ -14,4 +14,5 @@ export const MODEL_CONFIG: ModelConfig = {
     out: 0,
   },
   defaultRunner: 'ollama',
+  isEnabled: !!process.env.OLLAMA_ENABLED,
 };

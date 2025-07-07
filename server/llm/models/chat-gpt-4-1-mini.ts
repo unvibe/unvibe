@@ -18,4 +18,5 @@ export const MODEL_CONFIG: ModelConfig = {
     out: 1.6,
   },
   defaultRunner: 'openai-chat-completions',
+  isEnabled: !!process.env.OPENAI_API_KEY,
 };

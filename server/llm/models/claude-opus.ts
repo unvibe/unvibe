@@ -15,4 +15,5 @@ export const MODEL_CONFIG: ModelConfig = {
     out: 15.0,
   },
   defaultRunner: 'anthropic',
+  isEnabled: !!process.env.ANTHROPIC_API_KEY,
 };

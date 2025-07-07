@@ -9,15 +9,21 @@ import {
 } from 'react-icons/ti';
 import { IconType } from 'react-icons/lib';
 import { usePathname } from '@/lib/next/navigation';
+import { PixelSyncIcon } from '@/lib/ui/pixel-icons/PixelSyncIcon';
+import React from 'react';
 
 function SideIcon({
   href,
   Icon,
   active,
+  children,
+  indicatorColor,
 }: {
   href: string;
   active?: boolean;
-  Icon: IconType;
+  Icon: IconType | React.FC<{ size?: number }>;
+  children?: React.ReactNode;
+  indicatorColor?: string;
 }) {
   return (
     <div className={`p-2.5 bg-background-1 rounded-lg mt-2 relative`}>
@@ -26,11 +32,18 @@ function SideIcon({
           <span className='block w-1.5 h-1.5' />
         </div>
       )}
+      {indicatorColor && (
+        <span
+          className={`absolute top-1 right-1 w-2 h-2 rounded-full`}
+          style={{ background: indicatorColor, border: '2px solid white' }}
+        />
+      )}
       <Link
         href={href}
         className='text-foreground-2 flex items-center justify-center'
       >
-        <Icon className='w-6 h-6' />
+        <Icon size={24} />
+        {children}
       </Link>
     </div>
   );
@@ -59,10 +72,30 @@ const DOCS_NAV_ITEMS = [
   },
 ];
 
+// Mock sync status hook
+type SyncStatus = 'up-to-date' | 'needs-update' | 'updating';
+function useSyncStatus(): [SyncStatus, () => void] {
+  // TODO: connect to backend or use git info
+  const [status, setStatus] = React.useState<SyncStatus>('up-to-date');
+  const triggerUpdate = () => {
+    setStatus('updating');
+    setTimeout(() => setStatus('up-to-date'), 2000); // Mock update delay
+  };
+  return [status, triggerUpdate];
+}
+
 export function HomeSidebar() {
   const pathname = usePathname();
   const isHome = pathname.startsWith('/home') && pathname !== '/home/docs';
   const isDocs = pathname.startsWith('/home/docs');
+  const [syncStatus, triggerSync] = useSyncStatus();
+  const syncColor =
+    syncStatus === 'up-to-date'
+      ? '#27c93f'
+      : syncStatus === 'needs-update'
+        ? '#ff1744'
+        : '#ffd600';
+
   return (
     <div className='grid content-start h-screen shrink-0 w-full p-5 py-8'>
       <div className='h-[calc(100vh-4rem)] overflow-hidden flex items-stretch gap-4'>
@@ -73,6 +106,19 @@ export function HomeSidebar() {
               Icon={TiHomeOutline}
               active={isHome}
             />
+            {/* Sync button */}
+            <button
+              type='button'
+              tabIndex={-1}
+              style={{ all: 'unset', display: 'block' }}
+              onClick={triggerSync}
+            >
+              <SideIcon
+                href={'#'}
+                Icon={PixelSyncIcon}
+                indicatorColor={syncColor}
+              />
+            </button>
           </SideIconGroup>
           <SideIcon href='/home/docs' Icon={TiDocumentText} active={isDocs} />
         </div>

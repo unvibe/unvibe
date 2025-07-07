@@ -18,4 +18,5 @@ export const MODEL_CONFIG: ModelConfig = {
     search: true,
   },
   defaultRunner: 'google',
+  isEnabled: !!process.env.GOOGLE_API_KEY,
 };

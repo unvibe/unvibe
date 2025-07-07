@@ -116,4 +116,5 @@ export interface ModelConfig {
     out: number;
   };
   defaultRunner: RunnerId;
+  isEnabled: boolean;
 }

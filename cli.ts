@@ -17,7 +17,17 @@ function run(cmd: string, cwd?: string) {
   execSync(cmd, { stdio: 'inherit', cwd });
 }
 
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const flags = new Set(args);
+  return {
+    update: flags.has('--update'),
+  };
+}
+
 async function main() {
+  const { update } = parseArgs();
+
   if (!fs.existsSync(PROJECT_DIR)) {
     // Use GitHub CLI for cloning private repo
     run(`gh repo clone ${GH_REPO} ${PROJECT_DIR}`);
@@ -25,6 +35,12 @@ async function main() {
     // run(`git clone ${REPO_URL} ${PROJECT_DIR}`);
   } else {
     console.log('Project already cloned at ~/.unvibe.');
+  }
+
+  // If --update flag, pull latest code
+  if (update) {
+    console.log('Updating project at ~/.unvibe...');
+    run('git pull', PROJECT_DIR);
   }
 
   // Create empty .env.local if not exists
