@@ -25,10 +25,20 @@ function parseArgs() {
   };
 }
 
+function startApp() {
+  run('npm install', PROJECT_DIR);
+  run('npm run build', PROJECT_DIR);
+  run('npx drizzle-kit push', PROJECT_DIR);
+  run('npm start', PROJECT_DIR);
+}
+
 async function main() {
   const { update } = parseArgs();
 
-  if (!fs.existsSync(PROJECT_DIR)) {
+  if (
+    !fs.existsSync(PROJECT_DIR) &&
+    !fs.existsSync(path.join(PROJECT_DIR, '.git'))
+  ) {
     // Use GitHub CLI for cloning private repo
     run(`gh repo clone ${GH_REPO} ${PROJECT_DIR}`);
     // Fallback for public repo in the future:
@@ -40,7 +50,10 @@ async function main() {
   // If --update flag, pull latest code
   if (update) {
     console.log('Updating project at ~/.unvibe...');
+    console.log('Running git pull at', PROJECT_DIR);
     run('git pull', PROJECT_DIR);
+    // find a more robust way to handle this in the future
+    startApp();
   }
 
   // Create empty .env.local if not exists
@@ -49,10 +62,7 @@ async function main() {
     console.log('Created empty .env.local');
   }
 
-  run('npm install', PROJECT_DIR);
-  run('npm run build', PROJECT_DIR);
-  run('npx drizzle-kit push', PROJECT_DIR);
-  run('npm start', PROJECT_DIR);
+  startApp();
 }
 
 main();

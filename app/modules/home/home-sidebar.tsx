@@ -9,8 +9,9 @@ import {
 } from 'react-icons/ti';
 import { IconType } from 'react-icons/lib';
 import { usePathname } from '@/lib/next/navigation';
-import { PixelSyncIcon } from '@/lib/ui/pixel-icons/PixelSyncIcon';
+import { MdSync } from 'react-icons/md';
 import React from 'react';
+import { useAPIMutation } from '@/server/api/client';
 
 function SideIcon({
   href,
@@ -19,7 +20,7 @@ function SideIcon({
   children,
   indicatorColor,
 }: {
-  href: string;
+  href?: string;
   active?: boolean;
   Icon: IconType | React.FC<{ size?: number }>;
   children?: React.ReactNode;
@@ -34,17 +35,23 @@ function SideIcon({
       )}
       {indicatorColor && (
         <span
-          className={`absolute top-1 right-1 w-2 h-2 rounded-full`}
-          style={{ background: indicatorColor, border: '2px solid white' }}
+          className={`absolute bottom-1 left-[calc(50%-2px)] w-1 h-1 rounded-full ${indicatorColor}`}
         />
       )}
-      <Link
-        href={href}
-        className='text-foreground-2 flex items-center justify-center'
-      >
-        <Icon size={24} />
-        {children}
-      </Link>
+      {href ? (
+        <Link
+          href={href}
+          className='text-foreground-2 flex items-center justify-center'
+        >
+          <Icon size={24} />
+          {children}
+        </Link>
+      ) : (
+        <span className='text-foreground-2 flex items-center justify-center'>
+          <Icon size={24} />
+          {children}
+        </span>
+      )}
     </div>
   );
 }
@@ -72,29 +79,25 @@ const DOCS_NAV_ITEMS = [
   },
 ];
 
-// Mock sync status hook
-type SyncStatus = 'up-to-date' | 'needs-update' | 'updating';
-function useSyncStatus(): [SyncStatus, () => void] {
-  // TODO: connect to backend or use git info
-  const [status, setStatus] = React.useState<SyncStatus>('up-to-date');
-  const triggerUpdate = () => {
-    setStatus('updating');
-    setTimeout(() => setStatus('up-to-date'), 2000); // Mock update delay
-  };
-  return [status, triggerUpdate];
-}
-
 export function HomeSidebar() {
   const pathname = usePathname();
   const isHome = pathname.startsWith('/home') && pathname !== '/home/docs';
   const isDocs = pathname.startsWith('/home/docs');
-  const [syncStatus, triggerSync] = useSyncStatus();
+
+  // --- Sync logic
+  // Force the type for mutation input as void
+  const syncMutation = useAPIMutation('POST /home/sync-update');
+  let syncStatus: 'up-to-date' | 'needs-update' | 'updating' = 'up-to-date';
+  if (syncMutation.isPending) syncStatus = 'updating';
+  else if (syncMutation.isError) syncStatus = 'needs-update';
+  else if (syncMutation.isSuccess) syncStatus = 'up-to-date';
+
   const syncColor =
     syncStatus === 'up-to-date'
-      ? '#27c93f'
+      ? 'bg-emerald-500'
       : syncStatus === 'needs-update'
-        ? '#ff1744'
-        : '#ffd600';
+        ? 'bg-rose-500'
+        : 'bg-yellow-500';
 
   return (
     <div className='grid content-start h-screen shrink-0 w-full p-5 py-8'>
@@ -106,21 +109,28 @@ export function HomeSidebar() {
               Icon={TiHomeOutline}
               active={isHome}
             />
-            {/* Sync button */}
-            <button
-              type='button'
-              tabIndex={-1}
-              style={{ all: 'unset', display: 'block' }}
-              onClick={triggerSync}
-            >
-              <SideIcon
-                href={'#'}
-                Icon={PixelSyncIcon}
-                indicatorColor={syncColor}
-              />
-            </button>
+            <SideIcon href='/home/docs' Icon={TiDocumentText} active={isDocs} />
           </SideIconGroup>
-          <SideIcon href='/home/docs' Icon={TiDocumentText} active={isDocs} />
+          <button
+            type='button'
+            tabIndex={-1}
+            style={{ all: 'unset', display: 'block' }}
+            onClick={() => syncMutation.mutate({} as never)}
+            disabled={syncStatus === 'updating'}
+            title={
+              syncMutation.isError
+                ? 'Sync failed!'
+                : syncMutation.isSuccess
+                  ? 'Up to date!'
+                  : 'Sync now'
+            }
+          >
+            <SideIcon
+              href={undefined}
+              Icon={MdSync}
+              indicatorColor={syncColor}
+            />
+          </button>
         </div>
         <div className='border-2 border-border rounded-2xl overflow-hidden w-full bg-background-1'>
           <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>

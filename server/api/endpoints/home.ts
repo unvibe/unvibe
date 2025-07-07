@@ -3,6 +3,7 @@ import { z } from 'zod';
 import * as PluginsMap from '@/plugins/plugins.server';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 // List all available plugins (server-side only, not client plugins)
 function listAvailablePlugins() {
@@ -85,5 +86,31 @@ export const updateEnvironmentVariable = createEndpoint({
     const { key, value } = parsed;
     await setEnvironmentVariable(key, value);
     return { success: true };
+  },
+});
+
+export const runHomeSyncUpdate = createEndpoint({
+  type: 'POST',
+  pathname: '/home/sync-update',
+  handler: async () => {
+    return await new Promise((resolve) => {
+      let logs = '';
+      let status: 'updating' | 'done' | 'error' = 'updating';
+      const proc = spawn('node', ['cli.ts', '--update'], { shell: true });
+      proc.stdout.on('data', (data) => {
+        logs += data.toString();
+      });
+      proc.stderr.on('data', (data) => {
+        logs += data.toString();
+      });
+      proc.on('close', (code) => {
+        status = code === 0 ? 'done' : 'error';
+        resolve({ status, logs });
+      });
+      proc.on('error', (err) => {
+        status = 'error';
+        resolve({ status, logs: logs + '\n' + err.toString() });
+      });
+    });
   },
 });
