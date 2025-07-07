@@ -5,4 +5,4 @@ export * from './threads';
 export * from './projects';
 export * from './home';
 export * from './custom-plugin';
-export * from './home';
+export * from './types-dts';

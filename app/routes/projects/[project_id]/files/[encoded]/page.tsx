@@ -4,7 +4,7 @@ import path from 'node:path';
 import { Route } from './+types/page';
 import React from 'react';
 import { client } from '@/server/api/client';
-import { StartThreadInput } from '~/modules/project/landing-page/start-thread';
+import { StartThreadInput } from '~/modules/project/threads/llm-input';
 import { noop } from '@/lib/core/noop';
 import { MdInfoOutline } from 'react-icons/md';
 

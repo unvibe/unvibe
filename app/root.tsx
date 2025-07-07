@@ -44,17 +44,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className={clsx('box-border', 'font-display')}>
         <Provider theme={theme} models={llmModels}>
+          {/* <div className='fixed inset-0 -z-10 opacity-[0.05]'>
+            <svg viewBox='0 0 290 290' xmlns='http://www.w3.org/2000/svg'>
+              <filter id='noiseFilter'>
+                <feTurbulence
+                  type='fractalNoise'
+                  baseFrequency='2.97'
+                  numOctaves='4'
+                  stitchTiles='stitch'
+                />
+              </filter>
+
+              <rect width='100%' height='100%' filter='url(#noiseFilter)' />
+            </svg>
+          </div> */}
           {children}
           <Toaster />
         </Provider>
         <ScrollRestoration />
         <Scripts />
-        <script>
-          {`
-          const node = document.getElementById('thread-details-message-list')
-          node.scrollTop = node.scrollHeight;
-          `}
-        </script>
       </body>
     </html>
   );

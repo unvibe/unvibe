@@ -74,6 +74,8 @@ export interface ThreadInputBoxProps {
     clearAttachments: () => void;
   }) => void;
   disableInput?: boolean;
+  inputImage?: boolean;
+  inputSearchFlag?: boolean;
 }
 
 function makeImageKey(file: File) {
@@ -90,6 +92,8 @@ export function ThreadInputBox({
   isPending,
   onSubmit,
   disableInput,
+  inputImage = false,
+  inputSearchFlag = false,
 }: ThreadInputBoxProps) {
   const [prompt, setPrompt] = useState(controlledPrompt || '');
   useEffect(() => {
@@ -290,40 +294,46 @@ export function ThreadInputBox({
           </div>
           <div className='flex items-center gap-1'>
             {/* Right: search, upload images, submit button */}
-            <button
-              type='button'
-              onClick={() => setIsSearchMode((m) => !m)}
-              className={clsx(
-                'rounded-xl p-2.5 transition-colors duration-150',
-                'cursor-pointer disabled:cursor-default',
-                isSearchMode
-                  ? clsx(
-                      'bg-blue-600 text-background-1 border-blue-500 hover:bg-blue-600',
-                      'dark:bg-blue-900 dark:text-blue-500 dark:border-blue-900 dark:hover:bg-blue-900'
-                    )
-                  : 'bg-background-2 text-foreground border-border-2 hover:bg-background-2'
-              )}
-              disabled={disableInput || isPending}
-            >
-              <FiGlobe className='w-4 h-4' />
-            </button>
-            <button
-              type='button'
-              onClick={() => fileInputRef.current?.click()}
-              className='bg-background-2 text-foreground rounded-xl p-2.5 transition-colors duration-150 cursor-pointer disabled:cursor-default'
-              aria-label='Add images'
-              disabled={disableInput || isPending}
-            >
-              <LuImagePlus className='w-4 h-4' />
-            </button>
-            <input
-              type='file'
-              accept='image/*'
-              multiple
-              ref={fileInputRef}
-              className='hidden'
-              onChange={handleFileChange}
-            />
+            {inputSearchFlag && (
+              <button
+                type='button'
+                onClick={() => setIsSearchMode((m) => !m)}
+                className={clsx(
+                  'rounded-xl p-2.5 transition-colors duration-150',
+                  'cursor-pointer disabled:cursor-default',
+                  isSearchMode
+                    ? clsx(
+                        'bg-blue-600 text-background-1 border-blue-500 hover:bg-blue-600',
+                        'dark:bg-blue-900 dark:text-blue-500 dark:border-blue-900 dark:hover:bg-blue-900'
+                      )
+                    : 'bg-background-2 text-foreground border-border-2 hover:bg-background-2'
+                )}
+                disabled={disableInput || isPending}
+              >
+                <FiGlobe className='w-4 h-4' />
+              </button>
+            )}
+            {inputImage && (
+              <>
+                <button
+                  type='button'
+                  onClick={() => fileInputRef.current?.click()}
+                  className='bg-background-2 text-foreground rounded-xl p-2.5 transition-colors duration-150 cursor-pointer disabled:cursor-default'
+                  aria-label='Add images'
+                  disabled={disableInput || isPending}
+                >
+                  <LuImagePlus className='w-4 h-4' />
+                </button>
+                <input
+                  type='file'
+                  accept='image/*'
+                  multiple
+                  ref={fileInputRef}
+                  className='hidden'
+                  onChange={handleFileChange}
+                />
+              </>
+            )}
             <PrimarySendButton
               isPending={isPending}
               onClick={handleSubmit}

@@ -184,6 +184,17 @@ Structured output is a strict JSON object (see `server/llm/structured_output/`) 
 - `plugins/core`: Canonical plugin reference
 - `server/llm/structured_output/`: Structured output schema and instructions
 
+## Contributing Themes
+
+Unvibe supports custom UI themes to style the web interface. To add a new theme:
+
+1. **Create theme files:** In `themes/src`, create a new directory (e.g., `my-theme`) and add `light.ts` and/or `dark.ts` exporting a `Theme` object. Follow the structure of existing themes, such as `unvibe/light.ts`.
+2. **Implement the Theme interface:** Ensure your theme object adheres to the `Theme` interface defined in [themes/type.ts](./themes/type.ts), including properties: `id`, `name`, `colorScheme`, `cssVariables`, `meta`, and `shiki`.
+3. **Register your theme:** Import your theme in [themes/registery.ts](./themes/registery.ts) and add it to the exported `themes` array.
+4. **Test:** Run `npm run dev` and verify your theme appears in the UI theme selector.
+
+For detailed Theme contract and examples, refer to the Theme type definition and existing themes in the `themes/` directory.
+
 ---
 
 **Thank you for contributing to Unvibe!**

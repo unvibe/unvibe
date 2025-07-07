@@ -3,9 +3,12 @@ import { Modal } from '@/lib/ui/modal';
 import clsx from 'clsx';
 import { MdOutlineInfo } from 'react-icons/md';
 import { Switch } from '@/lib/ui';
-import { useProject } from '../provider';
+import { useProject } from '~/modules/project/provider';
 import { HiXMark } from 'react-icons/hi2';
-import { getPluginStyle, PluginIcon } from '../plugins-context/list-card';
+import {
+  getPluginStyle,
+  PluginIcon,
+} from '~/modules/project/plugins-context/list-card';
 
 function SectionCard({
   pluginName,

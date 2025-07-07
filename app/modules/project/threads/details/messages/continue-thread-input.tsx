@@ -2,7 +2,7 @@ import { ClientEndpointsMap, useAPIQuery as useV2Q } from '@/server/api/client';
 
 import { useAPIMutation } from '@/server/api/client';
 import { useParams } from '@/lib/next/navigation';
-import { StartThreadInput } from '~/modules/project/landing-page/start-thread';
+import { StartThreadInput } from '~/modules/project/threads/llm-input';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function ContinueThreadInput() {

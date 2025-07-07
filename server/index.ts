@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { startWebsocketServer } from './websocket/server';
 import { api } from './api';
 import { baseURL } from './api/constants';
+import './lsp-websocket-server';
 
 const app = new Hono();
 

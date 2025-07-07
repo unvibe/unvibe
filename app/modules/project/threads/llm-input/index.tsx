@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ThreadInputBox } from '~/modules/project/threads/thread-input-box';
-import { stringToHue } from '../system/lib/string-to-hue';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import { HiChevronDown } from 'react-icons/hi2';
-import { useProject } from '../provider';
-import { StartThreadContextModal } from './start-thread-context-modal';
-import ModelsSelector from './models-selector';
+
+import { stringToHue } from '~/modules/project/system/lib/string-to-hue';
+import { useProject } from '~/modules/project/provider';
 import { useLLMModels } from '~/modules/root-providers/llm-models';
+
+import { StartThreadContextModal } from './context-modal';
+import ModelsSelector from './models-selector';
+import { ThreadInputBox } from './thread-input-box';
 
 export function StartThreadInput({
   onSubmit,
@@ -78,6 +80,7 @@ export function StartThreadInput({
     setSelectedModel(currentModelId || models.DEFAULT_MODEL.MODEL_CONFIG.id);
   }, [currentModelId]);
 
+  const _models = Object.values(models.raw);
   return (
     <>
       <ThreadInputBox
@@ -86,6 +89,14 @@ export function StartThreadInput({
         isPending={isPending}
         disableInput={isPending}
         placeholder={placeholder}
+        inputImage={
+          _models.find((m) => m.MODEL_CONFIG.id === selectedModel)?.MODEL_CONFIG
+            .supports.image
+        }
+        inputSearchFlag={
+          _models.find((m) => m.MODEL_CONFIG.id === selectedModel)?.MODEL_CONFIG
+            .supports.search
+        }
         onSubmit={(value) => {
           onSubmit({
             ...value,

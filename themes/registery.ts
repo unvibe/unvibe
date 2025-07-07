@@ -3,7 +3,8 @@ import UnvibeLight from './src/unvibe/light';
 import ColorfulLight from './src/colorful/light';
 import ColorfulDark from './src/colorful/dark';
 import GruvboxDark from './src/gruvbox/dark';
-import GruvboxLight from './src/gruvbox/light';
+import AyuLight from './src/ayu/light';
+import AyuDark from './src/ayu/dark';
 
 export const themes = [
   UnvibeDark,
@@ -11,5 +12,6 @@ export const themes = [
   ColorfulDark,
   ColorfulLight,
   GruvboxDark,
-  GruvboxLight,
+  AyuLight,
+  AyuDark,
 ];

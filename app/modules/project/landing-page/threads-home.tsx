@@ -1,4 +1,4 @@
-import { StartThreadInput } from './start-thread';
+import { StartThreadInput } from '~/modules/project/threads/llm-input';
 import {
   ClientEndpointsMap,
   getQueryKey,

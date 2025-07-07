@@ -15,6 +15,7 @@ export default [
       route('/home/projects', 'routes/(home)/home/projects/page.tsx'),
       route('/home/themes', 'routes/(home)/home/themes/page.tsx'),
       route('/home/models', 'routes/(home)/home/models/page.tsx'),
+      route('/home/database', 'routes/(home)/home/database/page.tsx'),
     ]),
     layout('routes/projects/[project_id]/layout.tsx', [
       // project home
@@ -56,7 +57,7 @@ export default [
         'routes/projects/[project_id]/plugins/page.tsx'
       ),
     ]),
-    route('/demos/bmi-calculator', 'routes/demos/bmi-calculator/page.tsx'),
+    route('/demos/editor-lsp-demo', 'routes/demos/editor-lsp-demo/page.tsx'),
     route(
       '/demos/connections-graph',
       'routes/demos/connections-graph/page.tsx'

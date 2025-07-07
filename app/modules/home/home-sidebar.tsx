@@ -7,6 +7,7 @@ import {
   TiCogOutline,
   TiDocumentText,
   TiLightbulb,
+  TiDatabase,
 } from 'react-icons/ti';
 import { IconType } from 'react-icons/lib';
 import { usePathname } from '@/lib/next/navigation';
@@ -21,17 +22,24 @@ function SideIcon({
   active,
   children,
   indicatorColor,
+  indicatorStyle = {},
 }: {
   href?: string;
   active?: boolean;
   Icon: IconType | React.FC<{ size?: number }>;
   children?: React.ReactNode;
   indicatorColor?: string;
+  indicatorStyle?: React.CSSProperties;
 }) {
   return (
-    <div className={`p-2.5 bg-background-1 rounded-lg mt-2 relative`}>
+    <div
+      className={`p-2.5 bg-background-1 rounded-lg mt-2 relative cursor-pointer`}
+    >
       {active && (
-        <div className='absolute top-1 left-1 bg-blue-500 rounded-full overflow-hidden'>
+        <div
+          className='absolute top-1 left-1 bg-blue-500 rounded-full overflow-hidden'
+          style={indicatorStyle}
+        >
           <span className='block w-1.5 h-1.5' />
         </div>
       )}
@@ -77,6 +85,7 @@ const HOME_NAV_ITEMS = [
   { label: 'Themes', href: '/home/themes', Icon: TiBrush },
   { label: 'Environment', href: '/home/environment', Icon: TiCogOutline },
   { label: 'Models', href: '/home/models', Icon: TiLightbulb },
+  { label: 'Database', href: '/home/database', Icon: TiDatabase },
 ];
 
 const DOCS_NAV_ITEMS = [
@@ -142,7 +151,9 @@ export function HomeSidebar() {
             <SideIcon
               href={undefined}
               Icon={MdSync}
-              indicatorColor={syncColor}
+              indicatorColor={
+                import.meta.env.DEV ? 'rainbow rotate-45' : syncColor
+              }
             />
           </button>
         </div>
