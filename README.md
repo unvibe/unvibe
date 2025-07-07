@@ -1,3 +1,5 @@
+![Unvibe Logo](/app/routes/assets/unvibe-2.png)
+
 # Unvibe
 
 > **Your local AI coding copilot, powered by plugins**

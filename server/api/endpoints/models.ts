@@ -9,6 +9,13 @@ const runnerProviderMap: Record<string, string> = {
   'google': 'Google',
 };
 
+const apiKeyProviderMap: Record<string, string> = {
+  OPENAI_API_KEY: 'OpenAI',
+  GOOGLE_API_KEY: 'Google',
+  ANTHROPIC_API_KEY: 'Anthropic',
+  OLLAMA_ENABLED: 'Ollama',
+};
+
 export const listModels = createEndpoint({
   type: 'GET',
   pathname: '/models',
@@ -16,6 +23,8 @@ export const listModels = createEndpoint({
     return {
       DEFAULT_MODEL: llm.models.ChatGPT4_1,
       raw: llm.models,
+      runnerProviderMap,
+      apiKeyProviderMap,
       models: Object.values(llm.models).map((model) => {
         const runner = model.MODEL_CONFIG.defaultRunner;
         return {

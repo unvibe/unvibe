@@ -14,7 +14,16 @@ const PROJECT_DIR = path.join(HOME, '.unvibe');
 const ENV_FILE = path.join(PROJECT_DIR, '.env.local');
 
 function run(cmd: string, cwd?: string) {
-  execSync(cmd, { stdio: 'inherit', cwd });
+  return execSync(cmd, {
+    stdio: 'inherit',
+    cwd,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      NO_COLOR: '1', // Force no color in output
+      FORCE_COLOR: '0', // Disable color output
+    },
+  });
 }
 
 function parseArgs() {
@@ -22,13 +31,18 @@ function parseArgs() {
   const flags = new Set(args);
   return {
     update: flags.has('--update'),
+    restart: flags.has('--restart'),
   };
 }
 
-function startApp() {
+function updateApp() {
+  run('git pull', PROJECT_DIR);
   run('npm install', PROJECT_DIR);
   run('npm run build', PROJECT_DIR);
   run('npx drizzle-kit push', PROJECT_DIR);
+}
+
+function startApp() {
   run('npm start', PROJECT_DIR);
 }
 
@@ -51,9 +65,10 @@ async function main() {
   if (update) {
     console.log('Updating project at ~/.unvibe...');
     console.log('Running git pull at', PROJECT_DIR);
-    run('git pull', PROJECT_DIR);
-    // find a more robust way to handle this in the future
-    startApp();
+
+    updateApp();
+    console.log('Project updated successfully.');
+    return;
   }
 
   // Create empty .env.local if not exists

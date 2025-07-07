@@ -7,9 +7,11 @@ import { FiEdit } from 'react-icons/fi';
 import { HiPlus } from 'react-icons/hi2';
 import { TiCogOutline } from 'react-icons/ti';
 import * as React from 'react';
+import { useLLMModels } from '~/modules/root-providers/llm-models';
 
 export default function EnvironmentPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
+  const models = useLLMModels();
   const [visibleEnv, setVisibleEnv] = React.useState(data?.env ?? []);
 
   React.useEffect(() => {
@@ -19,6 +21,7 @@ export default function EnvironmentPage() {
   if (isLoading) return <div className='p-10'>Loading environment...</div>;
   if (error)
     return <div className='p-10 text-red-500'>Failed to load environment</div>;
+
   return (
     <HomeSectionSharedLayout>
       <HomeSectionSharedHeader
@@ -43,21 +46,29 @@ export default function EnvironmentPage() {
         {visibleEnv.map((envVar: { key: string; value: string }) => (
           <div
             key={envVar.key}
-            className='flex items-center gap-4 p-4 rounded-xl bg-background-2 min-w-[300px] relative'
+            className='p-4 rounded-xl bg-background-2 min-w-[300px] relative'
           >
-            <div className='w-6 h-6 bg-background-1/50 rounded-full flex items-center justify-center'>
-              {envVar.value && (
-                <FaCheckCircle className='w-5 h-5 text-emerald-600' />
-              )}
-            </div>
-            <div className='grid'>
-              <div className='text-sm'>{envVar.key}</div>
-              <div className='flex items-center h-[20px] pt-2 text-foreground-2'>
-                ********
+            <div className='flex items-center justify-between gap-1'>
+              <div className='flex items-center gap-4'>
+                <div className='w-6 h-6 bg-background-1/50 rounded-full flex items-center justify-center'>
+                  {envVar.value && (
+                    <FaCheckCircle className='w-5 h-5 text-emerald-600' />
+                  )}
+                </div>
+                <div className='text-sm'>{envVar.key}</div>
+              </div>
+              <div className='w-6 h-6 rounded-full flex items-center justify-center text-foreground-2'>
+                <FiEdit className='w-5 h-5' />
               </div>
             </div>
-            <div className='absolute top-4 right-4 text-foreground-2'>
-              <FiEdit className='w-5 h-5' />
+            <div className='flex gap-2 pl-10 items-center text-foreground-2'>
+              <div className='flex items-center h-[20px] text-foreground-2 text-xs'>
+                {envVar.value
+                  ? models.apiKeyProviderMap[envVar.key]
+                    ? models.apiKeyProviderMap[envVar.key] + ' models enabled'
+                    : '**********'
+                  : 'NOT_SET'}
+              </div>
             </div>
           </div>
         ))}

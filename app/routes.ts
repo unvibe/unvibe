@@ -14,6 +14,7 @@ export default [
       route('/home/plugins', 'routes/(home)/home/plugins/page.tsx'),
       route('/home/projects', 'routes/(home)/home/projects/page.tsx'),
       route('/home/themes', 'routes/(home)/home/themes/page.tsx'),
+      route('/home/models', 'routes/(home)/home/models/page.tsx'),
     ]),
     layout('routes/projects/[project_id]/layout.tsx', [
       // project home

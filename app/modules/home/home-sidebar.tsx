@@ -6,12 +6,14 @@ import {
   TiBrush,
   TiCogOutline,
   TiDocumentText,
+  TiLightbulb,
 } from 'react-icons/ti';
 import { IconType } from 'react-icons/lib';
 import { usePathname } from '@/lib/next/navigation';
 import { MdSync } from 'react-icons/md';
 import React from 'react';
 import { useAPIMutation } from '@/server/api/client';
+import clsx from 'clsx';
 
 function SideIcon({
   href,
@@ -34,9 +36,14 @@ function SideIcon({
         </div>
       )}
       {indicatorColor && (
-        <span
-          className={`absolute bottom-1 left-[calc(50%-2px)] w-1 h-1 rounded-full ${indicatorColor}`}
-        />
+        <div className='absolute bottom-2.5 right-2.5 box-border'>
+          <div
+            className={clsx(
+              'w-2 h-2 outline-4 outline-background-1 rounded-full',
+              indicatorColor
+            )}
+          />
+        </div>
       )}
       {href ? (
         <Link
@@ -69,6 +76,7 @@ const HOME_NAV_ITEMS = [
   { label: 'Plugins', href: '/home/plugins', Icon: TiPlug },
   { label: 'Themes', href: '/home/themes', Icon: TiBrush },
   { label: 'Environment', href: '/home/environment', Icon: TiCogOutline },
+  { label: 'Models', href: '/home/models', Icon: TiLightbulb },
 ];
 
 const DOCS_NAV_ITEMS = [
@@ -115,7 +123,13 @@ export function HomeSidebar() {
             type='button'
             tabIndex={-1}
             style={{ all: 'unset', display: 'block' }}
-            onClick={() => syncMutation.mutate({} as never)}
+            onClick={() =>
+              syncMutation.mutate({} as never, {
+                onSuccess: (data) => {
+                  console.log(data.logs);
+                },
+              })
+            }
             disabled={syncStatus === 'updating'}
             title={
               syncMutation.isError

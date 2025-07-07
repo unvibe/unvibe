@@ -8,7 +8,7 @@ import {
 } from 'react-icons/si';
 
 // Example icon mapping per provider
-const providerIcons: Record<string, React.ReactNode> = {
+export const providerIcons: Record<string, React.ReactNode> = {
   OpenAI: (
     <span role='img' aria-label='OpenAI'>
       <SiOpenai className='w-4 h-4' />
