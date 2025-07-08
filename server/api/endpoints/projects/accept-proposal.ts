@@ -20,7 +20,7 @@ async function applyShellScripts(project: Project, scripts?: string[]) {
   return result;
 }
 
-async function applyReplacedFiles(
+async function applyResolvedFileContent(
   project: Project,
   replaceFiles?: { path: string; content: string }[]
 ) {
@@ -78,7 +78,7 @@ async function applyEditedFiles(
   }
   const resolved = resolveEdits(editFiles, project);
   const formatted = await runTransforms(project, resolved);
-  return await applyReplacedFiles(project, formatted);
+  return await applyResolvedFileContent(project, formatted);
 }
 
 async function applyRangedEdits(
@@ -90,7 +90,7 @@ async function applyRangedEdits(
   }
   const resolved = resolveRangeEdits(editRanges, project);
   const formatted = await runTransforms(project, resolved);
-  return await applyReplacedFiles(project, formatted);
+  return await applyResolvedFileContent(project, formatted);
 }
 
 export const acceptProposal = createEndpoint({
@@ -140,7 +140,7 @@ export const acceptProposal = createEndpoint({
     );
     const [deleted, replaced, edited, ranges] = await Promise.all([
       applyDeletedFiles(project, parsed.proposal.delete_files),
-      applyReplacedFiles(project, parsed.proposal.replace_files),
+      applyResolvedFileContent(project, parsed.proposal.replace_files),
       applyEditedFiles(project, parsed.proposal.edit_files),
       applyRangedEdits(project, parsed.proposal.edit_ranges || []),
     ]);

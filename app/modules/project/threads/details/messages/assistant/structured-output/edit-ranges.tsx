@@ -16,6 +16,15 @@ export function StructuredOutputEditRanges() {
         const resolved = metadata?.resolved_edited_ranges?.find((r) => {
           return r.path === entry.path;
         });
+        const ranges = entry.edits;
+        const rangesDecorations = ranges.map((edit) => ({
+          start: { line: edit.start - 1, character: 0 },
+          end: {
+            line: edit.end - 1,
+            character: resolved?.content.split('\n')[edit.end - 1]?.length || 0,
+          },
+          properties: { class: 'highlighted-word' },
+        }));
         return (
           <ThreadDetailsMessageListItemFile
             icon={
@@ -32,23 +41,7 @@ export function StructuredOutputEditRanges() {
                 entry.edits.map((e) => e.content).join('\n\n'),
             }}
             type='edit'
-            decorations={
-              !resolved
-                ? undefined
-                : entry.edits.map((edit) => ({
-                    start: { line: edit.start - 1, character: 0 },
-                    end: {
-                      line: edit.end - 1,
-                      character:
-                        resolved.content.split('\n')[edit.end - 1]?.length || 0,
-                      // character: 0,
-                      // edit.content.split('\n')[
-                      //   edit.content.split('\n').length - 1
-                      // ].length,
-                    },
-                    properties: { class: 'highlighted-word' },
-                  }))
-            }
+            decorations={!resolved ? undefined : rangesDecorations}
             selected={selection.some(
               (p) => p.path === entry.path && p.selected
             )}

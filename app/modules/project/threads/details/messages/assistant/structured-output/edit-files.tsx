@@ -18,6 +18,28 @@ export function StructuredOutputEditFiles() {
         const resolved = metadata?.resolved_edited_files?.find((entry) => {
           return normalizePath(entry.path) === normalizePath(edit.path);
         });
+
+        const contentLines = edit.content.split('\n');
+        const startLine = edit.insert_at - 1; // Convert to 0-based index
+        const endLine = startLine + contentLines.length - 1;
+        const startCharacter = 0;
+        const endCharacter = contentLines[contentLines.length - 1].length;
+        console.log({
+          startLine,
+          endLine,
+          startCharacter,
+          endCharacter,
+          content: edit.content,
+        });
+        const editInsertionDecoration = {
+          start: { line: startLine, character: startCharacter },
+          end: {
+            line: endLine,
+            character: endCharacter,
+          },
+          properties: { class: 'highlighted-word' },
+        };
+
         return (
           <ThreadDetailsMessageListItemFile
             key={'edit_files' + edit.path + i.toString()}
@@ -28,24 +50,7 @@ export function StructuredOutputEditFiles() {
             }
             data={resolved ?? edit}
             type='remove'
-            decorations={
-              !resolved
-                ? undefined
-                : [
-                    {
-                      start: { line: edit.insert_at, character: 0 },
-                      end: {
-                        line: edit.content.split('\n').length,
-                        character:
-                          edit.content.split('\n').length === edit.insert_at
-                            ? edit.content.split('\n')[edit.insert_at - 1]
-                                .length
-                            : 0,
-                      },
-                      properties: { class: 'highlighted-word' },
-                    },
-                  ]
-            }
+            decorations={!resolved ? undefined : [editInsertionDecoration]}
             selected={selection.some((p) => p.path === edit.path && p.selected)}
             setSelected={(newState) => {
               setSelection((prev) => {
