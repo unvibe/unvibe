@@ -1,68 +1,27 @@
 // Monaco LSP Demo with .d.ts addExtraLib integration
-import { client } from '@/server/api/client';
+import { useAPIQuery } from '@/server/api/client';
 import * as React from 'react';
+
 const MonacoEditorWithLSP = React.lazy(() =>
   import('@/lib/ui/monaco-editor/editor-with-lsp.client').then((module) => ({
     default: module.MonacoEditorWithLSP,
   }))
 );
 
-const DEMO_FILE_REL_PATH = 'server/index.ts';
-const PROJECT_ID = 'unvibe';
-const DTS_MODULES = ['react', 'react-dom', 'node', 'hono'];
-
-async function fetchFileContent(projectId: string, filePath: string) {
-  const res = await client('GET /projects/request-file', {
-    filePath,
-    projectId,
-  });
-  const data = res;
-  if (data && data.content) {
-    return { content: data.content, filePath };
-  } else {
-    return {
-      content: `Failed to load file: ${filePath}\n${data?.error || ''}`,
-      filePath,
-    };
-  }
-}
-
 export default function EditorLspDemoPage() {
-  const [code, setCode] = React.useState<string>('Loading...');
-  const [filePath, setFilePath] = React.useState<string>(DEMO_FILE_REL_PATH);
+  const { data } = useAPIQuery('GET /projects/request-file', {
+    filePath: './server/index.ts',
+    projectId: 'unvibe',
+  });
   const [isClient, setIsClient] = React.useState(false);
   const [typingsLoaded, setTypingsLoaded] = React.useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
-    fetchFileContent(PROJECT_ID, DEMO_FILE_REL_PATH)
-      .then(({ content, filePath }) => {
-        setCode(content);
-        setFilePath(filePath);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch file content:', error);
-      });
   }, []);
 
   // Provide typings to Monaco before mount
-  const beforeMonacoMount = React.useCallback(async (monaco) => {
-    for (const mod of DTS_MODULES) {
-      try {
-        const r = await client('GET /types-dts', {
-          module: encodeURIComponent(mod),
-        });
-        const { content, found } = r;
-        console.log(r);
-        if (found && content) {
-          const virtualPath = `file:///node_modules/@types/${mod}/index.d.ts`;
-          monaco.languages.typescript.typescriptDefaults.addExtraLib(
-            content,
-            virtualPath
-          );
-        }
-      } catch {}
-    }
+  const beforeMonacoMount = React.useCallback(async () => {
     setTypingsLoaded(true);
   }, []);
 
@@ -78,13 +37,10 @@ export default function EditorLspDemoPage() {
         {isClient && (
           <React.Suspense fallback={<div>Loading Monaco...</div>}>
             <MonacoEditorWithLSP
-              content={code}
-              fileName={
-                filePath.startsWith('/')
-                  ? filePath
-                  : `/Users/khaledzakaria/projects/unvibe/${filePath}`
-              }
-              onChange={setCode}
+              content={data?.content}
+              projectRoot={'/Users/khaledzakaria/projects/unvibe'}
+              fileName='/Users/khaledzakaria/projects/unvibe/server/index.ts'
+              onChange={() => {}}
               height='90vh'
               beforeMonacoMount={beforeMonacoMount}
             />

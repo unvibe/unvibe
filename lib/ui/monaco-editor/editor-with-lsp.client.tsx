@@ -5,6 +5,17 @@ import { createHighlighter } from 'shiki';
 import { initVimMode } from 'monaco-vim';
 import { useTheme } from '~/modules/root-providers/theme';
 import * as React from 'react';
+import { noop } from '@/lib/core/noop';
+
+// function toAbsUri(path: string) {
+//   // Ensure file:///abs/path, not file://path
+//   if (path.startsWith('file:///')) return path;
+//   if (path.startsWith('/')) return `file://${path}`;
+//   return `file:///${path}`;
+// }
+
+export type Monaco =
+  typeof import('/Users/khaledzakaria/projects/unvibe/node_modules/monaco-editor/esm/vs/editor/editor.api');
 
 export function MonacoEditorWithLSP({
   content,
@@ -13,30 +24,17 @@ export function MonacoEditorWithLSP({
   onChange,
   value,
   beforeMonacoMount,
+  projectRoot,
 }: {
   content?: string;
   fileName: string;
   height?: string;
   onChange?: (value: string) => void;
   value?: string;
-  beforeMonacoMount?: (monaco: any) => void;
+  beforeMonacoMount?: (monaco: Monaco) => void;
+  projectRoot: string; // Optional, used for LSP initialize
 }) {
   const [theme] = useTheme();
-
-  // Hold LSP connection for completions, diagnostics, etc
-  const lspSocketRef = React.useRef<WebSocket | null>(null);
-  const lspPendingCompletions = React.useRef<
-    Record<number, (items: any[]) => void>
-  >({});
-  const lspMsgId = React.useRef(1);
-
-  // Cleanup socket on unmount
-  React.useEffect(
-    () => () => {
-      lspSocketRef.current?.close();
-    },
-    []
-  );
 
   return (
     <Editor
@@ -45,6 +43,7 @@ export function MonacoEditorWithLSP({
       theme={theme.shiki}
       value={value}
       onChange={(value) => {
+        console.log('Monaco value changed:', value);
         onChange?.(value || '');
       }}
       beforeMount={(monaco) => beforeMonacoMount?.(monaco)}
@@ -60,19 +59,15 @@ export function MonacoEditorWithLSP({
           });
           monaco.languages.register({ id: 'javascript' });
           monaco.languages.register({ id: 'markdown' });
-
           monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
             jsx: monaco.languages.typescript.JsxEmit.Preserve,
             target: monaco.languages.typescript.ScriptTarget.ES2020,
             esModuleInterop: true,
           });
-
-          // We'll use LSP for diagnostics, so keep Monaco silent
           monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
             noSemanticValidation: true,
             noSyntaxValidation: true,
           });
-
           shikiToMonaco(highlighter, monaco);
           const model = monaco.editor.createModel(
             content || '',
@@ -82,103 +77,8 @@ export function MonacoEditorWithLSP({
           editor.setModel(model);
           initVimMode(editor);
 
-          // --- LSP WIRING BELOW ---
-          // 1. Connect to LSP server
-          const ws = new WebSocket('ws://localhost:3007');
-          lspSocketRef.current = ws;
-
-          ws.onerror = (event) => {
-            console.error('[LSP] WebSocket error:', event);
-          };
-          ws.onopen = () => {
-            // Open file in LSP
-            ws.send(
-              JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'textDocument/didOpen',
-                params: {
-                  textDocument: {
-                    uri: `file://${fileName}`,
-                    languageId: 'typescript',
-                    version: 1,
-                    text: editor.getValue(),
-                  },
-                },
-              })
-            );
-          };
-
-          // 2. Sync changes to LSP
-          editor.onDidChangeModelContent(() => {
-            ws.send(
-              JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'textDocument/didChange',
-                params: {
-                  textDocument: { uri: `file://${fileName}`, version: 2 },
-                  contentChanges: [{ text: editor.getValue() }],
-                },
-              })
-            );
-          });
-
-          // 3. Listen for LSP diagnostics and apply as Monaco markers
-          ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            console.log('[LSP] Received message:', msg);
-            if (msg.method === 'textDocument/publishDiagnostics') {
-              const diagnostics = (msg.params?.diagnostics || []).map(
-                (diag: any) => ({
-                  severity: monaco.MarkerSeverity.Error, // TODO: map LSP severity to Monaco
-                  message: diag.message,
-                  startLineNumber: diag.range.start.line + 1,
-                  startColumn: diag.range.start.character + 1,
-                  endLineNumber: diag.range.end.line + 1,
-                  endColumn: diag.range.end.character + 1,
-                })
-              );
-              monaco.editor.setModelMarkers(model, 'lsp', diagnostics);
-            }
-            // 4. Handle LSP completion responses
-            if (msg.id && lspPendingCompletions.current[msg.id]) {
-              const cb = lspPendingCompletions.current[msg.id];
-              delete lspPendingCompletions.current[msg.id];
-              const items = msg.result?.items || [];
-              cb(items);
-            }
-          };
-
-          // 5. Register a minimal completion provider using LSP
-          monaco.languages.registerCompletionItemProvider('typescript', {
-            provideCompletionItems: async (model, position) => {
-              const id = lspMsgId.current++;
-              ws.send(
-                JSON.stringify({
-                  jsonrpc: '2.0',
-                  id,
-                  method: 'textDocument/completion',
-                  params: {
-                    textDocument: { uri: `file://${fileName}` },
-                    position: {
-                      line: position.lineNumber - 1,
-                      character: position.column - 1,
-                    },
-                  },
-                })
-              );
-              return new Promise((resolve) => {
-                lspPendingCompletions.current[id] = (items) => {
-                  resolve({
-                    suggestions: (items || []).map((item: any) => ({
-                      label: item.label,
-                      kind: monaco.languages.CompletionItemKind.Text,
-                      insertText: item.insertText || item.label,
-                    })),
-                  });
-                };
-              });
-            },
-          });
+          // TODO: wire up LSP
+          noop(projectRoot);
         });
       }}
       options={{
