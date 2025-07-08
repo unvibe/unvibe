@@ -3,7 +3,7 @@ import { createEndpoint } from '../../create-endpoint';
 import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { runProposalDiagnostics, _parseProject } from './utils';
+// import { runProposalDiagnostics, _parseProject } from './utils';
 
 export const requestFile = createEndpoint({
   type: 'GET',
@@ -14,23 +14,23 @@ export const requestFile = createEndpoint({
   }),
   handler: async ({ parsed }) => {
     const { projectId, filePath } = parsed;
-    const project = await _parseProject('projects', projectId);
+    // const project = await _parseProject('projects', projectId);
     const fileAbsolutePath = resolveHomePath(
       path.join(`projects/${projectId}`, filePath)
     );
     try {
       const content = await fs.readFile(fileAbsolutePath, 'utf-8');
-      const diagnostics = await runProposalDiagnostics(
-        {
-          message: '',
-          replace_files: [{ path: fileAbsolutePath, content: content }],
-        },
-        project
-      );
+      // const diagnostics = await runProposalDiagnostics(
+      //   {
+      //     message: '',
+      //     replace_files: [{ path: fileAbsolutePath, content: content }],
+      //   },
+      //   project
+      // );
       return {
         content,
         filePath: path.basename(filePath),
-        diagnostics,
+        // diagnostics,
       };
     } catch (error) {
       return {
