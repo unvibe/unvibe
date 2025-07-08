@@ -182,6 +182,7 @@ export async function check(
         type: 'error',
         column: character + 1,
         line: line + 1,
+        length: d.length,
         message: msg,
       });
     });

@@ -34,17 +34,16 @@ export default function EditorLspDemoPage() {
         Typings loaded: {typingsLoaded ? 'yes' : 'no'}
       </div>
       <div style={{ flex: 1 }}>
-        {isClient && (
-          <React.Suspense fallback={<div>Loading Monaco...</div>}>
-            <MonacoEditorWithLSP
-              content={data?.content}
-              projectRoot={'/Users/khaledzakaria/projects/unvibe'}
-              fileName='/Users/khaledzakaria/projects/unvibe/server/index.ts'
-              onChange={() => {}}
-              height='90vh'
-              beforeMonacoMount={beforeMonacoMount}
-            />
-          </React.Suspense>
+        {isClient && data?.content && (
+          <MonacoEditorWithLSP
+            content={data?.content}
+            diagnostics={data?.diagnostics}
+            projectRoot={'/Users/khaledzakaria/projects/unvibe'}
+            fileName='/Users/khaledzakaria/projects/unvibe/server/index.ts'
+            onChange={() => {}}
+            height='90vh'
+            beforeMonacoMount={beforeMonacoMount}
+          />
         )}
       </div>
     </div>

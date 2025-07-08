@@ -73,6 +73,7 @@ export type DiagnosticMessage = {
   message: string;
   line: number;
   column: number;
+  length?: number;
 };
 
 export type CustomSystemPart = InferSelectModel<typeof customSystemParts>;

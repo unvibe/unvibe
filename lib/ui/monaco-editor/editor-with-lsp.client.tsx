@@ -25,6 +25,7 @@ export function MonacoEditorWithLSP({
   value,
   beforeMonacoMount,
   projectRoot,
+  diagnostics,
 }: {
   content?: string;
   fileName: string;
@@ -33,6 +34,7 @@ export function MonacoEditorWithLSP({
   value?: string;
   beforeMonacoMount?: (monaco: Monaco) => void;
   projectRoot: string; // Optional, used for LSP initialize
+  diagnostics?: { name: string; result: string }[];
 }) {
   const [theme] = useTheme();
 
@@ -79,6 +81,34 @@ export function MonacoEditorWithLSP({
 
           // TODO: wire up LSP
           noop(projectRoot);
+          const flattedDiagnostics: {
+            type: string;
+            line: number;
+            length?: number; // optional, not always present
+            column: number;
+            message: string;
+          }[] = [];
+
+          diagnostics?.forEach((d) => {
+            const result: Record<
+              string,
+              { type: string; line: number; column: number; message: string }[]
+            > = JSON.parse(d.result);
+            const firstKey = Object.keys(result)?.[0];
+            if (firstKey === undefined) return;
+            flattedDiagnostics.push(...result[firstKey]);
+          });
+
+          const monacoDiagnostics = flattedDiagnostics?.map((diag) => ({
+            severity: monaco.MarkerSeverity.Error, // TODO: map LSP severity to Monaco
+            message: diag.message,
+            startLineNumber: diag.line,
+            startColumn: diag.column,
+            endLineNumber: diag.line,
+            endColumn: diag.column + (diag.length ?? 1), // Monaco uses 1-based indexing
+          }));
+
+          monaco.editor.setModelMarkers(model, 'lsp', monacoDiagnostics || []);
         });
       }}
       options={{

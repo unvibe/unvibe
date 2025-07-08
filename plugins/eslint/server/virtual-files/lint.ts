@@ -96,6 +96,7 @@ export async function lint(
         line: message.line,
         column: message.column,
         message: message.message,
+        length: message.endColumn ? message.endColumn - message.column : 3,
       });
     });
   });
