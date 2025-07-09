@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export type Message = string;
+export const key = 'message';
 
 export const instructions: string = fs.readFileSync(
   path.join(__dirname, 'instructions.md'),

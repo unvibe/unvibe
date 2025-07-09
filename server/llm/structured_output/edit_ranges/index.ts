@@ -9,6 +9,7 @@ export type EditRanges = {
   path: string;
   edits: { start: number; end: number; content: string }[];
 }[];
+export const key = 'edit_ranges';
 
 export const instructions: string = fs.readFileSync(
   path.join(__dirname, 'instructions.md'),

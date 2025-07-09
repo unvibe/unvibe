@@ -70,8 +70,8 @@ const SelectValueDisplay: React.FC<{
     value
   );
   return (
-    <span className='flex items-center gap-2 min-w-0 flex-1'>
-      {groupIcon && <span className='inline-flex mr-1'>{groupIcon}</span>}
+    <span className='flex items-center gap-1 min-w-0 flex-1'>
+      {groupIcon && <span className='inline-flex'>{groupIcon}</span>}
       <span className='truncate'>{selectedLabel}</span>
     </span>
   );
@@ -105,7 +105,7 @@ export const Select: React.FC<SelectProps> = ({
         <SelectPrimitive.Trigger
           className={clsx(
             'flex items-center justify-between focus:outline-none focus:border-foreground',
-            'cursor-pointer gap-2',
+            'cursor-pointer gap-1',
             trigger
           )}
         >
@@ -130,9 +130,9 @@ export const Select: React.FC<SelectProps> = ({
               {isGroupedOptions(options)
                 ? options.map((group, i) => (
                     <React.Fragment key={group.label + i}>
-                      <div className='p-2 text-xs font-semibold text-foreground-2 flex items-center gap-2'>
+                      <div className='p-2 text-xs font-semibold text-foreground-2 flex items-center gap-1'>
                         {group.icon && (
-                          <span className='mr-1 inline-flex'>{group.icon}</span>
+                          <span className='inline-flex'>{group.icon}</span>
                         )}
                         {group.label}
                       </div>

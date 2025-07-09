@@ -1,39 +1,34 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { instructions as delete_files } from './delete_files';
-import { instructions as edit_files } from './edit_files';
-import { instructions as shell_scripts } from './shell_scripts';
-import { instructions as replace_files } from './replace_files';
-import { instructions as edit_ranges } from './edit_ranges';
-import { instructions as message } from './message';
+import * as delete_files from './delete_files';
+import * as edit_files from './edit_files';
+import * as shell_scripts from './shell_scripts';
+import * as replace_files from './replace_files';
+import * as edit_ranges from './edit_ranges';
+import * as message from './message';
 
 const instructions = [
-  message,
-  replace_files,
-  delete_files,
-  edit_files,
-  edit_ranges,
-  shell_scripts,
+  message.instructions,
+  replace_files.instructions,
+  delete_files.instructions,
+  edit_files.instructions,
+  edit_ranges.instructions,
+  shell_scripts.instructions,
 ].join('\n\n---\n\n');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export type StructuredOutput = {
-  message: string;
-  replace_files?: { path: string; content: string }[];
-  delete_files?: { path: string }[];
-  edit_files?: { path: string; content: string; insert_at: number }[];
-  edit_ranges?: {
-    path: string;
-    edits: { start: number; end: number; content: string }[];
-  }[];
-  shell_scripts?: string[];
+  message: message.Message;
+  replace_files?: replace_files.ReplaceFiles;
+  delete_files?: delete_files.DeleteFiles;
+  edit_files?: edit_files.EditFiles;
+  edit_ranges?: edit_ranges.EditRanges;
+  shell_scripts?: shell_scripts.ShellScripts;
 };
 
 export const structuredOutputInstructions: string = fs
   .readFileSync(path.join(__dirname, './instructions.md'), 'utf8')
   .replace('{{{slot}}}', instructions);
-
-console.log(structuredOutputInstructions);
