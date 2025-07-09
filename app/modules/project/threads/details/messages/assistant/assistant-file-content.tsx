@@ -88,29 +88,29 @@ export function ThreadDetailsMessageListItemFileContent({
       linesMap[d.line].push(d);
     });
 
-    console.log({
-      linesMap,
-      content: content?.split('\n'),
-      diagnostics,
-      decorations,
-    });
-
-    const diagnosticsDecorations = Object.keys(linesMap).map((lineNumber) => ({
-      start: {
-        line: Number(lineNumber) >= 0 ? Number(lineNumber) : 0,
-        character: 0,
-      },
-      end: {
-        line: Number(lineNumber),
-        character: content?.split('\n')[Number(lineNumber)].length || 0,
-      },
-      properties: {
-        class: 'error-underline',
-        ['data-title']: linesMap[Number(lineNumber)]
-          .map((d) => d.message)
-          .join('\n'),
-      },
-    }));
+    const diagnosticsDecorations = Object.keys(linesMap)
+      .map((lineNumber) => {
+        const messages = linesMap[Number(lineNumber)];
+        return messages.map((d) => {
+          console.log('diagnostic', d);
+          const startLine = d.line - 1;
+          const endLine = d.line - 1;
+          const startCharacter = d.column - 1;
+          const endCharacter =
+            content?.split('\n')[d.line - 1]?.length || startCharacter + 3;
+          return {
+            start: { line: startLine, character: startCharacter },
+            end: { line: endLine, character: endCharacter },
+            properties: {
+              class: 'error-underline',
+              ['data-title']: linesMap[Number(lineNumber)]
+                .map((d) => d.message)
+                .join('\n'),
+            },
+          };
+        });
+      })
+      .flat();
 
     const allDecorations = mergeDecorations(
       decorations,
