@@ -1,20 +1,21 @@
 # Structured Output Instructions
 
+**message**: your message to the user, supports markdown.
+**replace_files**: an array of files to be replaced completely with new content.
+**delete_files**: an array of files to be deleted.
+**edit_files**: an array of files with single insertion points, where `insert_at` is the line number to insert the content.
+**edit_ranges**: an array of files with multiple range edits, where each edit specifies a start and end line, and the content to replace those lines.
+**shell_scripts**: an array of shell commands to be executed, typically for setup or configuration tasks.
+
 ## Output Type
 
 ```ts
 {
-  // A concise, actionable summary of the proposed change, question, or analysis. Markdown is supported.
   message: string;
-  // Full file replacements
   replace_files?: { path: string; content: string }[];
-  // Files to be deleted
   delete_files?: { path: string }[];
-  // Single-insertion point edits
   edit_files?: { path: string; content: string; insert_at: number }[];
-  // Multi-range or granular edits
   edit_ranges?: { path: string; edits: { start: number; end: number; content: string }[] }[];
-  // scripts to be executed
   shell_scripts?: string[];
 }
 ```
