@@ -23,14 +23,8 @@ export function StructuredOutputEditFiles() {
         const startLine = edit.insert_at - 1; // Convert to 0-based index
         const endLine = startLine + contentLines.length - 1;
         const startCharacter = 0;
-        const endCharacter = contentLines[contentLines.length - 1].length;
-        console.log({
-          startLine,
-          endLine,
-          startCharacter,
-          endCharacter,
-          content: edit.content,
-        });
+        const endCharacter =
+          resolved?.content.split('\n')[endLine]?.length || 0;
         const editInsertionDecoration = {
           start: { line: startLine, character: startCharacter },
           end: {
