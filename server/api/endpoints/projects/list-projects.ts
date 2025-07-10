@@ -20,17 +20,20 @@ async function listLocalSource(rootFromHome: string): Promise<string[]> {
 
 async function _listLocal(
   _sources: string[]
-): Promise<Record<string, string[]>> {
+): Promise<Record<string, { name: string; id: string }[]>> {
   // normalize for duplicates
   const sources = Array.from(new Set(_sources));
   // accumulate results
-  const result: Record<string, string[]> = {};
+  const result: Record<string, { name: string; id: string }[]> = {};
 
   // collect all projects
   await Promise.all(
     sources.map(async (source) => {
       const projects = await listLocalSource(source);
-      result[source] = projects;
+      result[btoa(source)] = projects.map((name) => ({
+        name,
+        id: btoa(`${source}/${name}`),
+      }));
     })
   );
 
@@ -46,8 +49,10 @@ export const listProjects = createEndpoint({
   handler: async ({ parsed }) => {
     const { sources } = parsed;
 
-    // from the ~ comma seperated list of directories that are a root of a project
-    const projects = await _listLocal(sources.split(','));
+    const decodedSourcesPaths = sources
+      .split(',')
+      .map((encodedPath) => atob(encodedPath));
+    const projects = await _listLocal(decodedSourcesPaths);
 
     return {
       projects,

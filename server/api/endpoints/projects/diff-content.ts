@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import simpleGit from 'simple-git';
 import { resolveHomePath } from '@/server/project/utils';
+import { pathFromId } from '@/server/project';
 
 export const diffContent = createEndpoint({
   type: 'POST',
@@ -22,7 +23,7 @@ export const diffContent = createEndpoint({
       const tempFilePath = tempPath;
       const tempFileContent = content;
       await fs.writeFile(tempFilePath, tempFileContent);
-      const rootPath = resolveHomePath(`projects/${projectId}`);
+      const rootPath = resolveHomePath(pathFromId(projectId));
       const resolvedFilePath = path.join(rootPath, filePath);
 
       const fileExists = await fs

@@ -6,8 +6,7 @@ export const killScript = createEndpoint({
   type: 'POST',
   pathname: '/projects/kill-script',
   params: z.object({
-    source: z.string(),
-    projectDirname: z.string(),
+    projectId: z.string(),
     processMetadata: z.object({
       id: z.string(),
       pid: z.number(),
@@ -21,8 +20,8 @@ export const killScript = createEndpoint({
     }),
   }),
   handler: async ({ parsed }) => {
-    const { source, projectDirname, processMetadata } = parsed;
-    const project = await _parseProject(source, projectDirname);
+    const { projectId, processMetadata } = parsed;
+    const project = await _parseProject(projectId);
 
     const result = _killScript(project, processMetadata);
 

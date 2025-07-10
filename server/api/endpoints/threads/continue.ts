@@ -48,7 +48,7 @@ async function loadContext(
   prompt: string,
   images: string[] | undefined
 ) {
-  const project = await parseProject('projects', projectId, allPlugins);
+  const project = await parseProject(projectId, allPlugins);
   // 4. prepare the context
   const context = new Context();
   const model = getModelById(thread.model_id);

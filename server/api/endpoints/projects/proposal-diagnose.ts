@@ -6,8 +6,7 @@ export const getProposalDiagnostic = createEndpoint({
   type: 'POST',
   pathname: '/projects/diagnose',
   params: z.object({
-    projectDirname: z.string(),
-    source: z.string(),
+    id: z.string(),
     proposal: z.object({
       message: z.string(),
       replace_files: z
@@ -27,8 +26,8 @@ export const getProposalDiagnostic = createEndpoint({
     }),
   }),
   handler: async ({ parsed }) => {
-    const { source, projectDirname } = parsed;
-    const project = await _parseProject(source, projectDirname);
+    const { id } = parsed;
+    const project = await _parseProject(id);
     const result = await runProposalDiagnostics(parsed.proposal, project);
 
     return {

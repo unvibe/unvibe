@@ -7,12 +7,11 @@ export const parseProject = createEndpoint({
   type: 'GET',
   pathname: '/projects/parse-project',
   params: z.object({
-    source: z.string(),
-    projectDirname: z.string(),
+    id: z.string(), // project id
   }),
   handler: async ({ parsed }) => {
-    const { source, projectDirname } = parsed;
-    const project = await _parseProject(source, projectDirname);
+    const { id } = parsed;
+    const project = await _parseProject(id);
 
     const projectWithoutContent: Project = {
       ...project,

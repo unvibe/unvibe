@@ -3,6 +3,7 @@ import { createEndpoint } from '../../create-endpoint';
 import { resolveHomePath } from '@/server/project/utils';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathFromId } from '@/server/project';
 // import { runProposalDiagnostics, _parseProject } from './utils';
 
 export const requestFile = createEndpoint({
@@ -16,7 +17,7 @@ export const requestFile = createEndpoint({
     const { projectId, filePath } = parsed;
     // const project = await _parseProject('projects', projectId);
     const fileAbsolutePath = resolveHomePath(
-      path.join(`projects/${projectId}`, filePath)
+      path.join(pathFromId(projectId), filePath)
     );
     try {
       const content = await fs.readFile(fileAbsolutePath, 'utf-8');

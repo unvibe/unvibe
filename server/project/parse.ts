@@ -6,6 +6,7 @@ import { db } from '@/server/db';
 import { scanProjectFilesWithCache } from './scan-and-cache';
 import type { FileCache } from './cache';
 import fs from 'node:fs/promises';
+import { pathFromId } from '.';
 
 const CACHE_DIR = path.join(resolveHomePath('.unvibe'), '.unvibe-cache');
 
@@ -80,12 +81,12 @@ async function eagerShouldReturnCache(projectPath: string) {
 }
 
 export async function parseProject(
-  source: string,
-  projectDirName: string,
+  id: string,
   plugins: ServerPlugin[]
 ): Promise<Project> {
-  const sourcePath = resolveHomePath(source);
-  const projectPath = path.join(sourcePath, projectDirName);
+  const projectPathFromHome = pathFromId(id);
+  const projectPath = resolveHomePath(projectPathFromHome);
+  const projectDirName = path.basename(projectPath);
 
   // --- Load file cache, scan for changes, persist cache ---
   const fileCache = await loadCache(projectPath);

@@ -6,8 +6,7 @@ import { client } from '@/server/api/client';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await client('GET /projects/parse-project', {
-    source: 'projects',
-    projectDirname: params.project_id,
+    id: params.project_id,
   });
   return {
     project: data.project,
@@ -16,8 +15,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const data = await client('GET /projects/parse-project', {
-    source: 'projects',
-    projectDirname: params.project_id,
+    id: params.project_id,
   });
   return {
     project: data.project,

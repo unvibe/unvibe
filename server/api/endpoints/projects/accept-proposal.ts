@@ -97,8 +97,7 @@ export const acceptProposal = createEndpoint({
   type: 'POST',
   pathname: '/projects/accept-proposal',
   params: z.object({
-    projectDirname: z.string(),
-    source: z.string(),
+    id: z.string(), // project id
     proposal: z.object({
       messageId: z.string(),
       message: z.string(),
@@ -133,7 +132,7 @@ export const acceptProposal = createEndpoint({
     }),
   }),
   handler: async ({ parsed }) => {
-    const project = await _parseProject(parsed.source, parsed.projectDirname);
+    const project = await _parseProject(parsed.id);
     const scripts = await applyShellScripts(
       project,
       parsed.proposal.shell_scripts || []

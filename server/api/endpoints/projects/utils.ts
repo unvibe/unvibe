@@ -174,11 +174,8 @@ export async function _modifyFiles(
   );
 }
 
-export function _parseProject(
-  source: Parameters<typeof parseProject>[0],
-  path: Parameters<typeof parseProject>[1]
-) {
-  return parseProject(source, path, allPlugins);
+export function _parseProject(id: string) {
+  return parseProject(id, allPlugins);
 }
 
 export async function runProposalDiagnostics(

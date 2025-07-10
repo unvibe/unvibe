@@ -49,11 +49,7 @@ export const editProposalFile = createEndpoint({
 
     const newContent = JSON.stringify(updatedContent);
 
-    const project = await parseProject(
-      'projects',
-      parsed.projectId,
-      allPlugins
-    );
+    const project = await parseProject(parsed.projectId, allPlugins);
     const { partialMetadata } = await createMetadata(newContent, project);
 
     await db

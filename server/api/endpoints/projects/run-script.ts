@@ -6,14 +6,13 @@ export const runScript = createEndpoint({
   type: 'POST',
   pathname: '/projects/run-script',
   params: z.object({
-    source: z.string(),
-    projectDirname: z.string(),
+    id: z.string(), // project id
     command: z.string(),
     args: z.array(z.string()),
   }),
   handler: async ({ parsed }) => {
-    const { source, projectDirname, command, args } = parsed;
-    const project = await _parseProject(source, projectDirname);
+    const { id, command, args } = parsed;
+    const project = await _parseProject(id);
     const processMetadata = await _runScript(project, command, args);
     return {
       processMetadata,

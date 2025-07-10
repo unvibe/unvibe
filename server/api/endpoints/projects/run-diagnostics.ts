@@ -10,13 +10,12 @@ export const runDiagnostics = createEndpoint({
   type: 'POST',
   pathname: '/projects/diagnostics',
   params: z.object({
-    source: z.string(),
-    projectDirname: z.string(),
+    id: z.string(), // project id
     content: z.array(z.object({ path: z.string(), content: z.string() })),
   }),
   handler: async ({ parsed }) => {
-    const { source, projectDirname, content } = parsed;
-    const project = await _parseProject(source, projectDirname);
+    const { id, content } = parsed;
+    const project = await _parseProject(id);
     const plugins = await loadPlugins(project);
     const diagnosticHooks = plugins
       .map((plugin) => plugin.Plugin.sourceCodeHooks)

@@ -4,7 +4,6 @@ export * from './kill-script';
 export * from './list-projects';
 export * from './list-remote-orgs';
 export * from './list-remote';
-export * from './modify-files';
 export * from './package-manager-commands';
 export * from './parse-project';
 export * from './proposal-diagnose';

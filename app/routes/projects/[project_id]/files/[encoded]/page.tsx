@@ -7,6 +7,7 @@ import { client } from '@/server/api/client';
 import { StartThreadInput } from '~/modules/project/threads/llm-input';
 import { noop } from '@/lib/core/noop';
 import { MdInfoOutline } from 'react-icons/md';
+import { pathFromId } from '@/server/project';
 
 const Editor = React.lazy(() =>
   import('@/lib/ui/monaco-editor').then((module) => ({
@@ -17,9 +18,8 @@ const Editor = React.lazy(() =>
 export async function loader({ params: p }: Route.LoaderArgs) {
   const decodedPath = decodeURIComponent(p.encoded);
   const filePath = atob(decodedPath);
-  console.log('server filePath::', path.basename(filePath));
   const fileAbsolutePath = resolveHomePath(
-    path.join(`projects/${p.project_id}`, filePath)
+    path.join(pathFromId(p.project_id), filePath)
   );
   const content = await fs.readFile(fileAbsolutePath, 'utf-8');
   return {
@@ -36,7 +36,6 @@ export async function clientLoader({ params: p }: Route.ClientLoaderArgs) {
     projectId: p.project_id,
   });
 
-  console.log('file::', result);
   return {
     content: result.content || '',
     filePath: result.filePath || '',
