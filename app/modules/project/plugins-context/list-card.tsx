@@ -107,10 +107,7 @@ export function ContextSectionCard({
             <h3 className='text-lg font-semibold pb-2'>{data.key}</h3>
             {data.type === 'system' ? null : (
               <div className='text-sm text-foreground-2 pb-2'>
-                <Markdown
-                  initialHTML={data.description}
-                  text={data.description}
-                />
+                <Markdown text={data.description} />
               </div>
             )}
             {ViewModal}

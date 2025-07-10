@@ -2,6 +2,7 @@ import { Modal } from '@/lib/ui/modal';
 import { Button } from '@/lib/ui/button';
 import { useState } from 'react';
 import { HiPlus } from 'react-icons/hi2';
+import { useAPIMutation } from '@/server/api/client';
 
 export function ProjectAddModal({
   open,
@@ -15,29 +16,35 @@ export function ProjectAddModal({
   const [mode, setMode] = useState<'empty' | 'github'>('empty');
   const [name, setName] = useState('');
   const [githubRepo, setGithubRepo] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleCreate = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setName('');
-      setGithubRepo('');
-      onClose();
-      onProjectCreated();
-    } catch (e) {
-      if (e instanceof Error) {
-        setError(e?.message || 'Failed to create project');
+  const mutation = useAPIMutation('POST /home/create-project', {
+    onSuccess: (res) => {
+      if (res.success) {
+        setName('');
+        setGithubRepo('');
+        onClose();
+        onProjectCreated();
       } else {
-        setError('Failed to create project');
+        setError(res.error || 'Failed to create project');
       }
-    } finally {
-      setLoading(false);
-    }
+    },
+    onError: (err: Error) => {
+      setError(err.message || 'Failed to create project');
+    },
+  });
+
+  const handleCreate = async () => {
+    setError(null);
+    mutation.mutate({
+      mode,
+      name,
+      githubRepo: mode === 'github' ? githubRepo : undefined,
+    });
   };
 
   if (!open) return null;
+
   return (
     <Modal onClose={onClose} className='min-w-[400px] p-8'>
       <h2 className='text-xl font-semibold pb-4 flex items-center gap-2 text-foreground-1'>
@@ -65,7 +72,7 @@ export function ProjectAddModal({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder='my-new-project'
-          disabled={loading}
+          disabled={mutation.isPending}
         />
         {mode === 'github' && (
           <>
@@ -75,20 +82,24 @@ export function ProjectAddModal({
               className='w-full px-3 py-2 rounded-md bg-background-2 border-none outline-none font-mono text-base'
               value={githubRepo}
               onChange={(e) => setGithubRepo(e.target.value)}
-              placeholder='e.g. unvibe-ai/unvibe'
-              disabled={loading}
+              placeholder='e.g. https://github.com/unvibe-ai/unvibe.git'
+              disabled={mutation.isPending}
             />
           </>
         )}
       </div>
       {error && <div className='text-red-500 mb-2'>{error}</div>}
       <div className='flex justify-end gap-2'>
-        <Button onClick={onClose} disabled={loading} variant='secondary'>
+        <Button
+          onClick={onClose}
+          disabled={mutation.isPending}
+          variant='secondary'
+        >
           Cancel
         </Button>
         <Button
           onClick={handleCreate}
-          isLoading={loading}
+          isLoading={mutation.isPending}
           disabled={!name}
           variant='primary'
         >

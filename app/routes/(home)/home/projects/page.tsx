@@ -1,5 +1,5 @@
 import Link from '@/lib/next/link';
-import { useProjects } from '~/modules/home/useProjects';
+import { useInvalidateProjects, useProjects } from '~/modules/home/useProjects';
 import { TiFolder } from 'react-icons/ti';
 import { useState, useEffect } from 'react';
 import { ProjectAddModal } from './ProjectAddModal';
@@ -17,6 +17,7 @@ export default function ProjectsPage() {
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [refreshIdx, setRefreshIdx] = useState(0);
+  const invalidateProjects = useInvalidateProjects();
 
   // Reset visibleProjects if actual projects list changes (e.g. after add/delete)
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function ProjectsPage() {
 
   const handleProjectCreated = () => {
     setRefreshIdx((i) => i + 1);
+    invalidateProjects();
   };
 
   return (

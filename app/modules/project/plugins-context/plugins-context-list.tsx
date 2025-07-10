@@ -8,6 +8,7 @@ import { parseContext } from './utils';
 import { useState } from 'react';
 import { SystemAddModal } from './system-add-modal';
 import { getQueryKey } from '@/server/api/client';
+import { ComingSoonModal } from '~/modules/modals/coming-soon';
 
 export function PluginList() {
   const contextPreview = useProject().context_preview;
@@ -17,6 +18,8 @@ export function PluginList() {
   const _hooks = parsed.filter((item) => item.type === 'hook');
 
   const [isSystemAddOpen, setIsSystemAddOpen] = useState(false);
+  const [isToolAddOpen, setIsToolAddOpen] = useState(false);
+  const [isHookAddOpen, setIsHookAddOpen] = useState(false);
   // Use getQueryKey for the context fetch
   const contextQueryKey = getQueryKey('GET /projects/parse-project');
 
@@ -33,7 +36,11 @@ export function PluginList() {
               />
             );
           })}
-          <ContextSectionCardAdd />
+          <ContextSectionCardAdd onClick={() => setIsToolAddOpen(true)} />
+          <ComingSoonModal
+            onClose={() => setIsToolAddOpen(false)}
+            open={isToolAddOpen}
+          />
         </Section>
         <Section title='System' description='LLM system instructions'>
           {_systems?.map((system) => {
@@ -68,6 +75,11 @@ export function PluginList() {
               />
             );
           })}
+          <ContextSectionCardAdd onClick={() => setIsHookAddOpen(true)} />
+          <ComingSoonModal
+            onClose={() => setIsHookAddOpen(false)}
+            open={isHookAddOpen}
+          />
         </Section>
       </div>
     </main>
