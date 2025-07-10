@@ -49,8 +49,7 @@ export function ContextItemDetailsTool({
       const resp = await toolCall.mutateAsync({
         tool: tool.name as string,
         args: form,
-        source: 'projects',
-        projectDirname: params.project_id as string,
+        projectId: params.project_id as string,
       });
       setResult(resp?.result);
     } catch (err: unknown) {

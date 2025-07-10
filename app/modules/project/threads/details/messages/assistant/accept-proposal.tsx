@@ -58,8 +58,7 @@ export function AcceptProposal() {
               onClick={() => {
                 applyProposal(
                   {
-                    projectDirname: projectId,
-                    source: 'projects',
+                    id: projectId,
                     proposal: {
                       messageId: messageContext.message.id,
                       ...structuredOutputContext.data,
@@ -89,8 +88,7 @@ export function AcceptProposal() {
                 onClick={() => {
                   applyProposal(
                     {
-                      projectDirname: projectId,
-                      source: 'projects',
+                      id: projectId,
                       proposal: {
                         messageId: messageContext.message.id,
                         ...structuredOutputContext.data,

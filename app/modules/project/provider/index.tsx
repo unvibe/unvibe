@@ -12,7 +12,7 @@ export function useClientPlugins() {
 export function useProjectActions() {
   const project = useProject();
   const params = useParams();
-  const projectDirname = params.project_id as string;
+  const projectId = params.project_id as string;
 
   const diagnosticChecks = useMemo(() => {
     return Object.values(project.plugins)
@@ -33,7 +33,7 @@ export function useProjectActions() {
     );
   }, [project]);
 
-  return { diagnosticChecks, clientPlugins, projectDirname };
+  return { diagnosticChecks, clientPlugins, projectDirname: projectId };
 }
 
 export function useProject() {

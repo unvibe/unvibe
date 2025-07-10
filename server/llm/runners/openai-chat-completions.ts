@@ -42,7 +42,15 @@ async function safelyRunToolCallback(
   callback: () => Promise<unknown> | unknown
 ) {
   try {
-    return await callback();
+    const callbackResult = await callback();
+    if (
+      !callbackResult ||
+      typeof callbackResult === 'undefined' ||
+      callbackResult === null
+    ) {
+      return '';
+    }
+    return callbackResult;
   } catch (error) {
     console.error('Error running tool callback:', error);
     if (error instanceof Error) {

@@ -1,6 +1,6 @@
 import { SiNpm } from 'react-icons/si';
 import { id } from '../../plugin.shared';
-import { useProject, useProjectActions } from '~/modules/project/provider';
+import { useProject } from '~/modules/project/provider';
 import {
   MdOutlinePlayCircle,
   MdOutlineRefresh,
@@ -15,6 +15,7 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { Modal } from '@/lib/ui/modal';
 import type { ProcessMetadata } from '@/server/project/EXPERIMENTAL_scripts';
+import { useParams } from '@/lib/next/navigation';
 
 function ScriptButton({
   script,
@@ -26,7 +27,7 @@ function ScriptButton({
   using: string;
 }) {
   const project = useProject();
-  const { projectDirname } = useProjectActions();
+  const params = useParams();
   const { mutate: runScript, isPending: isRunScriptRequestPending } =
     useAPIMutation('POST /projects/run-script');
   const { mutate: killScript, isPending: isKillScriptRequestPending } =
@@ -53,16 +54,14 @@ function ScriptButton({
             // stop the script
             killScript({
               processMetadata,
-              projectDirname,
-              source: 'projects',
+              projectId: params.project_id as string,
             });
           } else {
             runScript(
               {
                 command,
                 args: [],
-                source: 'projects',
-                projectDirname,
+                id: params.project_id as string,
               },
               {
                 onSuccess(data) {

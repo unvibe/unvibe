@@ -9,8 +9,7 @@ export function useToolsList() {
   const projectId =
     typeof params.project_id === 'string' ? params.project_id : '';
   return useAPIQuery('GET /tools-tester/list', {
-    projectDirname: projectId,
-    source: 'projects',
+    projectId,
   });
 }
 

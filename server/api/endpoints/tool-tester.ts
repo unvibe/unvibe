@@ -20,12 +20,11 @@ export const callTool = createEndpoint({
   params: z.object({
     tool: z.string(),
     args: z.record(z.unknown()),
-    projectDirname: z.string(),
-    source: z.string(),
+    projectId: z.string(),
   }),
   handler: async ({ parsed }) => {
-    const { tool, args, source, projectDirname } = parsed;
-    const project = await parseProject(source, projectDirname, allPlugins);
+    const { tool, args, projectId } = parsed;
+    const project = await parseProject(projectId, allPlugins);
 
     const plugins = await loadPlugins(project);
     const pluginsContexts = await Promise.all(
@@ -71,12 +70,11 @@ export const listTools = createEndpoint({
   type: 'GET',
   pathname: '/tools-tester/list',
   params: z.object({
-    projectDirname: z.string(),
-    source: z.string(),
+    projectId: z.string(),
   }),
   handler: async ({ parsed }) => {
-    const { projectDirname, source } = parsed;
-    const project = await parseProject(source, projectDirname, allPlugins);
+    const { projectId } = parsed;
+    const project = await parseProject(projectId, allPlugins);
     const plugins = await loadPlugins(project);
     const pluginsContexts = await Promise.all(
       plugins.map((plugin) => plugin.Plugin.createContext(project))
