@@ -91,9 +91,7 @@ export type MessageInsert = InferInsertModel<typeof messages>;
 
 // Sources table: allows dynamic management of folder sources.
 export const sources = sqliteTable('sources', {
-  id: text('id').primaryKey(), // uuid or similar
-  label: text('label').notNull(),
-  command: text('command').notNull(),
+  path: text('path').primaryKey(),
 });
 
 export type Source = InferSelectModel<typeof sources>;

@@ -9,6 +9,7 @@ import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layo
 import { Button } from '@/lib/ui';
 import { HiPlus } from 'react-icons/hi2';
 import { BsTerminalPlus } from 'react-icons/bs';
+import { AddSourceModal } from './AddSourceModal';
 
 export default function ProjectsPage() {
   const projects = useProjects();
@@ -16,6 +17,7 @@ export default function ProjectsPage() {
     projects ?? []
   );
   const [modalOpen, setModalOpen] = useState(false);
+  const [addSourceModalOpen, setAddSourceModalOpen] = useState(false);
   const [refreshIdx, setRefreshIdx] = useState(0);
   const invalidateProjects = useInvalidateProjects();
 
@@ -49,7 +51,7 @@ export default function ProjectsPage() {
               variant='secondary'
               className='flex items-center justify-center p-2!'
               title='Add Project'
-              onClick={() => setModalOpen(true)}
+              onClick={() => setAddSourceModalOpen(true)}
             >
               <BsTerminalPlus className='w-6 h-6' />
             </Button>
@@ -64,6 +66,10 @@ export default function ProjectsPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onProjectCreated={handleProjectCreated}
+      />
+      <AddSourceModal
+        open={addSourceModalOpen}
+        onClose={() => setAddSourceModalOpen(false)}
       />
       <div className='flex items-center gap-2 p-1 text-foreground-1 py-4'>
         <MdTerminal className='w-6 h-6 text-foreground' />
