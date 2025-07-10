@@ -1,7 +1,6 @@
 import { createEndpoint } from '@/server/api/create-endpoint';
 import * as PluginsMap from '@/plugins/plugins.server';
-import fs from 'node:fs/promises';
-import { ENV_PATH } from './utils';
+import { getAll } from '@/environment/server';
 
 // List all available plugins (server-side only, not client plugins)
 function listAvailablePlugins() {
@@ -25,16 +24,13 @@ function listAvailableThemes() {
 
 async function getEnvironmentVariables() {
   try {
-    const content = await fs.readFile(ENV_PATH, 'utf-8');
-    return content
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#'))
-      .map((line) => {
-        const [key, ...rest] = line.split('=');
-        return { key, value: rest.join('=') };
-      });
-  } catch {
+    const env = getAll();
+    return Object.entries(env).map(([key, value]) => ({
+      key,
+      value: value ? '****' : '',
+    }));
+  } catch (error) {
+    console.log('Error fetching environment variables:', error);
     return [];
   }
 }

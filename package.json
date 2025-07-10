@@ -4,18 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:client": "react-router build",
-    "dev:client": "react-router dev",
-    "start:client": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc --noEmit",
+    "server:nodemon": "nodemon --watch ./.env.local --watch ./server --watch ./plugins --watch ./environment --ext ts --exec \"npm run server\"",
+    "server": "tsx --env-file=.env.local server/index.ts",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:server": "npm run server:nodemon",
+    "dev:client": "react-router dev",
+    "build:client": "react-router build",
     "build": "npm run build:client",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
     "start:server": "tsx --env-file=.env.local server/index.ts",
+    "start:client": "react-router-serve ./build/server/index.js",
     "lint": "next lint",
-    "server:nodemon": "nodemon --watch ./server --watch ./plugins --ext ts --exec \"npm run server\"",
-    "server": "tsx --env-file=.env.local server/index.ts"
+    "typecheck": "react-router typegen && tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.51.0",

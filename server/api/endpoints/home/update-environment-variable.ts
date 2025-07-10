@@ -36,6 +36,8 @@ export const updateEnvironmentVariable = createEndpoint({
   handler: async ({ parsed }) => {
     const { key, value } = parsed;
     await setEnvironmentVariable(key, value);
+    // then we update current process environment
+    process.env[key] = value;
     return { success: true };
   },
 });

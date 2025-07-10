@@ -9,7 +9,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string;
-  readonly VITE_AWS_CDN_URL: string;
+  readonly VITE_CDN_URL: string;
   // more env variables...
 }
 

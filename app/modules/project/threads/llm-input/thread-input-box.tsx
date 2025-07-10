@@ -82,7 +82,7 @@ function makeImageKey(file: File) {
   const rawId = `${Date.now()}-${Math.random().toString(16).slice(2)}-${file.name}`;
   return `uploads/thread-images/${rawId}`;
 }
-const CDN_URL = import.meta.env.VITE_AWS_CDN_URL;
+const CDN_URL = import.meta.env.VITE_CDN_URL;
 
 export function ThreadInputBox({
   prompt: controlledPrompt,

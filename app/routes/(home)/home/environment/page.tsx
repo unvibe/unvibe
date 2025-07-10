@@ -8,15 +8,29 @@ import { HiPlus } from 'react-icons/hi2';
 import { TiCogOutline } from 'react-icons/ti';
 import * as React from 'react';
 import { useLLMModels } from '~/modules/root-providers/llm-models';
+import { EnvironmentEditModal } from './EnvironmentEditModal';
 
 export default function EnvironmentPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
   const models = useLLMModels();
   const [visibleEnv, setVisibleEnv] = React.useState(data?.env ?? []);
 
+  // Modal state
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
+  const [editingEnv, setEditingEnv] = React.useState<{
+    key: string;
+    value: string;
+  } | null>(null);
+
   React.useEffect(() => {
     if (data?.env) setVisibleEnv(data.env);
   }, [data]);
+
+  // Open modal with env var
+  const handleEditClick = (envVar: { key: string; value: string }) => {
+    setEditingEnv(envVar);
+    setEditModalOpen(true);
+  };
 
   if (isLoading) return <div className='p-10'>Loading environment...</div>;
   if (error)
@@ -57,9 +71,13 @@ export default function EnvironmentPage() {
                 </div>
                 <div className='text-sm'>{envVar.key}</div>
               </div>
-              <div className='w-6 h-6 rounded-full flex items-center justify-center text-foreground-2'>
+              <button
+                className='w-6 h-6 rounded-full flex items-center justify-center text-foreground-2 hover:bg-background-1/70 transition'
+                onClick={() => handleEditClick(envVar)}
+                title='Edit variable'
+              >
                 <FiEdit className='w-5 h-5' />
-              </div>
+              </button>
             </div>
             <div className='flex gap-2 pl-10 items-center text-foreground-2'>
               <div className='flex items-center h-[20px] text-foreground-2 text-xs'>
@@ -73,6 +91,12 @@ export default function EnvironmentPage() {
           </div>
         ))}
       </div>
+
+      <EnvironmentEditModal
+        open={editModalOpen}
+        envVar={editingEnv}
+        onClose={() => setEditModalOpen(false)}
+      />
     </HomeSectionSharedLayout>
   );
 }
