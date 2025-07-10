@@ -18,10 +18,6 @@ export function EnvironmentEditModal({
   const [editValue, setEditValue] = React.useState('');
   const { refetch } = useAPIQuery('GET /home/info');
 
-  React.useEffect(() => {
-    setEditValue(envVar?.value || '');
-  }, [envVar]);
-
   const mutation = useAPIMutation('POST /home/env-update', {
     onSuccess: () => {
       onClose();

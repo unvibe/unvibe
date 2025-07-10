@@ -9,5 +9,5 @@ export type Contract = {
   AWS_S3_BUCKET: string;
   AWS_S3_REGION: string;
   AWS_CLOUDFRONT_CDN_URL: string;
-  BROWSERLESS_API_KEY: string;
+  // BROWSERLESS_API_KEY: string;
 };

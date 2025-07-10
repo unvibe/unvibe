@@ -9,6 +9,7 @@ export function SidebarFilesList() {
   const projectName = project.path.split('/').pop();
 
   const tree = makeTree(files).children['.'];
+  console.log('SidebarFilesList tree:', tree);
   return (
     <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>
       <div className='flex justify-between items-center sticky top-0 bg-background-1 p-2 z-10 max-w-full'>

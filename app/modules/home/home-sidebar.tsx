@@ -11,10 +11,11 @@ import {
 } from 'react-icons/ti';
 import { IconType } from 'react-icons/lib';
 import { usePathname } from '@/lib/next/navigation';
-import { MdSync } from 'react-icons/md';
+import { MdInfoOutline, MdSync } from 'react-icons/md';
 import React from 'react';
 import { useAPIMutation } from '@/server/api/client';
 import clsx from 'clsx';
+import { useEnvironmentStatus } from '~/routes/(home)/home/environment/useEnvironmentStatus';
 
 function SideIcon({
   href,
@@ -79,16 +80,38 @@ function SideIconGroup({ children }: { children: React.ReactNode }) {
   );
 }
 
-const HOME_NAV_ITEMS = [
+function EnvironmentStatus() {
+  const status = useEnvironmentStatus();
+  if (status) return null;
+  return (
+    <span className='bg-amber-900 p-1.5 rounded-lg border border-amber-500'>
+      <MdInfoOutline className='text-amber-500' />
+    </span>
+  );
+}
+
+type NavItem = {
+  label: string;
+  href: string;
+  Icon: IconType | React.FC<{ size?: number }>;
+  Status?: React.FC;
+};
+
+const HOME_NAV_ITEMS: NavItem[] = [
   { label: 'Projects', href: '/home/projects', Icon: TiFolder },
   { label: 'Plugins', href: '/home/plugins', Icon: TiPlug },
   { label: 'Themes', href: '/home/themes', Icon: TiBrush },
-  { label: 'Environment', href: '/home/environment', Icon: TiCogOutline },
+  {
+    label: 'Environment',
+    href: '/home/environment',
+    Icon: TiCogOutline,
+    Status: EnvironmentStatus,
+  },
   { label: 'Models', href: '/home/models', Icon: TiLightbulb },
   { label: 'Database', href: '/home/database', Icon: TiDatabase },
 ];
 
-const DOCS_NAV_ITEMS = [
+const DOCS_NAV_ITEMS: NavItem[] = [
   {
     label: 'Getting Started',
     href: '/home/docs/getting-started',
@@ -170,10 +193,13 @@ export function HomeSidebar() {
                     key={item.href}
                     passHref
                     legacyBehavior
-                    className={`flex text-sm items-center gap-3 p-2 rounded-lg hover:bg-background-2 transition-colors ${isActive ? 'bg-background-2 font-bold' : ''}`}
+                    className={`flex justify-between text-sm items-center gap-3 p-2 rounded-lg hover:bg-background-2 transition-colors ${isActive ? 'bg-background-2 font-bold' : ''}`}
                   >
-                    <item.Icon className='w-6 h-6 text-foreground-2 shrink-0' />
-                    <span>{item.label}</span>
+                    <div className='flex items-center gap-2'>
+                      <item.Icon className='w-6 h-6 text-foreground-2 shrink-0' />
+                      <span>{item.label}</span>
+                    </div>
+                    {'Status' in item && item.Status && <item.Status />}
                   </Link>
                 );
               })}

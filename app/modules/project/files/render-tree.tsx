@@ -74,6 +74,7 @@ function TreeFolder({
   path: string;
 }) {
   const [open, setOpen] = useState(level > 1 ? false : true);
+  console.log(node);
   return (
     <li className='px-2 border-l border-border-2'>
       <button
@@ -177,6 +178,7 @@ export function RenderTree({
   parentPath?: string;
 }) {
   const projectId = useParams().project_id as string;
+  if (!node) return null;
   if (node.type === 'folder') {
     return (
       <ul className='text-foreground-1'>

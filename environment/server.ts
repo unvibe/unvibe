@@ -22,6 +22,6 @@ export function getAll(): Contract {
     AWS_S3_BUCKET: get('AWS_S3_BUCKET'),
     AWS_S3_REGION: get('AWS_S3_REGION'),
     AWS_CLOUDFRONT_CDN_URL: get('AWS_CLOUDFRONT_CDN_URL'),
-    BROWSERLESS_API_KEY: get('BROWSERLESS_API_KEY'),
+    // BROWSERLESS_API_KEY: get('BROWSERLESS_API_KEY'),
   };
 }

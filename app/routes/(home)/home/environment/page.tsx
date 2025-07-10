@@ -9,11 +9,14 @@ import { TiCogOutline } from 'react-icons/ti';
 import * as React from 'react';
 import { useLLMModels } from '~/modules/root-providers/llm-models';
 import { EnvironmentEditModal } from './EnvironmentEditModal';
+import { useEnvironmentStatus } from './useEnvironmentStatus';
+import { Alert } from '@/lib/ui/alert';
 
 export default function EnvironmentPage() {
   const { data, isLoading, error } = useAPIQuery('GET /home/info');
   const models = useLLMModels();
   const [visibleEnv, setVisibleEnv] = React.useState(data?.env ?? []);
+  const envStatus = useEnvironmentStatus();
 
   // Modal state
   const [editModalOpen, setEditModalOpen] = React.useState(false);
@@ -56,6 +59,12 @@ export default function EnvironmentPage() {
         allValues={data?.env ?? []}
         getSearchString={(envVar) => envVar.key + ' ' + envVar.value}
       />
+      {!envStatus && !isLoading && (
+        <Alert variant='warning' className='mb-8 max-w-md' opacity='50'>
+          Your environment is not meeting the minimum requirements for Unvibe to
+          run properly, you need at lease an API key
+        </Alert>
+      )}
       <div className='flex flex-wrap gap-4'>
         {visibleEnv.map((envVar: { key: string; value: string }) => (
           <div

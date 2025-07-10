@@ -57,36 +57,36 @@ export const createTool: CreateTool = () => {
 };
 
 /* Experimenting with different website parsers */
-async function axios_parser(url: string): Promise<string> {
-  const response = await axios.get(url, {
-    timeout: 10000,
-  });
-  const html = response.data;
-  return html;
-}
+// async function axios_parser(url: string): Promise<string> {
+//   const response = await axios.get(url, {
+//     timeout: 10000,
+//   });
+//   const html = response.data;
+//   return html;
+// }
 
-async function browserless_parser(url: string): Promise<string> {
-  const TOKEN = process.env.BROWSERLESS_API_KEY;
-  const response = await fetch(
-    `https://production-lon.browserless.io/content?token=${TOKEN}`,
-    {
-      method: 'POST',
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: url,
-        waitForEvent: {
-          event: 'load',
-        },
-      }),
-    }
-  );
+// async function browserless_parser(url: string): Promise<string> {
+//   const TOKEN = process.env.BROWSERLESS_API_KEY;
+//   const response = await fetch(
+//     `https://production-lon.browserless.io/content?token=${TOKEN}`,
+//     {
+//       method: 'POST',
+//       headers: {
+//         'Cache-Control': 'no-cache',
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         url: url,
+//         waitForEvent: {
+//           event: 'load',
+//         },
+//       }),
+//     }
+//   );
 
-  const content = await response.text();
-  return content;
-}
+//   const content = await response.text();
+//   return content;
+// }
 
 /**
  * Playwright-powered parser for dynamic web scraping
