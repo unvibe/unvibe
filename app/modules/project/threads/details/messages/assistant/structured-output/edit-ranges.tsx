@@ -8,7 +8,6 @@ export function StructuredOutputEditRanges() {
   const files = data.edit_ranges || [];
   const rangeSelection = selection.edit_ranges || [];
 
-  console.log(message.metadata);
   return (
     <>
       {files.map((range, i) => {

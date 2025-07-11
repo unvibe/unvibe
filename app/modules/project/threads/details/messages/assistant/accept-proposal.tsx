@@ -16,17 +16,20 @@ function ProposalButton({
   className,
   onClick,
   isLoading = false,
+  disabled = false,
 }: {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   className?: string;
   onClick?: () => void;
   isLoading?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <button
-      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer ${className}`}
+      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer disabled:opacity-50 ${className}`}
       onClick={onClick}
+      disabled={isLoading || disabled}
     >
       <span>
         {isLoading ? (
@@ -39,6 +42,8 @@ function ProposalButton({
     </button>
   );
 }
+
+const normalizePath = (p: string) => (p.startsWith('./') ? p : `./${p}`);
 
 export function AcceptProposal() {
   // get if there are any errors in any of the selected files
@@ -59,11 +64,22 @@ export function AcceptProposal() {
     rangeEdits.length === 0;
 
   const metadata = messageContext.message.metadata;
-  const hasIssues = metadata
-    ? Object.values(metadata.diagnostics).some((record) =>
-        Object.values(record).some((ds) => ds.some((m) => !!m.type))
-      )
-    : false;
+
+  const selection = structuredOutputContext.selection;
+
+  const hasIssues = Object.values(selection)
+    .flat()
+    .filter(
+      (s): s is { selected: true; path: string } => s.selected && 'path' in s
+    )
+    .some((s) => {
+      return Object.values(metadata?.diagnostics || {}).some((record) => {
+        return Object.entries(record).some(([path, ds]) => {
+          const normalizedPath = normalizePath(path);
+          return normalizedPath === s.path && ds.some((m) => !!m.type);
+        });
+      });
+    });
 
   const { mutate: applyProposal, isPending: isApplyingProposal } =
     useAPIMutation('POST /projects/accept-proposal');
@@ -167,6 +183,9 @@ export function AcceptProposal() {
               icon={MdOutlineDownloading}
               className='bg-emerald-800 text-emerald-50'
               isLoading={isApplyingProposal}
+              disabled={Object.values(selection).every((sel) =>
+                sel.every((s) => !s.selected)
+              )}
               onClick={() => {
                 applyProposal(
                   {
