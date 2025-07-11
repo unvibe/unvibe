@@ -240,9 +240,9 @@ export function AcceptProposal() {
               }}
             />
             <ProposalButton
-              label='Accept with errors'
+              label='Accept'
               icon={MdOutlineDownloading}
-              className='bg-yellow-700 text-amber-50'
+              className='bg-yellow-500 text-amber-950'
               isLoading={isApplyingProposal}
               onClick={() => {
                 applyProposal(
