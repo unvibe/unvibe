@@ -318,11 +318,11 @@ export const acceptProposal = createEndpoint({
     ]);
 
     return {
-      scripts,
-      deleted,
-      replaced,
-      edited,
-      ranges,
+      shell_scripts: scripts,
+      deleted_files: deleted,
+      replace_files: replaced,
+      edit_files: edited,
+      edit_ranges: ranges,
     };
   },
 });

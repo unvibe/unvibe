@@ -16,16 +16,17 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   const id = props.id;
   return (
     <div className='flex items-center space-x-2 select-none cursor-pointer'>
-      <RadixCheckbox.Root id={id} className='relative' checked={checked}>
-        <RadixCheckbox.Checkbox
-          className={clsx(
-            'w-6 h-6 rounded border border-border flex items-center justify-center transition-colors duration-150 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer',
-            checked ? 'bg-blue-600' : 'bg-background',
-            className
-          )}
-          checked={checked}
-          {...props}
-        />
+      <RadixCheckbox.Checkbox
+        id={id}
+        checked={checked}
+        className={clsx(
+          'relative',
+          'w-6 h-6 rounded border border-border flex items-center justify-center transition-colors duration-150 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer',
+          checked ? 'bg-blue-600' : 'bg-background',
+          className
+        )}
+        {...props}
+      >
         <RadixCheckbox.Indicator className='flex items-center justify-center text-background absolute inset-0 w-full h-full'>
           <svg
             width='20'
@@ -43,7 +44,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             />
           </svg>
         </RadixCheckbox.Indicator>
-      </RadixCheckbox.Root>
+      </RadixCheckbox.Checkbox>
       {label && (
         <label
           htmlFor={id}

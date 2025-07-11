@@ -49,8 +49,6 @@ export function AcceptProposal() {
   const scripts = structuredOutputContext.data.shell_scripts || [];
   const rangeEdits = structuredOutputContext.data.edit_ranges || [];
 
-  console.log(structuredOutputContext.selection);
-
   const hasNoFilesAndNoScripts =
     replaced.length === 0 &&
     edited.length === 0 &&
