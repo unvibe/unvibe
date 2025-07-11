@@ -1,9 +1,9 @@
 // Ayu Light Theme
 import { Theme } from '../../type';
 
-const ayuLight: Theme = {
-  name: 'Ayu Light',
-  id: 'ayu-light',
+const oneLight: Theme = {
+  name: 'One Light',
+  id: 'one-light',
   colorScheme: 'light',
   cssVariables: {
     '--background': '#FAFAFA',
@@ -21,7 +21,7 @@ const ayuLight: Theme = {
     '--font-ui': 'system-ui, sans-serif',
   },
   meta: [],
-  shiki: 'ayu-light',
+  shiki: 'one-light',
 };
 
-export default ayuLight;
+export default oneLight;

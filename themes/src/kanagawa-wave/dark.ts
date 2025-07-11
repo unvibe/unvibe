@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const kanagawaWaveDark: Theme = {
+  id: 'kanagawa-wave-dark',
+  name: 'Kanagawa Wave (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#1f1f28',
+    '--background-1': '#223249',
+    '--background-2': '#2a2a37',
+    '--border': '#54546d',
+    '--border-1': '#727169',
+    '--border-2': '#c8c093',
+    '--foreground': '#dcd7ba',
+    '--foreground-1': '#c8c093',
+    '--foreground-2': '#76946a',
+    '--accent': '#ffa066',
+    '--accent-2': '#ff5d62',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'kanagawa-wave',
 };
 
-export default ayuDark;
+export default kanagawaWaveDark;

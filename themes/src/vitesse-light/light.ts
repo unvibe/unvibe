@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
-  colorScheme: 'dark',
+const vitesseLight: Theme = {
+  id: 'vitesse-light',
+  name: 'Vitesse Light (Shiki)',
+  colorScheme: 'light',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#f5f5f5',
+    '--background-1': '#eaeaea',
+    '--background-2': '#cccccc',
+    '--border': '#bdbdbd',
+    '--border-1': '#a0a0a0',
+    '--border-2': '#00cfff',
+    '--foreground': '#181818',
+    '--foreground-1': '#232323',
+    '--foreground-2': '#ffcc00',
+    '--accent': '#00cfff',
+    '--accent-2': '#ffcc00',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'vitesse-light',
 };
 
-export default ayuDark;
+export default vitesseLight;

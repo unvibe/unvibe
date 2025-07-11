@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const darkPlusDark: Theme = {
+  id: 'dark-plus-dark',
+  name: 'Dark Plus (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#1e1e1e',
+    '--background-1': '#232323',
+    '--background-2': '#282828',
+    '--border': '#333333',
+    '--border-1': '#444444',
+    '--border-2': '#5c6370',
+    '--foreground': '#d4d4d4',
+    '--foreground-1': '#c8c8c8',
+    '--foreground-2': '#b5cea8',
+    '--accent': '#569cd6',
+    '--accent-2': '#d7ba7d',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'dark-plus',
 };
 
-export default ayuDark;
+export default darkPlusDark;

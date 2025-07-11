@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
-  colorScheme: 'dark',
+const githubLight: Theme = {
+  id: 'github-light',
+  name: 'GitHub Light (Shiki)',
+  colorScheme: 'light',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#ffffff',
+    '--background-1': '#f6f8fa',
+    '--background-2': '#eaeef2',
+    '--border': '#d0d7de',
+    '--border-1': '#b1bac4',
+    '--border-2': '#6e7781',
+    '--foreground': '#24292f',
+    '--foreground-1': '#57606a',
+    '--foreground-2': '#6e7781',
+    '--accent': '#0969da',
+    '--accent-2': '#fd8c73',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'github-light',
 };
 
-export default ayuDark;
+export default githubLight;

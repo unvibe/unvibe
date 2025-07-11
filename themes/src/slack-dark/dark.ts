@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const slackDark: Theme = {
+  id: 'slack-dark',
+  name: 'Slack Dark (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#1a1d21',
+    '--background-1': '#23272b',
+    '--background-2': '#282c2f',
+    '--border': '#454c55',
+    '--border-1': '#586069',
+    '--border-2': '#36c5f0',
+    '--foreground': '#e8eaed',
+    '--foreground-1': '#d1d5da',
+    '--foreground-2': '#ecb22e',
+    '--accent': '#36c5f0',
+    '--accent-2': '#e01e5a',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'slack-dark',
 };
 
-export default ayuDark;
+export default slackDark;

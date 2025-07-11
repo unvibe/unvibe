@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
-  colorScheme: 'dark',
+const rosePineDawnLight: Theme = {
+  id: 'rose-pine-dawn-light',
+  name: 'Rosé Pine Dawn (Shiki)',
+  colorScheme: 'light',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#faf4ed',
+    '--background-1': '#fffaf3',
+    '--background-2': '#f2e9de',
+    '--border': '#dfdad9',
+    '--border-1': '#b3b9b8',
+    '--border-2': '#eb6f92',
+    '--foreground': '#575279',
+    '--foreground-1': '#907aa9',
+    '--foreground-2': '#ea9a97',
+    '--accent': '#eb6f92',
+    '--accent-2': '#f6c177',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'rose-pine-dawn',
 };
 
-export default ayuDark;
+export default rosePineDawnLight;

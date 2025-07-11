@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const synthwave84Dark: Theme = {
+  id: 'synthwave-84-dark',
+  name: 'Synthwave 84 (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#2a2139',
+    '--background-1': '#3a2d5d',
+    '--background-2': '#4a397a',
+    '--border': '#f7e8e8',
+    '--border-1': '#e6e6e6',
+    '--border-2': '#f356b0',
+    '--foreground': '#f7f1ff',
+    '--foreground-1': '#f356b0',
+    '--foreground-2': '#ffe261',
+    '--accent': '#f356b0',
+    '--accent-2': '#ffe261',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'synthwave-84',
 };
 
-export default ayuDark;
+export default synthwave84Dark;

@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const catppuccinMacchiatoDark: Theme = {
+  id: 'catppuccin-macchiato-dark',
+  name: 'Catppuccin Macchiato (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#24273a',
+    '--background-1': '#1e2030',
+    '--background-2': '#181926',
+    '--border': '#363a4f',
+    '--border-1': '#494d64',
+    '--border-2': '#f4dbd6',
+    '--foreground': '#cad3f5',
+    '--foreground-1': '#a5adcb',
+    '--foreground-2': '#f4dbd6',
+    '--accent': '#ed8796',
+    '--accent-2': '#8aadf4',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'catppuccin-macchiato',
 };
 
-export default ayuDark;
+export default catppuccinMacchiatoDark;

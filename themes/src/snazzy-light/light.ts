@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
-  colorScheme: 'dark',
+const snazzyLight: Theme = {
+  id: 'snazzy-light',
+  name: 'Snazzy Light (Shiki)',
+  colorScheme: 'light',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#fafafa',
+    '--background-1': '#f4f4f4',
+    '--background-2': '#ededed',
+    '--border': '#dddddd',
+    '--border-1': '#bbbbbb',
+    '--border-2': '#ff5c57',
+    '--foreground': '#282a36',
+    '--foreground-1': '#44475a',
+    '--foreground-2': '#50fa7b',
+    '--accent': '#ff5c57',
+    '--accent-2': '#57c7ff',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'snazzy-light',
 };
 
-export default ayuDark;
+export default snazzyLight;

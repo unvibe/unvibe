@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
+const laserwaveDark: Theme = {
+  id: 'laserwave-dark',
+  name: 'Laserwave (Shiki)',
   colorScheme: 'dark',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#27212e',
+    '--background-1': '#36304a',
+    '--background-2': '#3b3355',
+    '--border': '#6c5b7b',
+    '--border-1': '#c86fc9',
+    '--border-2': '#ea00d9',
+    '--foreground': '#f8f8f2',
+    '--foreground-1': '#cbe3e7',
+    '--foreground-2': '#f300c9',
+    '--accent': '#ff6c6b',
+    '--accent-2': '#f3f99d',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'laserwave',
 };
 
-export default ayuDark;
+export default laserwaveDark;

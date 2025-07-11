@@ -1,3 +1,5 @@
+import { BundledTheme } from 'shiki/themes';
+
 export type Theme = {
   name: string;
   id: string;
@@ -16,5 +18,5 @@ export type Theme = {
         content: string;
       }
   )[];
-  shiki: string;
+  shiki: BundledTheme;
 };

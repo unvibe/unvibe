@@ -1,21 +1,21 @@
 import type { Theme } from '../../type';
 
-const ayuDark: Theme = {
-  id: 'ayu-dark',
-  name: 'Ayu Dark (Shiki)',
-  colorScheme: 'dark',
+const gruvboxLightMedium: Theme = {
+  id: 'gruvbox-light-medium',
+  name: 'Gruvbox Light Medium (Shiki)',
+  colorScheme: 'light',
   cssVariables: {
-    '--background': '#0f1419',
-    '--background-1': '#14191f',
-    '--background-2': '#1a1f26',
-    '--border': '#232834',
-    '--border-1': '#273747',
-    '--border-2': '#5c6773',
-    '--foreground': '#e6e1cf',
-    '--foreground-1': '#d9d7ce',
-    '--foreground-2': '#5c6773',
-    '--accent': '#ffb454',
-    '--accent-2': '#95e6cb',
+    '--background': '#fbf1c7',
+    '--background-1': '#f2e5bc',
+    '--background-2': '#ebdbb2',
+    '--border': '#d5c4a1',
+    '--border-1': '#bdae93',
+    '--border-2': '#665c54',
+    '--foreground': '#3c3836',
+    '--foreground-1': '#504945',
+    '--foreground-2': '#b57614',
+    '--accent': '#b57614',
+    '--accent-2': '#d79921',
     '--font-code': '"Fira Mono", Menlo, Monaco, Consolas, monospace',
     '--font-ui': 'system-ui, sans-serif',
   },
@@ -33,7 +33,7 @@ const ayuDark: Theme = {
       href: 'https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap',
     },
   ],
-  shiki: 'ayu-dark',
+  shiki: 'gruvbox-light-medium',
 };
 
-export default ayuDark;
+export default gruvboxLightMedium;
