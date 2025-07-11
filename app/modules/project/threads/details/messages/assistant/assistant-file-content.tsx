@@ -92,7 +92,6 @@ export function ThreadDetailsMessageListItemFileContent({
       .map((lineNumber) => {
         const messages = linesMap[Number(lineNumber)];
         return messages.map((d) => {
-          console.log('diagnostic', d);
           const startLine = d.line - 1;
           const endLine = d.line - 1;
           const startCharacter = d.column - 1;

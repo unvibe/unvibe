@@ -128,7 +128,8 @@ export function AssistantMessageContextProvider({
     }
 
     try {
-      const parsedContent = cleanUp(parseMessageContent(data.content));
+      const asJson = parseMessageContent(data.content);
+      const parsedContent = cleanUp(asJson);
       const addedFilesCount =
         typeof parsedContent !== 'string'
           ? parsedContent?.replace_files?.length || 0

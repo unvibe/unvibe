@@ -1,4 +1,5 @@
 import {
+  MdChevronRight,
   MdOutlineDownloading,
   MdOutlinePlayArrow,
   MdRefresh,
@@ -43,6 +44,7 @@ export function AcceptProposal() {
   // get if there are any errors in any of the selected files
   const messageContext = useAssistantMessageContext();
   const structuredOutputContext = useStructuredOutputContext();
+  const suggestedPrompts = structuredOutputContext.data.suggested_actions || [];
   const replaced = structuredOutputContext.data.replace_files || [];
   const edited = structuredOutputContext.data.edit_files || [];
   const deleted = structuredOutputContext.data.delete_files || [];
@@ -65,133 +67,33 @@ export function AcceptProposal() {
 
   const { mutate: applyProposal, isPending: isApplyingProposal } =
     useAPIMutation('POST /projects/accept-proposal');
-  const { mutate: continueThread, isPending: isContinuingThread } =
-    useAPIMutation('POST /threads/continue');
+  const {
+    mutate: continueThread,
+    isPending: isContinuingThread,
+    variables,
+  } = useAPIMutation('POST /threads/continue');
   const projectId = useParams().project_id as string;
   const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
     id: messageContext.message.thread_id,
   });
 
-  return (
-    <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
-      {hasNoFilesAndNoScripts ? (
-        <ProposalButton
-          label='Continue'
-          icon={MdOutlinePlayArrow}
-          className='bg-sky-800 text-sky-50'
-          isLoading={false}
-        />
-      ) : (
-        <>
-          {!hasIssues && (
-            <>
+  if (hasNoFilesAndNoScripts) {
+    return (
+      <div className='flex items-center justify-between pt-4 pb-2 gap-4'>
+        <div className='flex items-stretch gap-4 flex-wrap'>
+          {suggestedPrompts.length > 0 &&
+            suggestedPrompts.map((prompt) => (
               <ProposalButton
-                label='Accept & continue'
-                icon={MdOutlinePlayArrow}
+                key={prompt}
+                label={prompt}
+                icon={MdChevronRight}
                 className='bg-background-1 text-foreground-2'
-                isLoading={isApplyingProposal || isContinuingThread}
-                onClick={() => {
-                  applyProposal(
-                    {
-                      id: projectId,
-                      selections: structuredOutputContext.selection,
-                      proposal: {
-                        messageId: messageContext.message.id,
-                        ...structuredOutputContext.data,
-                      },
-                    },
-                    {
-                      onSuccess(data) {
-                        continueThread(
-                          {
-                            projectId,
-                            prompt: `Accepted. below is the result and the status of the proposal acceptance: ${JSON.stringify(data, null, 2)}`,
-                            threadId: messageContext.message.thread_id,
-                            context_config:
-                              thread?.thread?.context_config || undefined,
-                            images: [],
-                            search_enabled: false,
-                          },
-                          {
-                            onSuccess() {
-                              refetch();
-                            },
-                          }
-                        );
-                      },
-                      onError(error) {
-                        console.error('Error accepting proposal', error);
-                      },
-                    }
-                  );
-                }}
-              />
-              <ProposalButton
-                label='Accept'
-                icon={MdOutlineDownloading}
-                className='bg-emerald-800 text-emerald-50'
-                isLoading={isApplyingProposal}
-                onClick={() => {
-                  applyProposal(
-                    {
-                      id: projectId,
-                      selections: structuredOutputContext.selection,
-                      proposal: {
-                        messageId: messageContext.message.id,
-                        ...structuredOutputContext.data,
-                      },
-                    },
-                    {
-                      onSuccess(data) {
-                        console.log('Proposal accepted successfully', data);
-                      },
-                      onError(error) {
-                        console.error('Error accepting proposal', error);
-                      },
-                    }
-                  );
-                }}
-              />
-            </>
-          )}
-          {hasIssues && (
-            <>
-              <ProposalButton
-                label='Accept with errors'
-                icon={MdOutlineDownloading}
-                className='bg-yellow-700 text-amber-50'
-                isLoading={isApplyingProposal}
-                onClick={() => {
-                  applyProposal(
-                    {
-                      id: projectId,
-                      selections: structuredOutputContext.selection,
-                      proposal: {
-                        messageId: messageContext.message.id,
-                        ...structuredOutputContext.data,
-                      },
-                    },
-                    {
-                      onSuccess(data) {
-                        console.log('Proposal accepted successfully', data);
-                      },
-                      onError(error) {
-                        console.error('Error accepting proposal', error);
-                      },
-                    }
-                  );
-                }}
-              />
-              <ProposalButton
-                className='bg-background-1 text-foreground-2'
-                icon={MdRefresh}
-                label='Fix errors'
-                isLoading={isContinuingThread}
+                isLoading={isContinuingThread && variables?.prompt === prompt}
                 onClick={() => {
                   continueThread(
                     {
                       projectId,
-                      prompt: `fix the errors in the proposal ${JSON.stringify(metadata?.diagnostics, null, 2)}`,
+                      prompt,
                       threadId: messageContext.message.thread_id,
                       context_config:
                         thread?.thread?.context_config || undefined,
@@ -202,14 +104,146 @@ export function AcceptProposal() {
                       onSuccess() {
                         refetch();
                       },
+                      onError(error) {
+                        console.error('Error continuing thread', error);
+                      },
                     }
                   );
                 }}
               />
-            </>
-          )}
-        </>
-      )}
+            ))}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
+      <div className='flex items-center gap-4'>
+        {!hasIssues && (
+          <>
+            <ProposalButton
+              label='Accept & continue'
+              icon={MdOutlinePlayArrow}
+              className='bg-background-1 text-foreground-2'
+              isLoading={isApplyingProposal || isContinuingThread}
+              onClick={() => {
+                applyProposal(
+                  {
+                    id: projectId,
+                    selections: structuredOutputContext.selection,
+                    proposal: {
+                      messageId: messageContext.message.id,
+                      ...structuredOutputContext.data,
+                    },
+                  },
+                  {
+                    onSuccess(data) {
+                      continueThread(
+                        {
+                          projectId,
+                          prompt: `Accepted. below is the result and the status of the proposal acceptance: ${JSON.stringify(data, null, 2)}`,
+                          threadId: messageContext.message.thread_id,
+                          context_config:
+                            thread?.thread?.context_config || undefined,
+                          images: [],
+                          search_enabled: false,
+                        },
+                        {
+                          onSuccess() {
+                            refetch();
+                          },
+                        }
+                      );
+                    },
+                    onError(error) {
+                      console.error('Error accepting proposal', error);
+                    },
+                  }
+                );
+              }}
+            />
+            <ProposalButton
+              label='Accept'
+              icon={MdOutlineDownloading}
+              className='bg-emerald-800 text-emerald-50'
+              isLoading={isApplyingProposal}
+              onClick={() => {
+                applyProposal(
+                  {
+                    id: projectId,
+                    selections: structuredOutputContext.selection,
+                    proposal: {
+                      messageId: messageContext.message.id,
+                      ...structuredOutputContext.data,
+                    },
+                  },
+                  {
+                    onSuccess(data) {
+                      console.log('Proposal accepted successfully', data);
+                    },
+                    onError(error) {
+                      console.error('Error accepting proposal', error);
+                    },
+                  }
+                );
+              }}
+            />
+          </>
+        )}
+        {hasIssues && (
+          <>
+            <ProposalButton
+              label='Accept with errors'
+              icon={MdOutlineDownloading}
+              className='bg-yellow-700 text-amber-50'
+              isLoading={isApplyingProposal}
+              onClick={() => {
+                applyProposal(
+                  {
+                    id: projectId,
+                    selections: structuredOutputContext.selection,
+                    proposal: {
+                      messageId: messageContext.message.id,
+                      ...structuredOutputContext.data,
+                    },
+                  },
+                  {
+                    onSuccess(data) {
+                      console.log('Proposal accepted successfully', data);
+                    },
+                    onError(error) {
+                      console.error('Error accepting proposal', error);
+                    },
+                  }
+                );
+              }}
+            />
+            <ProposalButton
+              className='bg-background-1 text-foreground-2'
+              icon={MdRefresh}
+              label='Fix errors'
+              isLoading={isContinuingThread}
+              onClick={() => {
+                continueThread(
+                  {
+                    projectId,
+                    prompt: `fix the errors in the proposal ${JSON.stringify(metadata?.diagnostics, null, 2)}`,
+                    threadId: messageContext.message.thread_id,
+                    context_config: thread?.thread?.context_config || undefined,
+                    images: [],
+                    search_enabled: false,
+                  },
+                  {
+                    onSuccess() {
+                      refetch();
+                    },
+                  }
+                );
+              }}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }
