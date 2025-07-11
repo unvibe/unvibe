@@ -33,12 +33,20 @@ export function applyRangeEdits(
   // Sort edits in reverse order so line numbers remain correct as we splice
   const sorted = [...edits].sort((a, b) => b.start - a.start);
   const lines = fileContent.split('\n');
+
+  // Apply edits from bottom up
+  let newLines = [...lines];
   for (const edit of sorted) {
-    // Remove lines from start-1 to end-1, then insert new content lines at start-1
     const insertAt = Math.max(edit.start - 1, 0);
     const endAt = Math.max(edit.end, insertAt);
-    const newLines = edit.content.length ? edit.content.split('\n') : [];
-    lines.splice(insertAt, endAt - insertAt, ...newLines);
+    const replacementLines = edit.content.length
+      ? edit.content.split('\n')
+      : [];
+    newLines = [
+      ...newLines.slice(0, insertAt),
+      ...replacementLines,
+      ...newLines.slice(endAt + 1),
+    ];
   }
-  return lines.join('\n');
+  return newLines.join('\n');
 }

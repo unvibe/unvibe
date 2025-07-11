@@ -6,6 +6,7 @@ import { HiPlus } from 'react-icons/hi2';
 import { TiLightbulb } from 'react-icons/ti';
 import * as React from 'react';
 import { providerIcons } from '~/modules/project/threads/llm-input/models-selector';
+import { ComingSoonModal } from '~/modules/modals/coming-soon';
 
 export default function ModelsPage() {
   const { data, isLoading, error } = useAPIQuery('GET /models');
@@ -20,6 +21,7 @@ export default function ModelsPage() {
   React.useEffect(() => {
     if (data?.raw) setVisibleModels(Object.values(data.raw || {}));
   }, [data]);
+  const [showComingSoon, setShowComingSoon] = React.useState(false);
 
   if (isLoading) return <div className='p-10'>Loading environment...</div>;
   if (error)
@@ -42,7 +44,8 @@ export default function ModelsPage() {
           <Button
             variant='secondary'
             className='flex items-center justify-center p-2!'
-            title='Add Project'
+            title='Add an LLM model'
+            onClick={() => setShowComingSoon(true)}
           >
             <HiPlus className='w-6 h-6' />
           </Button>
@@ -147,6 +150,10 @@ export default function ModelsPage() {
           );
         })}
       </div>
+      <ComingSoonModal
+        onClose={() => setShowComingSoon(false)}
+        open={showComingSoon}
+      />
     </HomeSectionSharedLayout>
   );
 }
