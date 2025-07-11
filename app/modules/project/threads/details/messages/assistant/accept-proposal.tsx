@@ -7,6 +7,37 @@ import { useAssistantMessageContext } from './assistant-message-context';
 import { useStructuredOutputContext } from './structured-output/context';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { useParams } from 'react-router';
+import { Spinner } from '@/lib/ui/spinner';
+
+function ProposalButton({
+  label,
+  icon: Icon,
+  className,
+  onClick,
+  isLoading = false,
+}: {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  className?: string;
+  onClick?: () => void;
+  isLoading?: boolean;
+}) {
+  return (
+    <button
+      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 ${className}`}
+      onClick={onClick}
+    >
+      <span>
+        {isLoading ? (
+          <Spinner className='w-5 h-5' />
+        ) : (
+          <Icon className='w-5 h-5' />
+        )}
+      </span>
+      <span>{label}</span>
+    </button>
+  );
+}
 
 export function AcceptProposal() {
   // get if there are any errors in any of the selected files
@@ -17,6 +48,8 @@ export function AcceptProposal() {
   const deleted = structuredOutputContext.data.delete_files || [];
   const scripts = structuredOutputContext.data.shell_scripts || [];
   const rangeEdits = structuredOutputContext.data.edit_ranges || [];
+
+  console.log(structuredOutputContext.selection);
 
   const hasNoFilesAndNoScripts =
     replaced.length === 0 &&
@@ -32,10 +65,11 @@ export function AcceptProposal() {
       )
     : false;
 
-  const { mutate: applyProposal } = useAPIMutation(
-    'POST /projects/accept-proposal'
+  const { mutate: applyProposal, isPending: isApplyingProposal } =
+    useAPIMutation('POST /projects/accept-proposal');
+  const { mutate: continueThread, isPending: isFixingErrors } = useAPIMutation(
+    'POST /threads/continue'
   );
-  const { mutate: continueThread } = useAPIMutation('POST /threads/continue');
   const projectId = useParams().project_id as string;
   const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
     id: messageContext.message.thread_id,
@@ -44,21 +78,25 @@ export function AcceptProposal() {
   return (
     <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
       {hasNoFilesAndNoScripts ? (
-        <button className='font-mono text-sm p-1 px-3 bg-sky-800 text-sky-50 rounded-lg flex items-center gap-2'>
-          <span>
-            <MdOutlinePlayArrow className='w-5 h-5' />
-          </span>
-          <span>continue</span>
-        </button>
+        <ProposalButton
+          label='Continue'
+          icon={MdOutlinePlayArrow}
+          className='bg-sky-800 text-sky-50'
+          isLoading={false}
+        />
       ) : (
         <>
           {!hasIssues && (
-            <button
-              className='font-mono text-sm p-1 px-3 bg-emerald-800 text-emerald-50 rounded-lg flex items-center gap-2'
+            <ProposalButton
+              label='Accept'
+              icon={MdOutlineDownloading}
+              className='bg-emerald-800 text-emerald-50'
+              isLoading={isApplyingProposal}
               onClick={() => {
                 applyProposal(
                   {
                     id: projectId,
+                    selections: structuredOutputContext.selection,
                     proposal: {
                       messageId: messageContext.message.id,
                       ...structuredOutputContext.data,
@@ -74,21 +112,20 @@ export function AcceptProposal() {
                   }
                 );
               }}
-            >
-              <span>
-                <MdOutlineDownloading className='w-5 h-5' />
-              </span>
-              <span>Accept</span>
-            </button>
+            />
           )}
           {hasIssues && (
             <>
-              <button
-                className='font-mono text-sm p-1 px-3 bg-amber-800 text-amber-50 rounded-lg flex items-center gap-2'
+              <ProposalButton
+                label='Accept with errors'
+                icon={MdOutlineDownloading}
+                className='bg-yellow-700 text-amber-50'
+                isLoading={isApplyingProposal}
                 onClick={() => {
                   applyProposal(
                     {
                       id: projectId,
+                      selections: structuredOutputContext.selection,
                       proposal: {
                         messageId: messageContext.message.id,
                         ...structuredOutputContext.data,
@@ -104,14 +141,12 @@ export function AcceptProposal() {
                     }
                   );
                 }}
-              >
-                <span>
-                  <MdOutlineDownloading className='w-5 h-5' />
-                </span>
-                <span>Accept anyway</span>
-              </button>
-              <button
-                className='font-mono text-sm p-1 px-3 bg-background-1 text-foreground-2 rounded-lg flex items-center gap-2'
+              />
+              <ProposalButton
+                className='bg-background-1 text-foreground-2'
+                icon={MdRefresh}
+                label='Fix errors'
+                isLoading={isFixingErrors}
                 onClick={() => {
                   continueThread(
                     {
@@ -130,12 +165,7 @@ export function AcceptProposal() {
                     }
                   );
                 }}
-              >
-                <span>
-                  <MdRefresh className='w-5 h-5' />
-                </span>
-                <span>Feedback</span>
-              </button>
+              />
             </>
           )}
         </>

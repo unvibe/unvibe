@@ -34,19 +34,19 @@ async function saveCache(projectPath: string, cache: FileCache) {
 }
 
 // Derived-data cache helpers
-async function loadDerivedCache(
-  projectPath: string
-): Promise<Partial<Project> | null> {
-  const base64 = Buffer.from(projectPath).toString('base64');
-  await fs.mkdir(CACHE_DIR, { recursive: true });
-  const cachePath = path.join(CACHE_DIR, `${base64}.derived.json`);
-  try {
-    const content = await fs.readFile(cachePath, 'utf8');
-    return JSON.parse(content);
-  } catch {
-    return null;
-  }
-}
+// async function loadDerivedCache(
+//   projectPath: string
+// ): Promise<Partial<Project> | null> {
+//   const base64 = Buffer.from(projectPath).toString('base64');
+//   await fs.mkdir(CACHE_DIR, { recursive: true });
+//   const cachePath = path.join(CACHE_DIR, `${base64}.derived.json`);
+//   try {
+//     const content = await fs.readFile(cachePath, 'utf8');
+//     return JSON.parse(content);
+//   } catch {
+//     return null;
+//   }
+// }
 
 async function saveDerivedCache(
   projectPath: string,
@@ -61,24 +61,24 @@ async function saveDerivedCache(
   );
 }
 
-async function eagerShouldReturnCache(projectPath: string) {
-  const DIR_CACHE_NAME = 'roots.json';
-  try {
-    const roots = await fs.readFile(path.join(CACHE_DIR, DIR_CACHE_NAME), {
-      encoding: 'utf8',
-    });
-    const json = roots ? JSON.parse(roots) : {};
-    const stat = await fs.stat(projectPath).catch(() => null);
-    if (!stat) {
-      return false;
-    }
-    if (json[projectPath] === stat.mtimeMs) {
-      return true;
-    }
-  } catch {
-    return false;
-  }
-}
+// async function eagerShouldReturnCache(projectPath: string) {
+//   const DIR_CACHE_NAME = 'roots.json';
+//   try {
+//     const roots = await fs.readFile(path.join(CACHE_DIR, DIR_CACHE_NAME), {
+//       encoding: 'utf8',
+//     });
+//     const json = roots ? JSON.parse(roots) : {};
+//     const stat = await fs.stat(projectPath).catch(() => null);
+//     if (!stat) {
+//       return false;
+//     }
+//     if (json[projectPath] === stat.mtimeMs) {
+//       return true;
+//     }
+//   } catch {
+//     return false;
+//   }
+// }
 
 export async function parseProject(
   id: string,
@@ -88,51 +88,20 @@ export async function parseProject(
   const projectPath = resolveHomePath(projectPathFromHome);
   const projectDirName = path.basename(projectPath);
 
-  // --- Load file cache, scan for changes, persist cache ---
+  // --- Stale-while-revalidate: serve cache, revalidate in background ---
   const fileCache = await loadCache(projectPath);
-  const isUnchanged = await eagerShouldReturnCache(projectPath);
-  let _files: FileCache;
-  let derived: Partial<Project> | null = null;
+  let _files = fileCache;
+  const cacheIsMissing = Object.keys(_files).length === 0;
 
-  if (isUnchanged) {
-    _files = fileCache;
-    derived = await loadDerivedCache(projectPath);
-    if (derived && derived.context_config && derived.context_preview) {
-      // Only the DB-dependent part (customSystem) must be fresh
-      const customSystem = await db.query.customSystemParts.findMany({
-        where: (table, { eq }) => eq(table.project_id, projectDirName),
-      });
-      // Patch context_preview for 'system/custom/*' entries
-      const context_preview = derived.context_preview.map((entry) => {
-        if (entry.key.startsWith('system/custom/')) {
-          const context_key = entry.key.split('/')[2];
-          const customSystemPart = customSystem.find(
-            (sys) => sys.key === context_key
-          );
-          let preview_string = '';
-          if (customSystemPart) {
-            preview_string = _files[customSystemPart.value]?.content || '';
-          }
-          return { ...entry, preview_string };
-        } else {
-          return entry;
-        }
-      });
-      return {
-        ...derived,
-        context_preview,
-        EXPENSIVE_REFACTOR_LATER_content:
-          derived.EXPENSIVE_REFACTOR_LATER_content || {},
-        // These are always fresh:
-        path: projectPath,
-        size: derived.size || 0,
-        plugins: derived.plugins || {},
-        context_config: derived.context_config || {},
-      } as Project;
-    }
-  } else {
+  if (cacheIsMissing) {
+    // No cache? Block and scan for correctness
     _files = await scanProjectFilesWithCache(projectPath, fileCache);
     await saveCache(projectPath, _files);
+  } else {
+    // Fire-and-forget: update cache in the background for next time
+    scanProjectFilesWithCache(projectPath, fileCache).then(async (fresh) => {
+      await saveCache(projectPath, fresh);
+    });
   }
 
   // Compute everything that would be cached (derived)
