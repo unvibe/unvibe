@@ -61,7 +61,7 @@ export function ContextItemDetailsTool({
 
   return (
     <div className='flex items-stretch gap-4 bg-background-2 rounded-3xl p-2 w-full max-h-full overflow-hidden h-full'>
-      <div className='p-2 rounded-2xl bg-background-1/50 shrink-0 w-1/4 overflow-hidden h-full'>
+      <div className='p-2 rounded-2xl bg-background-1/50 shrink-0 w-2/4 overflow-hidden h-full'>
         <div className='font-mono px-4'>Parameters</div>
         <form
           className='grid content-start max-h-full py-4 h-full overflow-y-auto'
@@ -75,7 +75,7 @@ export function ContextItemDetailsTool({
           />
         </form>
       </div>
-      <div className='grid h-[50vh] p-2 content-start w-3/4 shrink-0 overflow-y-auto'>
+      <div className='grid h-full p-2 content-start w-2/4 shrink-0 overflow-y-auto text-sm'>
         <div className='flex items-center justify-between pr-4 relative'>
           <div className='font-mono'>Output</div>
           <Button
@@ -91,7 +91,7 @@ export function ContextItemDetailsTool({
             <span>Run</span>
           </Button>
         </div>
-        <div className='font-mono overflow-x-auto h-full'>
+        <div className='font-mono overflow-x-auto h-full text-sm'>
           <ContextItemDetailsToolResult output={result} />
         </div>
       </div>

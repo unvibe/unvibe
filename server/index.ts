@@ -17,7 +17,7 @@ app.all(`${baseURL}/*`, async (c) => {
   try {
     const method = request.method as 'GET';
     const pathname = new URL(request.url).pathname;
-    const handlerPathname = pathname.replace('/api/v2', '');
+    const handlerPathname = pathname.replace(baseURL, '');
     const pool = Object.values(api.endpoints);
     const endpoint = pool.find(
       (endpoint) =>

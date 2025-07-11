@@ -101,9 +101,9 @@ export function ContextSectionCard({
       {isDetailsOpen && (
         <Modal
           onClose={() => setIsDetailsOpen(false)}
-          className='max-w-4xl mx-auto p-5 w-full h-full max-h-[90vh] overflow-hidden'
+          className='mx-auto p-5 w-full h-full max-h-[90vh] max-w-7xl overflow-hidden grid'
         >
-          <div className='grid content-start w-full h-full max-w-full max-h-full overflow-hidden'>
+          <div className='flex flex-col w-full h-full max-w-full max-h-full overflow-hidden'>
             <h3 className='text-lg font-semibold pb-2'>{data.key}</h3>
             {data.type === 'system' ? null : (
               <div className='text-sm text-foreground-2 pb-2'>
