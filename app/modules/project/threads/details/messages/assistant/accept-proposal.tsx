@@ -27,13 +27,15 @@ function ProposalButton({
 }) {
   return (
     <button
-      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer disabled:opacity-50 ${className}`}
+      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       onClick={onClick}
       disabled={isLoading || disabled}
     >
       <span>
         {isLoading ? (
-          <Spinner className='w-5 h-5' />
+          <div className='w-5 h-5 flex items-center justify-center'>
+            <Spinner className='w-4 h-4' />
+          </div>
         ) : (
           <Icon className='w-5 h-5' />
         )}
@@ -96,7 +98,7 @@ export function AcceptProposal() {
   if (hasNoFilesAndNoScripts) {
     return (
       <div className='flex items-center justify-between pt-4 pb-2 gap-4'>
-        <div className='flex items-stretch gap-4 flex-wrap'>
+        <div className='grid content-start justify-start gap-4'>
           {suggestedPrompts.length > 0 &&
             suggestedPrompts.map((prompt) => (
               <ProposalButton
@@ -142,6 +144,9 @@ export function AcceptProposal() {
               icon={MdOutlinePlayArrow}
               className='bg-background-1 text-foreground-2'
               isLoading={isApplyingProposal || isContinuingThread}
+              disabled={Object.values(selection).every((sel) =>
+                sel.every((s) => !s.selected)
+              )}
               onClick={() => {
                 applyProposal(
                   {
@@ -212,6 +217,29 @@ export function AcceptProposal() {
         {hasIssues && (
           <>
             <ProposalButton
+              className='bg-background-1 text-foreground-2'
+              icon={MdRefresh}
+              label='Fix errors'
+              isLoading={isContinuingThread}
+              onClick={() => {
+                continueThread(
+                  {
+                    projectId,
+                    prompt: `fix the errors in the proposal ${JSON.stringify(metadata?.diagnostics, null, 2)}`,
+                    threadId: messageContext.message.thread_id,
+                    context_config: thread?.thread?.context_config || undefined,
+                    images: [],
+                    search_enabled: false,
+                  },
+                  {
+                    onSuccess() {
+                      refetch();
+                    },
+                  }
+                );
+              }}
+            />
+            <ProposalButton
               label='Accept with errors'
               icon={MdOutlineDownloading}
               className='bg-yellow-700 text-amber-50'
@@ -232,29 +260,6 @@ export function AcceptProposal() {
                     },
                     onError(error) {
                       console.error('Error accepting proposal', error);
-                    },
-                  }
-                );
-              }}
-            />
-            <ProposalButton
-              className='bg-background-1 text-foreground-2'
-              icon={MdRefresh}
-              label='Fix errors'
-              isLoading={isContinuingThread}
-              onClick={() => {
-                continueThread(
-                  {
-                    projectId,
-                    prompt: `fix the errors in the proposal ${JSON.stringify(metadata?.diagnostics, null, 2)}`,
-                    threadId: messageContext.message.thread_id,
-                    context_config: thread?.thread?.context_config || undefined,
-                    images: [],
-                    search_enabled: false,
-                  },
-                  {
-                    onSuccess() {
-                      refetch();
                     },
                   }
                 );
