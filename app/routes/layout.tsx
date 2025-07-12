@@ -94,7 +94,7 @@ function HomeEnvModal() {
           {optionalExpanded &&
             AWS_KEYS.map((key) => {
               return (
-                <div key={key} className='flex items-center gap-2 mb-2'>
+                <div key={key} className='flex items-center gap-2'>
                   <label className='w-1/2'>
                     {key
                       .replace(/_/g, ' ')

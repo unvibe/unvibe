@@ -5,10 +5,7 @@ import { MdOutlineInfo } from 'react-icons/md';
 import { Switch } from '@/lib/ui';
 import { useProject } from '~/modules/project/provider';
 import { HiXMark } from 'react-icons/hi2';
-import {
-  getPluginStyle,
-  PluginIcon,
-} from '~/modules/project/plugins-context/list-card';
+import { getPluginStyle } from '~/modules/project/plugins-context/list-card';
 
 function SectionCard({
   pluginName,
@@ -33,9 +30,7 @@ function SectionCard({
     <div className={clsx('p-1 bg-background-2 rounded-2xl pb-3')}>
       <h4 className='px-2 py-1 text-foreground-2 capitalize font-semibold text-sm flex items-center gap-2'>
         {/* <PluginIndicator name={pluginName} /> */}
-        <div className='p-2 rounded-xl border' style={{ ...style }}>
-          <PluginIcon name={pluginName} sizeClassName='w-4 h-4' />
-        </div>
+        <div className='p-1 rounded-xl border' style={{ ...style }}></div>
         <span>{pluginName}</span>
       </h4>
       {keys.map((name) => {
@@ -149,7 +144,7 @@ export function StartThreadContextModal({
           </button>
         </div>
         <div className='grid gap-1'>
-          <div className='flex items-center text-xs gap-3 text-foreground-2'>
+          <div className='flex items-center text-sm gap-3 text-foreground-2'>
             <MdOutlineInfo className='w-4 h-4' />
             <p>changes will be applied to the current thread only</p>
           </div>

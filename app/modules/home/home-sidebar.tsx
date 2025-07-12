@@ -45,10 +45,10 @@ function SideIcon({
         </div>
       )}
       {indicatorColor && (
-        <div className='absolute bottom-2.5 right-2.5 box-border'>
+        <div className='absolute bottom-3 right-2 box-border'>
           <div
             className={clsx(
-              'w-2 h-2 outline-4 outline-background-1 rounded-full',
+              'w-2 h-2 outline-3 outline-background-1 rounded-full',
               indicatorColor
             )}
           />
@@ -174,9 +174,7 @@ export function HomeSidebar() {
             <SideIcon
               href={undefined}
               Icon={MdSync}
-              indicatorColor={
-                import.meta.env.DEV ? 'rainbow rotate-45' : syncColor
-              }
+              indicatorColor={import.meta.env.DEV ? 'bg-purple-500' : syncColor}
             />
           </button>
         </div>
