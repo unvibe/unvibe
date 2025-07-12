@@ -6,7 +6,7 @@
   "scripts": {
     "server:nodemon": "nodemon --watch ./.env.local --watch ./server --watch ./plugins --watch ./environment --ext ts --exec \"npm run server\"",
     "server": "tsx --env-file=.env.local server/index.ts",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npx drizzle-kit studio\"",
     "dev:server": "npm run server:nodemon",
     "dev:client": "react-router dev",
     "build:client": "react-router build",

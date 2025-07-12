@@ -67,6 +67,9 @@ function HomeEnvModal() {
           </h3>
           <Select
             options={modelsOptions}
+            value={
+              modelsOptions.find((opt) => opt.value.includes('OPENAI'))?.value
+            }
             placeholder='Select model provider key'
           />
           <input
