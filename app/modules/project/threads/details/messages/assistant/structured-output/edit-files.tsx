@@ -29,9 +29,13 @@ export function StructuredOutputEditFiles() {
           },
           properties: { class: 'highlighted-word' },
         };
+        const git = message.metadata?.diffs?.edit_files?.find(
+          (d) => d.path === file.path
+        )?.data;
         return (
           <ThreadDetailsMessageListItemFile
             key={file.path + i.toString()}
+            git={git}
             enabledEditing={true}
             icon={
               <span className='w-4 h-4 border-2 border-emerald-600 flex items-center justify-center'>

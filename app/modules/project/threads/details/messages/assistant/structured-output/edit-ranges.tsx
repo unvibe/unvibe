@@ -24,9 +24,13 @@ export function StructuredOutputEditRanges() {
           },
           properties: { class: 'highlighted-word' },
         }));
+        const git = message.metadata?.diffs?.range_edits?.find(
+          (d) => d.path === range.path
+        )?.data;
         return (
           <ThreadDetailsMessageListItemFile
             key={range.path + i.toString()}
+            git={git}
             enabledEditing={true}
             icon={
               <span className='w-4 h-4 border-2 border-emerald-600 grid items-center p-px'>

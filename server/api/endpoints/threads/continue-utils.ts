@@ -7,6 +7,12 @@ import { Project } from '@/server/project/types';
 import { StructuredOutput } from '@/server/llm/structured_output';
 import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 import { runTransforms } from '@/server/llm/structured_output/transform';
+import { VirtualFile } from '@/plugins/_types/plugin.server';
+import fs from 'fs/promises';
+import path from 'path';
+import simpleGit from 'simple-git';
+import { noop } from '@/lib/core/noop';
+import gitDiffParser from 'gitdiff-parser';
 
 function resolveRangeEdit(
   project: Project,
@@ -40,6 +46,94 @@ function resolveEditedFile(
     path: file.path,
     content: appliedContent,
   };
+}
+
+export async function createDiffs(
+  project: Project,
+  virtualFiles: VirtualFile[]
+): Promise<
+  {
+    path: string;
+    data: { diff: string; additions: number; deletions: number };
+  }[]
+> {
+  return Promise.all(
+    virtualFiles.map(async (vf) => {
+      try {
+        const tempPath = `/tmp/unvibe_diff_${Date.now()}_temp_file`;
+        const tempContent = vf.content;
+        await fs.writeFile(tempPath, tempContent);
+        const rootPath = project.path;
+        const resolvedFilePath = path.join(rootPath, vf.path);
+
+        const fileExists = await fs
+          .access(resolvedFilePath)
+          .then(() => true)
+          .catch(() => false);
+
+        if (!fileExists) {
+          return {
+            path: vf.path,
+            data: {
+              diff: '',
+              additions: tempContent.split('\n').length,
+              deletions: 0,
+            },
+          };
+        }
+
+        const git = simpleGit({
+          baseDir: project.path,
+          binary: 'git',
+          maxConcurrentProcesses: 6,
+        });
+
+        const diff = await git.diff(['--no-index', resolvedFilePath, tempPath]);
+        const summary = gitDiffParser.parse(diff)[0];
+
+        const additions = summary?.hunks.reduce(
+          (acc, hunk) =>
+            acc +
+            hunk.changes.reduce(
+              (acc, change) => acc + ('isInsert' in change ? 1 : 0),
+              0
+            ),
+          0
+        );
+        const deletions = summary?.hunks.reduce(
+          (acc, hunk) =>
+            acc +
+            hunk.changes.reduce(
+              (acc, change) => acc + ('isDelete' in change ? 1 : 0),
+              0
+            ),
+          0
+        );
+
+        // now safely delete the temp file
+        try {
+          await fs.unlink(tempPath);
+        } catch (error) {
+          noop(error);
+        }
+
+        return {
+          path: vf.path,
+          data: {
+            diff,
+            additions: additions || 0,
+            deletions: deletions || 0,
+          },
+        };
+      } catch (error) {
+        console.error(`Error creating diff for ${vf.path}:`, error);
+        return {
+          path: vf.path,
+          data: { diff: '', additions: 0, deletions: 0 },
+        };
+      }
+    })
+  );
 }
 
 export async function createMetadata(
@@ -85,6 +179,24 @@ export async function createMetadata(
     await runTransforms(project, resolvedEditedFiles || []),
   ]);
 
+  const [replaceFilesDiffs, deleteFilesDiffs, editFilesDiffs, rangeEditsDiffs] =
+    await Promise.all([
+      createDiffs(project, parsed.replace_files || []),
+      (parsed.delete_files || []).map((file) => {
+        return {
+          path: file.path,
+          data: {
+            diff: '',
+            additions: 0,
+            deletions:
+              project.EXPENSIVE_REFACTOR_LATER_content[file.path]?.split('\n')
+                .length,
+          },
+        };
+      }),
+      createDiffs(project, resolvedEditedFiles || []),
+      createDiffs(project, resolvedEditedRanges || []),
+    ]);
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     diagnostics: Object.fromEntries(
@@ -105,6 +217,12 @@ export async function createMetadata(
     source_sha1: sha1Map,
     resolved_edited_files: formattedEdits,
     resolved_edited_ranges: formattedRanges,
+    diffs: {
+      replace_files: replaceFilesDiffs,
+      delete_files: deleteFilesDiffs,
+      edit_files: editFilesDiffs,
+      range_edits: rangeEditsDiffs,
+    },
   };
 
   return {

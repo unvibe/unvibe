@@ -1,19 +1,25 @@
 import { ThreadDetailsMessageListItemFile } from '../assistant-file';
+import { useAssistantMessageContext } from '../assistant-message-context';
 import { useStructuredOutputContext } from './context';
 
 export function StructuredOutputReplaceFiles() {
   const { data, selection, setSelection } = useStructuredOutputContext();
   const files = data.replace_files || [];
   const replaceSelection = selection.replace_files || [];
+  const { message } = useAssistantMessageContext();
 
   return (
     <>
       {files.map((file, i) => {
         const sel = replaceSelection.find((p) => p.path === file.path);
+        const git = message.metadata?.diffs?.edit_files?.find(
+          (d) => d.path === file.path
+        )?.data;
         return (
           <ThreadDetailsMessageListItemFile
             key={file.path + i.toString()}
             enabledEditing={true}
+            git={git}
             icon={
               <span className='w-4 h-4 border-2 border-emerald-600 flex relative'>
                 <span className='absolute inset-0 flex items-center justify-center'>

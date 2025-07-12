@@ -1,5 +1,4 @@
 export * from './accept-proposal';
-export * from './diff-content';
 export * from './kill-script';
 export * from './list-projects';
 export * from './list-remote-orgs';

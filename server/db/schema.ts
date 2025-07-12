@@ -22,6 +22,10 @@ export const threads = sqliteTable('threads', {
     .default([]), // always a JSON array
 });
 
+export type MetadataDiffsEntry = {
+  path: string;
+  data: { diff: string; additions: number; deletions: number };
+};
 export type FilesMapDiagnostics = Record<string, DiagnosticMessage[]>;
 export type DiagnosticsByHookName = Record<string, FilesMapDiagnostics>;
 export type StructuredOutputMetadata = {
@@ -31,6 +35,12 @@ export type StructuredOutputMetadata = {
   diagnostics: DiagnosticsByHookName; // diagnostics for each hook
   resolved_edited_files?: { path: string; content: string }[]; // resolved edited files
   resolved_edited_ranges?: { path: string; content: string }[]; // resolved edited ranges
+  diffs?: {
+    replace_files?: MetadataDiffsEntry[]; // diffs for replaced files
+    delete_files?: MetadataDiffsEntry[]; // diffs for deleted files
+    edit_files?: MetadataDiffsEntry[]; // diffs for edited files
+    range_edits?: MetadataDiffsEntry[]; // diffs for edited ranges
+  };
 };
 // messages table definition
 export const messages = sqliteTable('messages', {

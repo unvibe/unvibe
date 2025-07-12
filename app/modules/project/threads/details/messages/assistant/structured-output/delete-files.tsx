@@ -1,18 +1,24 @@
 import { ThreadDetailsMessageListItemFile } from '../assistant-file';
+import { useAssistantMessageContext } from '../assistant-message-context';
 import { useStructuredOutputContext } from './context';
 
 export function StructuredOutputDeleteFiles() {
   const { data, selection, setSelection } = useStructuredOutputContext();
   const files = data.delete_files || [];
   const deleteSelection = selection.delete_files || [];
+  const { message } = useAssistantMessageContext();
 
   return (
     <>
       {files.map((file, i) => {
         const sel = deleteSelection.find((p) => p.path === file.path);
+        const git = message.metadata?.diffs?.edit_files?.find(
+          (d) => d.path === file.path
+        )?.data;
         return (
           <ThreadDetailsMessageListItemFile
             NO_CONTENT
+            git={git}
             icon={
               <span className='w-4 h-4 border-2 border-rose-600 flex relative'>
                 <div className='rotate-45 absolute inset-0'>

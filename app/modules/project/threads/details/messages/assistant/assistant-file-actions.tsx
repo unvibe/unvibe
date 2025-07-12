@@ -2,42 +2,20 @@ import clsx from 'clsx';
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Button, Checkbox } from '@/lib/ui';
-import { useProject, useProjectActions } from '~/modules/project/provider';
+import { useProject } from '~/modules/project/provider';
 import { useAssistantMessageContext } from './assistant-message-context';
 import { DiagnosticMessage } from '@/server/db/schema';
 import { Modal } from '@/lib/ui/modal';
-// import { Progress } from '@/modules/ui/progress/progress-circle';
-// import { HiPencilSquare } from 'react-icons/hi2';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { TbEdit } from 'react-icons/tb';
 import { Tooltip } from '@/lib/ui/tooltip';
+import { Code } from '@/lib/ui/code/base';
 
 const Editor = React.lazy(() =>
   import('@/lib/ui/monaco-editor').then((module) => ({
     default: module.MonacoEditor,
   }))
 );
-
-// function QualityCheckProgress({
-//   progress,
-//   type,
-// }: {
-//   progress: number;
-//   type: 'error' | 'warning' | 'idle' | 'success';
-// }) {
-//   let color = 'text-foreground-2';
-
-//   if (type === 'warning') {
-//     color = 'text-amber-600';
-//   } else if (type === 'idle') {
-//     color = 'text-foreground-2';
-//   } else if (type === 'success') {
-//     color = 'text-emerald-600';
-//   } else {
-//     color = 'text-rose-600';
-//   }
-//   return <Progress progress={progress} filledClassName={clsx(color)} />;
-// }
 
 export interface FileActionProps {
   // props
@@ -81,12 +59,13 @@ export function useFileDiagnostics(path: string) {
 export function ThreadDetailsMessageListItemFileActions({
   data,
   icon,
-  expanded,
+  // expanded,
   enableEditing = false,
-  setExpanded,
-  codeSnippetRef,
+  // setExpanded,
+  // codeSnippetRef,
   selected,
   setSelected,
+  git,
 }: {
   data: { path: string; content?: string };
   icon?: React.ReactNode;
@@ -96,6 +75,7 @@ export function ThreadDetailsMessageListItemFileActions({
   codeSnippetRef: React.RefObject<HTMLPreElement | null>;
   selected?: boolean;
   setSelected?: (selected: boolean) => void;
+  git?: { diff: string; additions: number; deletions: number };
 }) {
   const id = useParams()?.id as string;
   const { refetch } = useAPIQuery('GET /threads/details', { id });
@@ -110,33 +90,6 @@ export function ThreadDetailsMessageListItemFileActions({
   const { path } = data;
   const projectId =
     typeof params.project_id === 'string' ? params.project_id : '';
-
-  const fileActionsProps: FileActionProps = useMemo(() => {
-    return {
-      data,
-      projectId,
-      expanded,
-      codeSnippetRef,
-      setExpanded,
-    };
-  }, [data, projectId, expanded, codeSnippetRef, setExpanded]);
-
-  const projectContext = useProjectActions();
-
-  const pathDiagnostics = useMemo(() => {
-    const plugins = projectContext.clientPlugins;
-    const pluginsWithPathDiagnostics = plugins.filter(
-      (plugin) => plugin.Plugin.components?.assistant?.proposal?.pathDiagnostics
-    );
-
-    return pluginsWithPathDiagnostics
-      .map((plugin) =>
-        Object.values(
-          plugin.Plugin.components.assistant!.proposal!.pathDiagnostics!
-        )
-      )
-      .flat();
-  }, [projectContext]);
 
   const project = useProject();
 
@@ -190,6 +143,7 @@ export function ThreadDetailsMessageListItemFileActions({
   const { mutate: updateFile } = useAPIMutation(
     'POST /threads/edit-proposal-file'
   );
+  const [showGitDiffModal, setShowGitDiffModal] = useState(false);
 
   return (
     <div className='p-1 font-mono pl-4 text-xs flex items-center justify-between'>
@@ -206,9 +160,25 @@ export function ThreadDetailsMessageListItemFileActions({
             {path.startsWith('./') ? `@${path.slice(1)}` : path}
           </div>
           <div className='flex items-center gap-2'>
-            {pathDiagnostics.map((PathDiagnostics, index) => (
-              <PathDiagnostics key={index} {...fileActionsProps} />
-            ))}
+            {git && (
+              <button
+                onClick={() => {
+                  setShowGitDiffModal(true);
+                }}
+                className={clsx(
+                  'justify-start flex items-center gap-1 text-xs font-mono text-foreground-2'
+                )}
+              >
+                <div className={clsx('text-emerald-600')}>+{git.additions}</div>
+                <div className={clsx('text-rose-600')}>-{git.deletions}</div>
+                <div className='flex gap-px'>
+                  <div className='w-2 h-2 bg-emerald-700' />
+                  <div className='w-2 h-2 bg-emerald-700' />
+                  <div className='w-2 h-2 bg-rose-700' />
+                  <div className='w-2 h-2 bg-rose-700' />
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -296,6 +266,21 @@ export function ThreadDetailsMessageListItemFileActions({
               }
             }}
           />
+        </Modal>
+      )}
+
+      {showGitDiffModal && git?.diff && (
+        <Modal onClose={() => setShowGitDiffModal(false)}>
+          <div className='relative pb-8'>
+            <div className='max-h-[50vh] overflow-y-auto pb-[3.25rem] p-5 max-w-4xl'>
+              <div className='text-xs'>
+                <Code code={git.diff} isDiff />
+              </div>
+            </div>
+            <div className='absolute inset-x-0 bottom-0 w-full border-t bg-background-2 px-4 py-2 border-border'>
+              <Button onClick={() => setShowGitDiffModal(false)}>Close</Button>
+            </div>
+          </div>
         </Modal>
       )}
     </div>

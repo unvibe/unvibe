@@ -11,6 +11,7 @@ export function ThreadDetailsMessageListItemFile({
   NO_CONTENT = false,
   decorations,
   enabledEditing = false,
+  git,
 }: {
   icon?: React.ReactNode;
   type: 'add' | 'remove' | 'edit';
@@ -19,6 +20,7 @@ export function ThreadDetailsMessageListItemFile({
   selected?: boolean;
   NO_CONTENT?: boolean;
   decorations?: Decorations;
+  git?: { diff: string; additions: number; deletions: number };
   enabledEditing?: boolean;
 }) {
   const [expaneded, setExpanded] = useState(true);
@@ -46,6 +48,7 @@ export function ThreadDetailsMessageListItemFile({
         setSelected={setSelected}
         codeSnippetRef={codeSnippetRef}
         enableEditing={enabledEditing}
+        git={git}
       />
       {!NO_CONTENT && (
         <ThreadDetailsMessageListItemFileContent
