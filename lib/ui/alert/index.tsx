@@ -2,13 +2,14 @@ import React from 'react';
 import clsx from 'clsx';
 
 export type AlertVariant = 'info' | 'success' | 'error' | 'warning';
-export type AlertOpacity = '50' | '0' | '100';
+export type AlertOpacity = '50' | '0' | '100' | '10';
 
 const styleMap: Record<AlertVariant, Record<AlertOpacity, string>> = {
   info: {
     '100':
       'dark:bg-blue-800 bg-blue-50 dark:text-blue-200 text-blue-900 dark:border-blue-600 border-blue-200',
     '50': 'dark:bg-blue-800/50 bg-blue-50/50 dark:text-blue-200 text-blue-900 dark:border-blue-600/50 border-blue-200/50',
+    '10': 'dark:bg-blue-800/10 bg-blue-50/10 dark:text-blue-200 text-blue-900 dark:border-blue-600/10 border-blue-200/10',
     '0': 'bg-transparent border-transparent dark:text-blue-200 text-blue-900',
   },
   success: {
@@ -16,18 +17,21 @@ const styleMap: Record<AlertVariant, Record<AlertOpacity, string>> = {
       'dark:bg-emerald-800 bg-green-50 dark:text-emerald-200 text-green-900 dark:border-emerald-600 border-green-200',
     '50': 'dark:bg-emerald-800/50 bg-green-50/50 dark:text-emerald-200 text-green-900 dark:border-emerald-600/50 border-green-200/50',
     '0': 'bg-transparent border-transparent dark:text-emerald-200 text-green-900',
+    '10': 'dark:bg-emerald-800/10 bg-green-50/10 dark:text-emerald-200 text-green-900 dark:border-emerald-600/10 border-green-200/10',
   },
   error: {
     '100':
       'dark:bg-rose-800 bg-red-50 dark:text-rose-200 text-red-900 dark:border-rose-600 border-red-200',
     '50': 'dark:bg-rose-800/50 bg-red-50/50 dark:text-rose-200 text-red-900 dark:border-rose-600/50 border-red-200/50',
     '0': 'bg-transparent border-transparent dark:text-rose-200 text-red-900',
+    '10': 'dark:bg-rose-800/10 bg-red-50/10 dark:text-rose-200 text-red-900 dark:border-rose-600/10 border-red-200/10',
   },
   warning: {
     '100':
       'dark:bg-yellow-700 bg-yellow-50 dark:text-yellow-100 text-yellow-900 dark:border-yellow-600 border-yellow-200',
     '50': 'dark:bg-yellow-700/50 bg-yellow-50/50 dark:text-yellow-100 text-yellow-900 dark:border-yellow-600/50 border-yellow-200/50',
     '0': 'bg-transparent border-transparent dark:text-yellow-100 text-yellow-900',
+    '10': 'dark:bg-yellow-700/10 bg-yellow-50/10 dark:text-yellow-100 text-yellow-900 dark:border-yellow-600/10 border-yellow-200/10',
   },
 };
 

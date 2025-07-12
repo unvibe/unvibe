@@ -186,7 +186,7 @@ export function AcceptProposal() {
             <ProposalButton
               label='Accept'
               icon={MdOutlineDownloading}
-              className='bg-emerald-800 text-emerald-50'
+              className='bg-emerald-600 text-emerald-950'
               isLoading={isApplyingProposal}
               disabled={Object.values(selection).every((sel) =>
                 sel.every((s) => !s.selected)

@@ -25,15 +25,19 @@ export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get('Cookie');
   const parsed = cookie.parse(cookieHeader || '');
   const selectedTheme = parsed.theme || 'unvibe-dark';
-  const models = await client('GET /models');
+  const [models, homeInfo] = await Promise.all([
+    client('GET /models'),
+    client('GET /home/info'),
+  ]);
   return {
     theme: themes.find((theme) => theme.id == selectedTheme) || defaultTheme,
     llmModels: models,
+    homeInfo,
   };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme, llmModels } = useLoaderData<typeof loader>();
+  const { theme, llmModels, homeInfo } = useLoaderData<typeof loader>();
   return (
     <html lang='en'>
       <head>
@@ -44,21 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className={clsx('box-border', 'font-display')}>
-        <Provider theme={theme} models={llmModels}>
-          {/* <div className='fixed inset-0 -z-10 opacity-[0.05]'>
-            <svg viewBox='0 0 290 290' xmlns='http://www.w3.org/2000/svg'>
-              <filter id='noiseFilter'>
-                <feTurbulence
-                  type='fractalNoise'
-                  baseFrequency='2.97'
-                  numOctaves='4'
-                  stitchTiles='stitch'
-                />
-              </filter>
-
-              <rect width='100%' height='100%' filter='url(#noiseFilter)' />
-            </svg>
-          </div> */}
+        <Provider theme={theme} models={llmModels} homeInfo={homeInfo}>
           {children}
           <Toaster />
         </Provider>

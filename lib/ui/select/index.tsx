@@ -6,7 +6,11 @@ import {
   HiMiniCheckCircle,
 } from 'react-icons/hi2';
 
-export type SelectOption = { value: string; label: string };
+export type SelectOption = {
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
+};
 export type SelectGroup = {
   label: string;
   options: SelectOption[];
@@ -77,7 +81,7 @@ const SelectValueDisplay: React.FC<{
   );
 };
 
-const defaultTrigger = clsx(
+export const defaultTrigger = clsx(
   'hover:bg-background-2 hover:border-foreground transition-colors duration-200 ease-in-out font-semibold text-foreground-2',
   'rounded-xl border-2 border-border bg-background-2 py-2 px-3 text-sm leading-none shadow-sm'
 );

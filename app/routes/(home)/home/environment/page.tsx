@@ -1,7 +1,6 @@
 import { HomeSectionSharedHeader } from '~/modules/home/home-section-shared-header';
 import { HomeSectionSharedLayout } from '~/modules/home/home-section-shared-layout';
 import { Button } from '@/lib/ui';
-import { useAPIQuery } from '@/server/api/client';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
 import { HiPlus } from 'react-icons/hi2';
@@ -11,11 +10,12 @@ import { useLLMModels } from '~/modules/root-providers/llm-models';
 import { EnvironmentEditModal } from './EnvironmentEditModal';
 import { useEnvironmentStatus } from './useEnvironmentStatus';
 import { Alert } from '@/lib/ui/alert';
+import { useHomeInfo } from '~/modules/root-providers/home-info';
 
 export default function EnvironmentPage() {
-  const { data, isLoading, error } = useAPIQuery('GET /home/info');
+  const { env } = useHomeInfo();
   const models = useLLMModels();
-  const [visibleEnv, setVisibleEnv] = React.useState(data?.env ?? []);
+  const [visibleEnv, setVisibleEnv] = React.useState(env ?? []);
   const envStatus = useEnvironmentStatus();
 
   // Modal state
@@ -26,18 +26,14 @@ export default function EnvironmentPage() {
   } | null>(null);
 
   React.useEffect(() => {
-    if (data?.env) setVisibleEnv(data.env);
-  }, [data]);
+    if (env) setVisibleEnv(env);
+  }, [env]);
 
   // Open modal with env var
   const handleEditClick = (envVar: { key: string; value: string }) => {
     setEditingEnv(envVar);
     setEditModalOpen(true);
   };
-
-  if (isLoading) return <div className='p-10'>Loading environment...</div>;
-  if (error)
-    return <div className='p-10 text-red-500'>Failed to load environment</div>;
 
   return (
     <HomeSectionSharedLayout>
@@ -56,10 +52,10 @@ export default function EnvironmentPage() {
         }
         values={visibleEnv}
         setValues={setVisibleEnv}
-        allValues={data?.env ?? []}
+        allValues={env ?? []}
         getSearchString={(envVar) => envVar.key + ' ' + envVar.value}
       />
-      {!envStatus && !isLoading && (
+      {!envStatus && (
         <Alert variant='warning' className='mb-8 max-w-md' opacity='50'>
           Your environment is not meeting the minimum requirements for Unvibe to
           run properly, you need at lease an API key
