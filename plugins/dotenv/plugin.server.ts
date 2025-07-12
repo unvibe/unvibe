@@ -5,7 +5,9 @@ export const Plugin: ServerPlugin = {
   id,
   metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects .env files and lists env keys (no secrets).',
-  detect: async () => false,
+  detect: async (project) => {
+    return project.paths.some((f) => f.match(/^\.env($|\.)/));
+  },
   setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

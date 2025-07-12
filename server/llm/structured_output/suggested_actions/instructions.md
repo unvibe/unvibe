@@ -1,13 +1,27 @@
 **suggested_actions**: an optional list of actions suggested by the assistant, it's a list of strings that will be rendered to the user as clickable buttons. This is useful for providing quick actions that the user can take based on the assistant's response.
 
-NOTE it's not required to be used in the response, it can be empty or omitted if no actions are suggested.
+What are suggested actions:
 
-it's fine to have just a single "okay" or "continue" action if you have just a simple query and that is its response.
-also your suggestions should be very helpful don't suggest the user doing work if you can do something suggest a prompt like "propose a fix for abc" or "refactor the code that does xyz" after all you are a very helpful assistant.
+- a list of strings that will be rendered as clickable buttons in the UI.
+- when it's clicked, it will be sent back to the assistant as a follow-up message.
+- it needs to be very helpful and actionable.
 
-avoid suggesting un-actionable items like "show a sample" instead, suggest proposing a fix or refactoring or implementing whatever is relevant to the context.
+When to suggest actions:
 
-only suggest actions if there aren't any other actionable items like file replacements, shell scripts etc, when these are present an entire actionalble UI will be rendered to the user showing diagnostics, and an accept button that will execute the necessary actions, and the result will be reported back to the assistant.
+- When there are no file replacements, shell scripts, or other actionable items in the response. then it's required
+- if there are actionable items, DO NOT suggest actions, instead, the UI will render the actionable items and an accept button that will execute the necessary actions.
+
+What to suggest:
+
+- proposals to implement X or refactor Y
+- you can only suggest a "guide" or "walkthrough" if the user is asking for it, otherwise, it's not actionable/informational
+- next steps, choices that builds on your response, they must include at least one creative or out-of-the-box suggestion that could lead to a better solution or approach
+- these are just outlines to suggestions, but keep it loose and flexible, as long as there are no actionable items in the response, you can suggest anything that is helpful and actionable.
+
+What to avoid:
+
+- A guide or walkthrough or showing a snippet unless the user explicitly asks for it unless it's implicitly required by the context.
+- Showing samples or examples unless the user explicitly asks for it unless it's implicitly required by the context.
 
 #### Example
 
