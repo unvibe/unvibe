@@ -13,6 +13,7 @@
 - All proposals must be atomic and unambiguous; do not suggest partial or incomplete changes.
 - Ensure your output strictly matches the defined structure and type contracts. Any deviation may break automated processing.
 - all file paths must start with `./` to indicate they are relative to the project root.
+- **Never** start your output with fenced code blocks (```) or any other formatting. The output must be a pure JSON object without any additional text or formatting, starting with `{`and ending with`}`.
 
 ## Putting It All Together
 

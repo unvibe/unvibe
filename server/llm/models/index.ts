@@ -17,6 +17,8 @@ import * as Gemini_2_5Flash from './gemini-2-5-flash';
 import * as GEMMA_3_4b from './gemma3-4b';
 import * as Qwen3 from './qwen3-latest';
 import * as DeepSeek from './deepseek-r1';
+import * as MoonshotKimi128k from './moonshot-kimi-128k';
+import * as MoonshotV1128k from './moonshot-v1-128k';
 
 export const models = {
   ChatGPT4_1Mini,
@@ -34,6 +36,8 @@ export const models = {
   Claude_Opus,
   Qwen3,
   DeepSeek,
+  MoonshotKimi128k,
+  MoonshotV1128k,
 };
 
 export type Model = (typeof models)[keyof typeof models];

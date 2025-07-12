@@ -13,6 +13,7 @@ import { createOllamaRunner } from './runners/ollama';
 import { RunnerId } from './runners';
 import { createAnthropicRunner } from './runners/anthropic';
 import { createGoogleRunner } from './runners/google';
+import { createMoonshotRunner } from './runners/moonshot';
 
 // re-export models
 export * from './models';
@@ -43,6 +44,8 @@ function getRunner(runner: RunnerId | undefined, modelConfig: ModelConfig) {
       return createAnthropicRunner(modelConfig);
     case 'google':
       return createGoogleRunner(modelConfig);
+    case 'moonshot':
+      return createMoonshotRunner(modelConfig);
     default:
       throw new Error(`Unknown runner: ${runner}`);
   }
