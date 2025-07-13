@@ -1,3 +1,11 @@
+# Unvibe
+
+Run llms in your local projects and files with full configuration and control over context
+
+```base
+npx unvibe
+```
+
 > [!IMPORTANT]
 > This is a personal project made for one purpose: bring LLMs (AI assistants) to your local projects and files, so you can use them directly in your code editor or browser without needing to upload your files to a remote server.
 > it has full access to your local files, with request-to-write permissions, so it can read your code, docs, and project structure.
