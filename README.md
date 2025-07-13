@@ -56,7 +56,7 @@ rm -rf ~/.unvibe
 ## Project Status
 
 This started as a sketch of a platform to run all kinds of llms in your local projects and files, with a nice way to add/remove/update context and tools.
-When you first open a project from the app, it will parse that project and register a `Plugins` associated with that project stack.
+When you first open a project from the app, it will parse that project and register plugins associated with that project stack.
 
 Let's say you opened a Typescript React project, then it will register typescript and various web tooling that will:
 
@@ -68,3 +68,23 @@ Let's say you opened a Typescript React project, then it will register typescrip
 and more, everything is customizable, although for now the only supported stack is Typescript/nodejs based projects, some plugins stubs exists for later support like AWS, Docker, Go, Python, etc...
 
 There's a lot of rough edges throughout the app, this is an experimental phase, so expect some bugs and missing features.
+
+## TODOs
+
+- [ ] Support for visual flow like (the llm view the project with you and ready to be prompted with the correct context)
+- [ ] Support for files flow, focused work on a file (you can jumpt to a file and prompt away in few strokes)
+- [ ] Support Structured Output Configuration, currently it's modular, but hardcoded for now
+- [ ] Finish all Coming Soon features marked by `<ComingSoon />` component
+- [ ] More quality of life improvments in the `llm-input` UI component in `continue-thread` flow
+- [ ] Add Structured Output play ground for testing various behaviors independent of the current project
+- [ ] Support search enabled queries, currently limited to `web_scraping` tool
+- [ ] Add Home docs (user guide to various features, document all cases of usage)
+- [ ] Fix add project/github pull flow (which source to add to?)
+- [ ] Enable remove/add source in `home/projects`
+- [ ] More informative `home/environment` page and inputs (what does each var do?)
+- [ ] Fix archived threads
+- [ ] Add `delete|edit` hover actions to the threads list items
+- [ ] Enable per-project/theme
+- [ ] Enable per-project and per-thread context settings
+- [ ] Make next.js plugin
+- [ ] Make react-router plugin
