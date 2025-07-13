@@ -3,6 +3,9 @@
 > it has full access to your local files, with request-to-write permissions, so it can read your code, docs, and project structure.
 > Use it at your own risk, and only if you trust the code and the AI assistants it uses.
 
+> [!RECOMENDED]: since this is just the exploration phase, there are a lot of rough edges, coming soon features, and missing features.
+> for now use `GPT 4.1` and its variants (`mini | nano`)only
+
 ## What is Unvibe?
 
 Unvibe is a local web application that brings LLM (AI assistant) workflows directly to your projects and files. It runs on your machine, with _the same read access as you_—so it can see your code, docs, and project structure. When writing or changing files, Unvibe **always asks for your permission first**.
