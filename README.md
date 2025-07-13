@@ -108,5 +108,3 @@ These are the hardest to solve right now, so for now im sticking to the TODOs ab
 I started this project because I wanted full control over what can be done with LLMs, this project showed promise and hope that i can compose contexts however I want, and manage my own costs (although more expensive than directly using a 20$ a month AI product subscription) but i think it is worth it
 
 I am mainly intereseted in fully building the JS/TS web stacks and making them fully supported (a plugin for next.js, react-router, etc...) and then I will start working on other stacks like python, go, etc. But that's a tall order, so my hope is if people find the idea useful they can contribute to the project and help me build it. so unvibe becomes a fully open-source community project.
-
-## License
