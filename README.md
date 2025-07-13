@@ -88,3 +88,16 @@ There's a lot of rough edges throughout the app, this is an experimental phase, 
 - [ ] Enable per-project and per-thread context settings
 - [ ] Make next.js plugin
 - [ ] Make react-router plugin
+
+## Contributing
+
+check the [contributing guide](/CONTRIBUTING.md) for more details.
+
+## Roadmap
+
+These are the hardest to solve right now, so for now im sticking to the TODOs above, once these are done, I will start working on the roadmap items.
+
+- [ ] Fix all llm providers (gemini, ollama, anthropic, etc...)
+- [ ] Enable llm image output
+- [ ] Enable Audio/Video input and output
+- [ ] Enable Custom workflows (more than just visual/files/threads flows)
