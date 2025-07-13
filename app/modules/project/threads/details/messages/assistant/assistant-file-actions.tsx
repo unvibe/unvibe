@@ -9,12 +9,22 @@ import { Modal } from '@/lib/ui/modal';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { TbEdit } from 'react-icons/tb';
 import { Tooltip } from '@/lib/ui/tooltip';
-import { Code } from '@/lib/ui/code/base';
 
 const Editor = React.lazy(() =>
-  import('@/lib/ui/monaco-editor').then((module) => ({
-    default: module.MonacoEditor,
-  }))
+  import('@/lib/ui/monaco-editor')
+    .then((module) => ({
+      default: module.MonacoEditor,
+    }))
+    .catch((error) => {
+      console.log('Failed to load Monaco Editor:', error);
+      return {
+        default: () => (
+          <div className='text-red-500'>
+            Failed to load editor. Please try again later.
+          </div>
+        ),
+      };
+    })
 );
 
 export interface FileActionProps {
@@ -144,6 +154,10 @@ export function ThreadDetailsMessageListItemFileActions({
     'POST /threads/edit-proposal-file'
   );
   const [showGitDiffModal, setShowGitDiffModal] = useState(false);
+  // const { data: original } = useAPIQuery('GET /projects/request-file', {
+  //   projectId: projectId,
+  //   filePath: data.path,
+  // });
 
   return (
     <div className='p-1 font-mono pl-4 text-xs flex items-center justify-between'>
@@ -270,17 +284,25 @@ export function ThreadDetailsMessageListItemFileActions({
       )}
 
       {showGitDiffModal && git?.diff && (
-        <Modal onClose={() => setShowGitDiffModal(false)}>
-          <div className='relative pb-8'>
-            <div className='max-h-[50vh] overflow-y-auto pb-[3.25rem] p-5 max-w-4xl'>
-              <div className='text-xs'>
-                <Code code={git.diff} isDiff />
-              </div>
-            </div>
-            <div className='absolute inset-x-0 bottom-0 w-full border-t bg-background-2 px-4 py-2 border-border'>
-              <Button onClick={() => setShowGitDiffModal(false)}>Close</Button>
-            </div>
-          </div>
+        <Modal
+          onClose={() => setShowGitDiffModal(false)}
+          className='max-w-4xl max-h-[80vh] w-full h-full relative'
+        >
+          <Editor
+            fileName={'untitled.diff'}
+            height='80vh'
+            value={git.diff}
+            content={git.diff}
+          />
+          {/* <Editor
+            fileName={data.path.split('/').pop() || 'untitled'}
+            value={data.content}
+            content={data.content}
+            height='80vh'
+            showSideBySideDiff={false}
+            showInlineDiff={true}
+            original={original?.content || ''}
+          /> */}
         </Modal>
       )}
     </div>

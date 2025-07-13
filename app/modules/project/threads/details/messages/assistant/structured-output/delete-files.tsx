@@ -12,7 +12,7 @@ export function StructuredOutputDeleteFiles() {
     <>
       {files.map((file, i) => {
         const sel = deleteSelection.find((p) => p.path === file.path);
-        const git = message.metadata?.diffs?.edit_files?.find(
+        const git = message.metadata?.diffs?.delete_files?.find(
           (d) => d.path === file.path
         )?.data;
         return (

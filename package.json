@@ -13,7 +13,7 @@
     "build": "npm run build:client",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
     "start:server": "tsx --env-file=.env.local server/index.ts",
-    "start:client": "react-router-serve ./build/server/index.js",
+    "start:client": "PORT=54495 react-router-serve ./build/server/index.js",
     "lint": "next lint",
     "typecheck": "react-router typegen && tsc --noEmit"
   },
@@ -28,7 +28,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
-    "@react-three/drei": "^10.0.7",
+    "@react-three/drei": "^10.5.0",
     "@react-three/fiber": "^9.1.2",
     "@tanstack/react-query": "^5.67.3",
     "@typefox/monaco-editor-react": "^6.9.0",

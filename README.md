@@ -1,8 +1,11 @@
+> [!IMPORTANT]
+> This is a personal project made for one purpose: bring LLMs (AI assistants) to your local projects and files, so you can use them directly in your code editor or browser without needing to upload your files to a remote server.
+> it has full access to your local files, with request-to-write permissions, so it can read your code, docs, and project structure.
+> Use it at your own risk, and only if you trust the code and the AI assistants it uses.
+
 ## What is Unvibe?
 
 Unvibe is a local web application that brings LLM (AI assistant) workflows directly to your projects and files. It runs on your machine, with _the same read access as you_—so it can see your code, docs, and project structure. When writing or changing files, Unvibe **always asks for your permission first**.
-
----
 
 ## Requirements
 
@@ -33,5 +36,3 @@ npx unvibe --update
 or update from the app itself by clicking on the "Update" button in the sidebar.
 
 **Deleting Unvibe** Deleting the `~/.unvibe` directory will remove Unvibe from your machine.
-
----

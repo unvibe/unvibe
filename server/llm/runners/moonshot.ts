@@ -295,7 +295,7 @@ async function execToolCalls({
 async function run(
   _config: RunInput & { MODEL_CONFIG: ModelConfig }
 ): RunOutput {
-  const { structuredOutput, tag, search_enabled, MODEL_CONFIG } = _config;
+  const { tag, MODEL_CONFIG } = _config;
 
   const tools = _config.context.getTools();
   const llmTools = normalizeToolDefinition(tools);

@@ -12,7 +12,7 @@ export function StructuredOutputReplaceFiles() {
     <>
       {files.map((file, i) => {
         const sel = replaceSelection.find((p) => p.path === file.path);
-        const git = message.metadata?.diffs?.edit_files?.find(
+        const git = message.metadata?.diffs?.replace_files?.find(
           (d) => d.path === file.path
         )?.data;
         return (

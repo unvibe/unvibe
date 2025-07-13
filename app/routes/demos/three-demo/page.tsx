@@ -1,46 +1,31 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-
-function RotatingBox(props: React.ComponentProps<'mesh'>) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
-    }
-  });
-  return (
-    <mesh {...props} ref={meshRef}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={'orange'} />
-    </mesh>
-  );
-}
+import { RotatingEarth } from './RotatingEarth';
+import { AnimatedDotsBackground } from './StarsBackground';
 
 export default function Page() {
   return (
-    <div style={{ width: '100%', height: '100vh', background: '#111' }}>
-      <h1 style={{ textAlign: 'center', color: 'white', paddingTop: 20 }}>
-        react-three-fiber Demo
+    <div style={{ width: '100%', height: '100vh', background: '#fff' }}>
+      <h1 style={{ textAlign: 'center', color: 'black', paddingTop: 20 }}>
+        3D Low-Poly Earth with Edges (drei)
       </h1>
       <Canvas
-        camera={{ position: [0, 0, 5] }}
+        camera={{ position: [0, 0, 3] }}
         style={{
           height: 500,
           margin: '0 auto',
           display: 'block',
-          background: '#222',
+          background: '#fff',
         }}
       >
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <RotatingBox position={[0, 0, 0]} />
+        <AnimatedDotsBackground />
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <RotatingEarth position={[0, 0, 0]} />
       </Canvas>
-      <p style={{ color: '#ccc', textAlign: 'center', marginTop: 20 }}>
-        This is a simple 3D cube rendered using @react-three/fiber.
+      <p style={{ color: '#333', textAlign: 'center', marginTop: 20 }}>
+        This is a modern three-fiber + drei demo of a low-poly white Earth with
+        real triangle edges.
       </p>
     </div>
   );

@@ -45,7 +45,7 @@ function Wrapper({
       <div
         className={clsx(
           'p-4 flex rounded-2xl max-w-[70%] w-full group',
-          'border border-border-1 bg-background-2 relative'
+          'bg-background-2 relative'
         )}
       >
         <div className={clsx('whitespace-pre-wrap overflow-hidden w-full')}>

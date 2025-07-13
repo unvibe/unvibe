@@ -140,10 +140,10 @@ export function ThreadDetailsMessageListItemFileContent({
         )}
       />
       {!expanded && (
-        <div className='absolute bottom-1 w-full flex justify-center font-mono text-xs'>
+        <div className='absolute bottom-1 w-full flex justify-center font-mono text-sm'>
           <div className='absolute -bottom-1 h-[50px] inset-x-0 bg-gradient-to-t from-background-2 via-background-2/50 to-transparent'></div>
           <button
-            className='text-foreground-2 border bg-background-2 border-border z-10 px-4 py-2 rounded-full shadow dark:shadow-black/20 cursor-pointer'
+            className='text-foreground-2 bg-background-1 border-border z-10 px-4 py-1 rounded-lg shadow dark:shadow-black/20 cursor-pointer'
             onClick={() => {
               setExpanded(true);
               if (codeSnippetRef.current) {
