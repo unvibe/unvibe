@@ -15,6 +15,7 @@ export function StructuredOutputReplaceFiles() {
         const git = message.metadata?.diffs?.replace_files?.find(
           (d) => d.path === file.path
         )?.data;
+        console.log(git);
         return (
           <ThreadDetailsMessageListItemFile
             key={file.path + i.toString()}

@@ -67,7 +67,7 @@ async function main() {
     console.log('Running git pull at', PROJECT_DIR);
 
     updateApp();
-    console.log('Project updated successfully.');
+    console.log('Project updated successfully, restart the app');
     return;
   }
 

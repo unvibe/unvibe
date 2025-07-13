@@ -9,6 +9,8 @@ import { useLLMModels } from '~/modules/root-providers/llm-models';
 import { StartThreadContextModal } from './context-modal';
 import ModelsSelector from './models-selector';
 import { ThreadInputBox } from './thread-input-box';
+import { useHomeInfo } from '~/modules/root-providers/home-info';
+import { AWS_KEYS } from '~/routes/(home)/home/environment/useEnvironmentStatus';
 
 export function StartThreadInput({
   onSubmit,
@@ -81,6 +83,7 @@ export function StartThreadInput({
   }, [currentModelId]);
 
   const _models = Object.values(models.raw);
+  const { env } = useHomeInfo();
   return (
     <>
       <ThreadInputBox
@@ -91,7 +94,8 @@ export function StartThreadInput({
         placeholder={placeholder}
         inputImage={
           _models.find((m) => m.MODEL_CONFIG.id === selectedModel)?.MODEL_CONFIG
-            .supports.image
+            .supports.image &&
+          AWS_KEYS.every((key) => env.find((e) => e.key === key && e.value))
         }
         inputSearchFlag={
           _models.find((m) => m.MODEL_CONFIG.id === selectedModel)?.MODEL_CONFIG

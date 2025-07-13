@@ -1,18 +1,28 @@
 import { useAPIQuery } from '@/server/api/client';
 
 export const DEFAULT_DIR = 'projects';
-export const MOCK_NESTED = 'projects/web-monorepo/apps';
-
-export const DEFAULT_SOURCES = [DEFAULT_DIR, MOCK_NESTED].map(btoa).join(',');
 
 export function useInvalidateProjects() {
-  return useAPIQuery('GET /projects/list', {
-    sources: DEFAULT_SOURCES,
-  }).refetch;
+  const sourcesQuery = useAPIQuery('GET /home/list-sources', {});
+  const sources = sourcesQuery.data?.sources || [];
+  return useAPIQuery(
+    'GET /projects/list',
+    {
+      sources: sources?.map(btoa).join(','),
+    },
+    sourcesQuery.isFetching ? false : true
+  ).refetch;
 }
 
 export function useProjects() {
-  return useAPIQuery('GET /projects/list', {
-    sources: DEFAULT_SOURCES,
-  });
+  const sourcesQuery = useAPIQuery('GET /home/list-sources', {});
+  const sources = sourcesQuery.data?.sources || [];
+
+  return useAPIQuery(
+    'GET /projects/list',
+    {
+      sources: sources?.map(btoa).join(','),
+    },
+    sourcesQuery.isFetching ? false : true
+  );
 }

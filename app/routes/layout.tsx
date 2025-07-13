@@ -14,6 +14,8 @@ import { HiChevronDown, HiChevronUp, HiXMark } from 'react-icons/hi2';
 import { Button, Checkbox } from '@/lib/ui';
 import { noop } from '@/lib/core/noop';
 import { MdInfoOutline } from 'react-icons/md';
+import { useAPIMutation } from '@/server/api/client';
+import toast from 'react-hot-toast';
 
 const modelsOptions = MODELS_KEYS.map((key) => ({
   value: key,
@@ -28,6 +30,15 @@ function HomeEnvModal() {
   const envStatus = useEnvironmentStatus();
   const [isEnvSetup, setIsEnvSetup] = React.useState(envStatus);
   const [optionalExpanded, setOptionalExpanded] = React.useState(false);
+  const [modelApiKey, setModelApiKey] = React.useState<string>(
+    modelsOptions.find((opt) => opt.value.includes('OPENAI'))?.value || ''
+  );
+  const [modelApiKeyValue, setModelApiKeyValue] = React.useState('');
+  const mutation = useAPIMutation('POST /home/env-update', {
+    onSuccess: () => {
+      console.log('Environment setup updated successfully');
+    },
+  });
 
   if (isEnvSetup) {
     return null; // Don't render modal if environment is not set up
@@ -67,15 +78,16 @@ function HomeEnvModal() {
           </h3>
           <Select
             options={modelsOptions}
-            value={
-              modelsOptions.find((opt) => opt.value.includes('OPENAI'))?.value
-            }
+            onChange={(value) => setModelApiKey(value)}
+            value={modelApiKey}
             placeholder='Select model provider key'
           />
           <input
             type='text'
             placeholder='--API Key--'
             className={clsx(defaultTrigger, 'w-full !font-normal')}
+            value={modelApiKeyValue}
+            onChange={(e) => setModelApiKeyValue(e.target.value)}
           />
         </div>
         <div className='grid gap-2 border-2 border-border border-dashed p-4 rounded-2xl'>
@@ -120,7 +132,23 @@ function HomeEnvModal() {
           </div>
           <div className='flex justify-end items-center gap-3'>
             <Button variant='secondary'>Cancel</Button>
-            <Button variant='success' disabled>
+            <Button
+              variant='success'
+              disabled={!modelApiKeyValue}
+              isLoading={mutation.isPending}
+              onClick={() => {
+                mutation.mutate(
+                  {
+                    key: modelApiKey,
+                    value: modelApiKeyValue,
+                  },
+                  {
+                    onSuccess: () =>
+                      toast.success('Environment updated successfully'),
+                  }
+                );
+              }}
+            >
               Save
             </Button>
           </div>

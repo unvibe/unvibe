@@ -1,8 +1,9 @@
 import { Modal } from '@/lib/ui/modal';
 import { Button } from '@/lib/ui/button';
 import { useState, useEffect } from 'react';
-import { useAPIMutation } from '@/server/api/client';
+import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { HiFolder, HiChevronLeft, HiPlus } from 'react-icons/hi';
+import { HiTrash } from 'react-icons/hi2';
 
 export function AddSourceModal({
   open,
@@ -16,6 +17,11 @@ export function AddSourceModal({
   const [dirs, setDirs] = useState<{ name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const sourcesQuery = useAPIQuery('GET /home/list-sources', {});
+  const sources = sourcesQuery.data?.sources || [];
+  const addSourceMutation = useAPIMutation('POST /home/add-source');
+  const removeSourceMutation = useAPIMutation('POST /home/remove-source');
 
   const mutation = useAPIMutation('POST /home/ls', {
     onSuccess: (res) => {
@@ -58,7 +64,33 @@ export function AddSourceModal({
   };
 
   const handleDirAdd = (name: string) => {
-    alert((currentPath ? '~/' + currentPath + '/' : '~/') + name);
+    const fullPath = currentPath ? currentPath + '/' + name : name;
+    addSourceMutation.mutate(
+      {
+        path: fullPath,
+      },
+      {
+        onSuccess: () => {
+          onClose();
+          sourcesQuery.refetch();
+        },
+      }
+    );
+  };
+
+  const handleDirRemove = (name: string) => {
+    const fullPath = currentPath ? currentPath + '/' + name : name;
+    removeSourceMutation.mutate(
+      {
+        path: fullPath,
+      },
+      {
+        onSuccess: () => {
+          onClose();
+          sourcesQuery.refetch();
+        },
+      }
+    );
   };
 
   const handleBack = () => {
@@ -69,6 +101,11 @@ export function AddSourceModal({
     const prev = pathStack[pathStack.length - 1];
     setPathStack((stack) => stack.slice(0, -1));
     setCurrentPath(prev);
+  };
+
+  const checkAlreadyExists = (path: string) => {
+    const _currentPath = currentPath ? currentPath + '/' : '';
+    return sources.some((source) => source === _currentPath + path);
   };
 
   if (!open) return null;
@@ -98,29 +135,46 @@ export function AddSourceModal({
         </div>
       ) : (
         <div className='h-[400px] overflow-auto divide-y divide-border-2'>
-          {dirs.map((dir) => (
-            <div
-              key={dir.name}
-              className='flex items-center gap-2 p-2 hover:bg-background-2 rounded text-foreground-1'
-            >
-              <Button
-                variant='secondary'
-                className='mr-2 !p-2'
-                onClick={() => handleDirAdd(dir.name)}
-                title='Select this folder as source'
-              >
-                <HiPlus className='w-4 h-4' />
-              </Button>
+          {dirs.map((dir) => {
+            const exists = checkAlreadyExists(dir.name);
+            return (
               <div
-                className='flex items-center gap-2 flex-1 cursor-pointer'
-                onClick={() => handleDirClick(dir.name)}
-                title='Click to open'
+                key={dir.name}
+                className='flex items-center gap-2 p-2 hover:bg-background-2 rounded text-foreground-1'
               >
-                <HiFolder className='w-5 h-5 text-blue-400' />
-                <span className='truncate'>{dir.name}</span>
+                <Button
+                  variant={exists ? 'danger' : 'secondary'}
+                  className='mr-2 !p-2'
+                  onClick={() => {
+                    if (exists) {
+                      handleDirRemove(dir.name);
+                    } else {
+                      handleDirAdd(dir.name);
+                    }
+                  }}
+                  title='Select this folder as source'
+                  isLoading={
+                    addSourceMutation.isPending ||
+                    removeSourceMutation.isPending
+                  }
+                >
+                  {exists ? (
+                    <HiTrash className='w-4 h-4' />
+                  ) : (
+                    <HiPlus className='w-4 h-4' />
+                  )}
+                </Button>
+                <div
+                  className='flex items-center gap-2 flex-1 cursor-pointer'
+                  onClick={() => handleDirClick(dir.name)}
+                  title='Click to open'
+                >
+                  <HiFolder className='w-5 h-5 text-blue-400' />
+                  <span className='truncate'>{dir.name}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {dirs.length === 0 && (
             <div className='p-4 text-center text-foreground-2'>No folders</div>
           )}

@@ -72,6 +72,9 @@ export async function createDiffs(
           .catch(() => false);
 
         if (!fileExists) {
+          console.log(
+            `File ${resolvedFilePath} does not exist, returning empty diff.`
+          );
           return {
             path: vf.path,
             data: {

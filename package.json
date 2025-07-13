@@ -12,7 +12,7 @@
     "dev:client": "react-router dev",
     "build:client": "react-router build",
     "build": "npm run build:client",
-    "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\" \"npx drizzle-kit studio\"",
     "start:server": "tsx --env-file=.env.local server/index.ts",
     "start:client": "PORT=54495 react-router-serve ./build/server/index.js",
     "lint": "next lint",
