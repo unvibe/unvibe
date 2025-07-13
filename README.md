@@ -11,8 +11,13 @@ Run llms in your local projects and files with full configuration and control ov
 
 - **Node.js**: Unvibe requires Node.js version 23 or higher.
 - **gh CLI**: Github CLI is used for various git / github operations
+- **OpenAI API Key**: You need an OpenAI API key to use the LLMs
 
 ## Install and Run
+
+> [!NOTE]
+> Recomended workflow: since this is just the exploration phase, there are a lot of rough edges, coming soon features, and missing features.
+> for now use `GPT 4.1` and its variants (`mini | nano`)only
 
 To **install**:
 
@@ -27,6 +32,9 @@ this will:
 3. builds the app
 4. starts the app at server `http://localhost:3000`
 
+If this is the first time you run it then you will be greeted with a welcome message that prompts for the OpenAI API key, once you enter it you are ready to go!
+Optionally, also follow the instructions to set up AWS S3 to enable LLM input/output of type image (for now, later will be used for video/audio too).
+
 To **update**
 
 ```bash
@@ -35,12 +43,14 @@ npx unvibe --update
 
 or update from the app itself by clicking on the "Update" button in the sidebar.
 
-To **delet**
+To **delete**
+
+> [!WARNING]
+> This will delete everything related to Unvibe and will also delete all the data in the database (sqlite)
+> Unvibe does not store or send any data to any remote server, everything is stored locally in the database.
 
 ```bash
 rm -rf ~/.unvibe
 ```
 
-> [!NOTE]
-> Recomended workflow: since this is just the exploration phase, there are a lot of rough edges, coming soon features, and missing features.
-> for now use `GPT 4.1` and its variants (`mini | nano`)only
+## Project Status
