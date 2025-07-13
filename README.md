@@ -4,7 +4,7 @@
 > Use it at your own risk, and only if you trust the code and the AI assistants it uses.
 
 > [!NOTE]
-> **recomended workflow** since this is just the exploration phase, there are a lot of rough edges, coming soon features, and missing features.
+> Recomended workflow: since this is just the exploration phase, there are a lot of rough edges, coming soon features, and missing features.
 > for now use `GPT 4.1` and its variants (`mini | nano`)only
 
 ## What is Unvibe?
