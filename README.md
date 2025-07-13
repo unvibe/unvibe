@@ -9,7 +9,7 @@ Run llms in your local projects and files with full configuration and control ov
 
 ## Requirements
 
-- **Node.js**: Unvibe requires Node.js version 23 or higher.
+- **Node.js**: requires Node.js version 23 or higher.
 - **gh CLI**: Github CLI is used for various git / github operations
 - **OpenAI API Key**: You need an OpenAI API key to use the LLMs
 
@@ -30,7 +30,7 @@ this will:
 1. pull the latest version of Unvibe from github into `~/.unvibe`
 2. installs the dependencies
 3. builds the app
-4. starts the app at server `http://localhost:3000`
+4. starts the app at server `http://localhost:54495`
 
 If this is the first time you run it then you will be greeted with a welcome message that prompts for the OpenAI API key, once you enter it you are ready to go!
 Optionally, also follow the instructions to set up AWS S3 to enable LLM input/output of type image (for now, later will be used for video/audio too).
@@ -54,3 +54,17 @@ rm -rf ~/.unvibe
 ```
 
 ## Project Status
+
+This started as a sketch of a platform to run all kinds of llms in your local projects and files, with a nice way to add/remove/update context and tools.
+When you first open a project from the app, it will parse that project and register a `Plugins` associated with that project stack.
+
+Let's say you opened a Typescript React project, then it will register typescript and various web tooling that will:
+
+- aid the model in understanding the project structure via system instructions
+- provide the model with the ability to run scripts against your codebase
+- provide tools to manage various aspects of your stack
+- diagnostics hooks (runs on llm repsonse) and analysis of the project structure, code, and files
+
+and more, everything is customizable, although for now the only supported stack is Typescript/nodejs based projects, some plugins stubs exists for later support like AWS, Docker, Go, Python, etc...
+
+There's a lot of rough edges throughout the app, this is an experimental phase, so expect some bugs and missing features.
