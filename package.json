@@ -1,6 +1,6 @@
 {
   "name": "unvibe",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -118,6 +118,6 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "bin": {
-    "unvibe": "./cli.ts"
+    "unvibe": "./cli.js"
   }
 }

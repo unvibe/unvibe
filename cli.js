@@ -13,7 +13,7 @@ const HOME = os.homedir();
 const PROJECT_DIR = path.join(HOME, '.unvibe');
 const ENV_FILE = path.join(PROJECT_DIR, '.env.local');
 
-function run(cmd: string, cwd?: string) {
+function run(cmd, cwd) {
   return execSync(cmd, {
     stdio: 'inherit',
     cwd,
