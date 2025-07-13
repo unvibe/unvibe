@@ -43,6 +43,9 @@ function updateApp() {
 }
 
 function startApp() {
+  run('npm install', PROJECT_DIR);
+  run('npm run build', PROJECT_DIR);
+  run('npx drizzle-kit push', PROJECT_DIR);
   run('npm start', PROJECT_DIR);
 }
 
