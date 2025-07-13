@@ -2,7 +2,7 @@ import { Modal } from '@/lib/ui/modal';
 import { Button } from '@/lib/ui/button';
 import { useState } from 'react';
 import { HiPlus } from 'react-icons/hi2';
-import { useAPIMutation } from '@/server/api/client';
+import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 
 export function ProjectAddModal({
   open,
@@ -17,6 +17,10 @@ export function ProjectAddModal({
   const [name, setName] = useState('');
   const [githubRepo, setGithubRepo] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // NEW: selected source
+  const sourcesQuery = useAPIQuery('GET /home/list-sources', {});
+  const sources = sourcesQuery.data?.sources || [];
+  const [selectedSource, setSelectedSource] = useState<string>('');
 
   const mutation = useAPIMutation('POST /home/create-project', {
     onSuccess: (res) => {
@@ -36,10 +40,12 @@ export function ProjectAddModal({
 
   const handleCreate = async () => {
     setError(null);
+    // TODO: include selectedSource in the mutation payload when backend is ready
     mutation.mutate({
       mode,
       name,
       githubRepo: mode === 'github' ? githubRepo : undefined,
+      source: selectedSource,
     });
   };
 
@@ -50,6 +56,25 @@ export function ProjectAddModal({
       <h2 className='text-xl font-semibold pb-4 flex items-center gap-2 text-foreground-1'>
         <HiPlus className='w-8 h-8' /> New Project
       </h2>
+      {/* NEW: Source select */}
+      <div className='mb-4'>
+        <label className='block text-sm mb-1'>Add to Source</label>
+        <select
+          className='w-full px-3 py-2 rounded-md bg-background-2 border-none outline-none font-mono text-base mb-2'
+          value={selectedSource}
+          onChange={(e) => setSelectedSource(e.target.value)}
+          disabled={sourcesQuery.isPending}
+        >
+          <option value='' disabled>
+            Select source...
+          </option>
+          {sources.map((src: string) => (
+            <option key={src} value={src}>
+              {src}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className='flex gap-3 mb-4'>
         <Button
           variant={mode === 'empty' ? 'primary' : 'secondary'}

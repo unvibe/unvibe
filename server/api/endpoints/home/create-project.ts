@@ -6,16 +6,16 @@ import os from 'node:os';
 import { runShellCommand } from '@/lib/server/run-shell-command';
 import { noop } from '@/lib/core/noop';
 
-// Configurable projects dir, defaults to '~/projects' if not set
-function getProjectsDir() {
-  const envDir = process.env.UNVIBE_PROJECTS_DIR;
-  if (envDir && envDir.trim()) {
-    return envDir.startsWith('~')
-      ? path.join(os.homedir(), envDir.slice(1))
-      : envDir;
+function getTargetDir(name: string, source?: string) {
+  const homeDir = os.homedir();
+  if (source && source.trim()) {
+    // always treat source as relative to home
+    const src = source.replace(/^~\/?/, '');
+    return path.join(homeDir, src, name);
   }
-  return path.join(os.homedir(), 'projects');
+  return path.join(homeDir, 'projects', name);
 }
+
 export const createProject = createEndpoint({
   type: 'POST',
   pathname: '/home/create-project',
@@ -23,11 +23,11 @@ export const createProject = createEndpoint({
     mode: z.enum(['empty', 'github']),
     name: z.string().min(1),
     githubRepo: z.string().optional(),
+    source: z.string().optional(),
   }),
   handler: async ({ parsed }) => {
-    const { mode, name, githubRepo } = parsed;
-    const projectsDir = getProjectsDir();
-    const targetDir = path.join(projectsDir, name);
+    const { mode, name, githubRepo, source } = parsed;
+    const targetDir = getTargetDir(name, source);
 
     // Validate project name (very basic)
     if (!/^[a-zA-Z0-9_.-]+$/.test(name)) {
