@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "server:nodemon": "nodemon --watch ./.env.local --watch ./server --watch ./plugins --watch ./environment --ext ts --exec \"npm run server\"",
     "server": "tsx --env-file=.env.local server/index.ts",
