@@ -12,7 +12,6 @@ import { runShellCommand } from '@/lib/server/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { StructuredOutput } from '@/server/llm/structured_output';
-import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 import { parseProject } from '@/server/project/parse';
 export {
   runScript as _runScript,
@@ -185,38 +184,9 @@ export async function runProposalDiagnostics(
   const plugins = await loadPlugins(project);
   const addedFiles = proposal.replace_files || [];
   const deletedFiles = proposal.delete_files || [];
-  const editedFiles = proposal.edit_files || [];
-  const editedRanges = proposal.edit_ranges || [];
   const content = [
     ...addedFiles,
     ...deletedFiles.map((file) => ({ path: file.path, content: '' })),
-    ...editedRanges.map((range) => {
-      const source =
-        project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(range.path)] ||
-        '';
-      const newSource = applyRangeEdits(source, range.edits);
-      return {
-        path: range.path,
-        content: newSource,
-      };
-    }),
-    ...editedFiles.map((file) => {
-      const source =
-        project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] ||
-        '';
-      // todo apply the range to the source
-      // Apply the edit by lines
-      const sourceLines = source.split('\n');
-      const editLines = file.content.split('\n');
-      // split the source lines in two parts
-      const newLines = [...sourceLines];
-      newLines.splice(file.insert_at - 1, 0, ...editLines);
-      const appliedContent = newLines.join('\n');
-      return {
-        path: file.path,
-        content: appliedContent,
-      };
-    }),
   ];
 
   // console.log('content after edit', content);

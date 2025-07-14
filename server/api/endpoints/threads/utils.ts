@@ -4,10 +4,6 @@ import * as llm from '@/server/llm';
 import { models } from '@/server/llm/models';
 import { Thread } from '@/server/db/schema';
 import { sendWebsocketEvent } from '@/server/websocket/server';
-import { StructuredOutput } from '@/server/llm/structured_output';
-import { Project } from '@/server/project/types';
-import { normalizePath } from '../projects/utils';
-import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
 
 export function sendEventEnd(tag: string, threadId: string) {
   sendWebsocketEvent({
@@ -107,41 +103,4 @@ export function createThread({
     workspaces: workspaces,
     context_config: context_config,
   };
-}
-
-export function resolveRangeEdits(
-  edits: StructuredOutput['edit_ranges'] = [],
-  project: Project
-) {
-  return edits?.map((range) => {
-    const source =
-      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(range.path)] || '';
-    const newSource = applyRangeEdits(source, range.edits);
-    return {
-      path: range.path,
-      content: newSource,
-    };
-  });
-}
-
-export function resolveEdits(
-  edits: StructuredOutput['edit_files'] = [],
-  project: Project
-) {
-  return edits?.map((file) => {
-    const source =
-      project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] || '';
-    // todo apply the range to the source
-    // Apply the edit by lines
-    const sourceLines = source.split('\n');
-    const editLines = file.content.split('\n');
-    // split the source lines in two parts
-    const newLines = [...sourceLines];
-    newLines.splice(file.insert_at - 1, 0, ...editLines);
-    const appliedContent = newLines.join('\n');
-    return {
-      path: file.path,
-      content: appliedContent,
-    };
-  });
 }
