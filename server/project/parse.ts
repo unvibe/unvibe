@@ -86,7 +86,6 @@ export async function parseProject(
 ): Promise<Project> {
   const projectPathFromHome = pathFromId(id);
   const projectPath = resolveHomePath(projectPathFromHome);
-  const projectDirName = path.basename(projectPath);
 
   // --- Stale-while-revalidate: serve cache, revalidate in background ---
   const fileCache = await loadCache(projectPath);
@@ -164,7 +163,7 @@ export async function parseProject(
   );
 
   const customSystem = await db.query.customSystemParts.findMany({
-    where: (table, { eq }) => eq(table.project_id, projectDirName),
+    where: (table, { eq }) => eq(table.project_id, id),
   });
 
   const flattened = contexts

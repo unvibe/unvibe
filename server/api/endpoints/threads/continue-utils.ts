@@ -5,48 +5,13 @@ import { normalizePath, runProposalDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
 import { Project } from '@/server/project/types';
 import { StructuredOutput } from '@/server/llm/structured_output';
-import { applyRangeEdits } from '@/server/llm/structured_output/resolve-edits';
-import { runTransforms } from '@/server/llm/structured_output/transform';
+// import { runTransforms } from '@/server/llm/structured_output/transform';
 import { VirtualFile } from '@/plugins/_types/plugin.server';
 import fs from 'fs/promises';
 import path from 'path';
 import simpleGit from 'simple-git';
 import { noop } from '@/lib/core/noop';
 import gitDiffParser from 'gitdiff-parser';
-
-function resolveRangeEdit(
-  project: Project,
-  rangeEdit: NonNullable<StructuredOutput['edit_ranges']>[number]
-) {
-  const source =
-    project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(rangeEdit.path)] ||
-    '';
-  const newSource = applyRangeEdits(source, rangeEdit.edits);
-  return {
-    path: rangeEdit.path,
-    content: newSource,
-  };
-}
-
-function resolveEditedFile(
-  project: Project,
-  file: NonNullable<StructuredOutput['edit_files']>[number]
-) {
-  const source =
-    project.EXPENSIVE_REFACTOR_LATER_content[normalizePath(file.path)] || '';
-  // todo apply the range to the source
-  // Apply the edit by lines
-  const sourceLines = source.split('\n');
-  const editLines = file.content.split('\n');
-  // split the source lines in two parts
-  const newLines = [...sourceLines];
-  newLines.splice(file.insert_at - 1, 0, ...editLines);
-  const appliedContent = newLines.join('\n');
-  return {
-    path: file.path,
-    content: appliedContent,
-  };
-}
 
 export async function createDiffs(
   project: Project,
@@ -152,12 +117,8 @@ export async function createMetadata(
 
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
   const deletedPaths = parsed.delete_files?.map((p) => p.path) || [];
-  const editedPaths = parsed.edit_files?.map((p) => p.path) || [];
-  const editedRanges = parsed.edit_ranges?.map((p) => p.path) || [];
-  const relatedFiles = replacedPaths
-    .concat(deletedPaths)
-    .concat(editedPaths)
-    .concat(editedRanges);
+  const relatedFiles = replacedPaths.concat(deletedPaths);
+
   const sha1Map = Object.fromEntries(
     await Promise.all(
       relatedFiles.map(async (filePath) => {
@@ -169,37 +130,21 @@ export async function createMetadata(
     )
   );
 
-  const resolvedEditedFiles = parsed.edit_files?.map((file) =>
-    resolveEditedFile(project, file)
-  );
-
-  const resolvedEditedRanges = parsed.edit_ranges?.map((rangeEdit) =>
-    resolveRangeEdit(project, rangeEdit)
-  );
-
-  const [formattedRanges, formattedEdits] = await Promise.all([
-    await runTransforms(project, resolvedEditedRanges || []),
-    await runTransforms(project, resolvedEditedFiles || []),
+  const [replaceFilesDiffs, deleteFilesDiffs] = await Promise.all([
+    createDiffs(project, parsed.replace_files || []),
+    (parsed.delete_files || []).map((file) => {
+      return {
+        path: file.path,
+        data: {
+          diff: '',
+          additions: 0,
+          deletions:
+            project.EXPENSIVE_REFACTOR_LATER_content[file.path]?.split('\n')
+              .length,
+        },
+      };
+    }),
   ]);
-
-  const [replaceFilesDiffs, deleteFilesDiffs, editFilesDiffs, rangeEditsDiffs] =
-    await Promise.all([
-      createDiffs(project, parsed.replace_files || []),
-      (parsed.delete_files || []).map((file) => {
-        return {
-          path: file.path,
-          data: {
-            diff: '',
-            additions: 0,
-            deletions:
-              project.EXPENSIVE_REFACTOR_LATER_content[file.path]?.split('\n')
-                .length,
-          },
-        };
-      }),
-      createDiffs(project, resolvedEditedFiles || []),
-      createDiffs(project, resolvedEditedRanges || []),
-    ]);
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     diagnostics: Object.fromEntries(
@@ -218,13 +163,9 @@ export async function createMetadata(
     ),
     parsed,
     source_sha1: sha1Map,
-    resolved_edited_files: formattedEdits,
-    resolved_edited_ranges: formattedRanges,
     diffs: {
       replace_files: replaceFilesDiffs,
       delete_files: deleteFilesDiffs,
-      edit_files: editFilesDiffs,
-      range_edits: rangeEditsDiffs,
     },
   };
 
