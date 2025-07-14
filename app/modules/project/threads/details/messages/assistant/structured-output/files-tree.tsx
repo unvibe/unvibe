@@ -39,10 +39,9 @@ export function FilesTree() {
   const { data } = useStructuredOutputContext();
 
   const tree = useMemo(() => {
-    const files = data.edit_files || [];
     const replace = data.replace_files || [];
     const remove = data.delete_files || [];
-    const all = [...files, ...replace, ...remove];
+    const all = [...replace, ...remove];
     const paths = all.map((file) => file.path);
     const parsed = makeTree(paths);
     return parsed.children['.'];

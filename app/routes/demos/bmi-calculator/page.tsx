@@ -166,7 +166,7 @@ export default function BMICalculator() {
         </Button>
         {bmi !== null && <BMIResult bmi={bmi} category={category} />}
       </div>
-      <style jsx global>{`
+      <style>{`
         .text-gradient {
           background-clip: text;
           -webkit-background-clip: text;

@@ -40,8 +40,6 @@ export function StructuredOutputContextProvider({
   const [selection, setSelection] = useState<ProposalSelection>(() => {
     const replace = data.replace_files || [];
     const remove = data.delete_files || [];
-    const edit = data.edit_files || [];
-    const ranges = data.edit_ranges || [];
     const scripts = data.shell_scripts || [];
     return {
       replace_files: replace.map((file) => ({
@@ -49,11 +47,6 @@ export function StructuredOutputContextProvider({
         selected: true,
       })),
       delete_files: remove.map((file) => ({ path: file.path, selected: true })),
-      edit_files: edit.map((file) => ({ path: file.path, selected: true })),
-      edit_ranges: ranges.map((range) => ({
-        path: range.path,
-        selected: true,
-      })),
       shell_scripts: scripts.map((script) => ({ script, selected: true })),
     };
   });

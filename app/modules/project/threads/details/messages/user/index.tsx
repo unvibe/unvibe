@@ -49,10 +49,7 @@ export function ThreadDetailsMessageUser({ data }: ThreadDetailsMessageProps) {
               ))}
             </div>
           )}
-          <Markdown
-            initialHTML={parsedContent || ''}
-            text={parsedContent || ''}
-          />
+          <Markdown text={parsedContent || ''} />
         </div>
         {!!parsedContent && <CopyButton content={parsedContent} />}
       </div>

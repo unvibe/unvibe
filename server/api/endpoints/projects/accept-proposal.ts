@@ -6,9 +6,6 @@ import { runShellCommand } from '@/lib/server/run-shell-command';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { noop } from '@/lib/core/noop';
-import { resolveEdits, resolveRangeEdits } from '../threads/utils';
-import { StructuredOutput } from '@/server/llm/structured_output';
-import { runTransforms } from '@/server/llm/structured_output/transform';
 
 type Acceptance = {
   shell_scripts: {
@@ -152,81 +149,6 @@ async function applyDeletedFiles(
   );
 }
 
-async function applyEditedFiles(
-  project: Project,
-  editFiles?: StructuredOutput['edit_files'],
-  selection?: { path: string; selected: boolean }[]
-): Promise<Acceptance['edit_files']> {
-  if (!editFiles || editFiles.length === 0) {
-    return [];
-  }
-  const resolved = resolveEdits(editFiles, project);
-  const formatted = await runTransforms(project, resolved);
-  const selected = selection
-    ? formatted.filter((file) =>
-        selection.some((s) => s.path === file.path && s.selected)
-      )
-    : formatted;
-
-  return Promise.all(
-    selected.map(async (entry) => {
-      let status: 'success' | 'error';
-      let payload = '';
-      try {
-        await _applyFullFile(project, entry);
-        status = 'success';
-      } catch (error) {
-        status = 'error';
-        if (error instanceof Error) {
-          payload = `Error: ${error.message}`;
-        } else if (typeof error === 'string') {
-          payload = `Error: ${error}`;
-        } else {
-          payload = 'Error: An unexpected error occurred: ' + String(error);
-        }
-      }
-      return { path: entry.path, status, payload };
-    })
-  );
-}
-
-async function applyRangedEdits(
-  project: Project,
-  editRanges?: StructuredOutput['edit_ranges'],
-  selections?: { path: string; selected: boolean }[]
-): Promise<Acceptance['edit_ranges']> {
-  if (!editRanges || editRanges.length === 0) {
-    return [];
-  }
-  const resolved = resolveRangeEdits(editRanges, project);
-  const formatted = await runTransforms(project, resolved);
-  const selected = selections
-    ? formatted.filter((file) =>
-        selections.some((s) => s.path === file.path && s.selected)
-      )
-    : formatted;
-  return Promise.all(
-    selected.map(async (entry) => {
-      let status: 'success' | 'error';
-      let payload = '';
-      try {
-        await _applyFullFile(project, entry);
-        status = 'success';
-      } catch (error) {
-        status = 'error';
-        if (error instanceof Error) {
-          payload = `Error: ${error.message}`;
-        } else if (typeof error === 'string') {
-          payload = `Error: ${error}`;
-        } else {
-          payload = 'Error: An unexpected error occurred: ' + String(error);
-        }
-      }
-      return { path: entry.path, status, payload };
-    })
-  );
-}
-
 const proposalSelectionSchema = z.object({
   replace_files: z
     .array(z.object({ path: z.string(), selected: z.boolean() }))
@@ -252,29 +174,6 @@ const proposalSchema = z.object({
     .array(z.object({ path: z.string(), content: z.string() }))
     .optional(),
   delete_files: z.array(z.object({ path: z.string() })).optional(),
-  edit_ranges: z
-    .array(
-      z.object({
-        path: z.string(),
-        edits: z.array(
-          z.object({
-            start: z.number(), // 0-based index
-            end: z.number(), // 0-based index
-            content: z.string(),
-          })
-        ),
-      })
-    )
-    .optional(),
-  edit_files: z
-    .array(
-      z.object({
-        path: z.string(),
-        content: z.string(),
-        insert_at: z.number(), // 1-based index
-      })
-    )
-    .optional(),
   shell_scripts: z.array(z.string()).optional(),
 });
 
@@ -294,7 +193,7 @@ export const acceptProposal = createEndpoint({
       parsed.selections.shell_scripts
     );
 
-    const [deleted, replaced, edited, ranges] = await Promise.all([
+    const [deleted, replaced] = await Promise.all([
       applyDeletedFiles(
         project,
         parsed.proposal.delete_files,
@@ -305,24 +204,12 @@ export const acceptProposal = createEndpoint({
         parsed.proposal.replace_files,
         parsed.selections.replace_files
       ),
-      applyEditedFiles(
-        project,
-        parsed.proposal.edit_files,
-        parsed.selections.edit_files
-      ),
-      applyRangedEdits(
-        project,
-        parsed.proposal.edit_ranges,
-        parsed.selections.edit_ranges
-      ),
     ]);
 
     return {
       shell_scripts: scripts,
       deleted_files: deleted,
       replace_files: replaced,
-      edit_files: edited,
-      edit_ranges: ranges,
     };
   },
 });

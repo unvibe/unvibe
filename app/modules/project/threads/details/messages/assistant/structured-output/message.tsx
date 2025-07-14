@@ -3,5 +3,5 @@ import { useStructuredOutputContext } from './context';
 
 export function StructuredOutputMessage() {
   const { data } = useStructuredOutputContext();
-  return <Markdown text={data.message} initialHTML={data.message} />;
+  return <Markdown text={data.message} />;
 }

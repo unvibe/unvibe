@@ -49,7 +49,6 @@ function cleanUp(candidate: StructuredOutput | string): StructuredOutput {
     return {
       message: candidate,
       delete_files: [],
-      edit_files: [],
       replace_files: [],
       shell_scripts: [],
     };
@@ -64,10 +63,6 @@ function cleanUp(candidate: StructuredOutput | string): StructuredOutput {
 
   return {
     ...candidate,
-    edit_files:
-      candidate.edit_files?.filter(
-        (file) => typeof file === 'object' && file.path
-      ) || [],
     replace_files: addedFiles || [],
     delete_files: removedFiles || [],
     shell_scripts:

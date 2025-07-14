@@ -100,6 +100,7 @@ export const useBackedLogStore = create<BackendLogsStore>()(
               lastMessage.id === 'threads' &&
               (lastMessage.content as ContentWithUsage)?.type === 'end';
 
+            console.log(messages);
             const lastMessageThatContainsUsage = messages.findLast((m) =>
               hasUsage(m.content)
             );
