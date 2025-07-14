@@ -99,7 +99,7 @@ export function ProfileCard(props: ProfileCardProps) {
           </>
         )}
       </div>
-      <style jsx global>{`
+      <style>{`
         .animate-fade-in {
           animation: fadeIn 0.6s;
         }

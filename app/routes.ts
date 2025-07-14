@@ -67,7 +67,6 @@ export default [
     route('/demos/shader-art', 'routes/demos/shader-art/page.tsx'),
     route('/demos/three-car-racer', 'routes/demos/three-car-racer/page.tsx'),
     route('/demos/three-cityscape', 'routes/demos/three-cityscape/page.tsx'),
-    route('/demos/three-demo', 'routes/demos/three-demo/page.tsx'),
     route('/demos/todo', 'routes/demos/todo/page.tsx'),
     route('/demos/ui', 'routes/demos/ui/page.tsx'),
   ]),

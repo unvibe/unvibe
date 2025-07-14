@@ -100,10 +100,15 @@ export const useBackedLogStore = create<BackendLogsStore>()(
               lastMessage.id === 'threads' &&
               (lastMessage.content as ContentWithUsage)?.type === 'end';
 
-            console.log(messages);
-            const lastMessageThatContainsUsage = messages.findLast((m) =>
-              hasUsage(m.content)
-            );
+            const lastMessageThatContainsUsage = (() => {
+              for (let i = messages.length - 1; i >= 0; i--) {
+                if (hasUsage(messages[i].content)) {
+                  return messages[i];
+                }
+              }
+              return undefined;
+            })();
+
             const usage = getUsage(lastMessageThatContainsUsage?.content || {});
             const accumlatedUsages = {
               total_tokens: usage?.total_tokens ?? 0,

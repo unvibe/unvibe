@@ -53,17 +53,11 @@ export function AcceptProposal() {
   const structuredOutputContext = useStructuredOutputContext();
   const suggestedPrompts = structuredOutputContext.data.suggested_actions || [];
   const replaced = structuredOutputContext.data.replace_files || [];
-  const edited = structuredOutputContext.data.edit_files || [];
   const deleted = structuredOutputContext.data.delete_files || [];
   const scripts = structuredOutputContext.data.shell_scripts || [];
-  const rangeEdits = structuredOutputContext.data.edit_ranges || [];
 
   const hasNoFilesAndNoScripts =
-    replaced.length === 0 &&
-    edited.length === 0 &&
-    deleted.length === 0 &&
-    scripts.length === 0 &&
-    rangeEdits.length === 0;
+    replaced.length === 0 && deleted.length === 0 && scripts.length === 0;
 
   const metadata = messageContext.message.metadata;
 

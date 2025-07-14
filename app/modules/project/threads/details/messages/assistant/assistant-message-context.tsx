@@ -44,58 +44,27 @@ export function useAssistantMessageContext() {
   return useContext(AssistantMessageContext) as AssistantMessageContext;
 }
 
-function cleanUp(candidate: StructuredOutput | string): StructuredOutput {
-  if (typeof candidate === 'string') {
-    return {
-      message: candidate,
-      delete_files: [],
-      replace_files: [],
-      shell_scripts: [],
-    };
-  }
-
-  const addedFiles = candidate.replace_files?.filter(
-    (file) => typeof file === 'object' && file.path
-  );
-  const removedFiles = candidate.delete_files?.filter(
-    (file) => typeof file === 'object' && file.path
-  );
-
-  return {
-    ...candidate,
-    replace_files: addedFiles || [],
-    delete_files: removedFiles || [],
-    shell_scripts:
-      candidate.shell_scripts?.filter((script) => typeof script === 'string') ||
-      [],
-    message: candidate.message || '',
-  };
-}
-
-function parseMessageContent(
-  _content: string | null
-): StructuredOutput | string {
+function parseMessageContent(_content: string | null): StructuredOutput {
   const content = _content?.trim();
-  if (!content) return '';
+  if (!content) return { message: '-- No content provided --' };
   try {
     if (content.startsWith('```json')) {
       const jsonString = content.slice(8, -3);
-      return JSON.parse(jsonString);
+      return JSON.parse(jsonString) as StructuredOutput;
     }
     if (content.startsWith('```typescript')) {
       const jsonString = content.slice(14, -3);
-      return JSON.parse(jsonString);
+      return JSON.parse(jsonString) as StructuredOutput;
     }
     if (content.startsWith('{')) {
-      return JSON.parse(content);
+      return JSON.parse(content) as StructuredOutput;
     }
     if (content.startsWith('[')) {
-      return JSON.parse(content);
+      return JSON.parse(content) as StructuredOutput;
     }
-    return content;
+    return JSON.parse(content);
   } catch (error) {
-    console.error('Failed to parse JSON:', error);
-    return content;
+    return { message: `Failed to parse content ${error}` };
   }
 }
 
@@ -123,8 +92,12 @@ export function AssistantMessageContextProvider({
     }
 
     try {
-      const asJson = parseMessageContent(data.content);
-      const parsedContent = cleanUp(asJson);
+      const parsedContent =
+        data.metadata?.parsed || parseMessageContent(data.content);
+
+      if (typeof parsedContent.message !== 'string') {
+        parsedContent.message = '';
+      }
       const addedFilesCount =
         typeof parsedContent !== 'string'
           ? parsedContent?.replace_files?.length || 0
