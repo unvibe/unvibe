@@ -1,4 +1,4 @@
-import { Contract } from '@/environment';
+import { Contract } from '@/server/environment';
 import { useHomeInfo } from '~/modules/root-providers/home-info';
 
 export const MODELS_KEYS: (keyof Contract)[] = [

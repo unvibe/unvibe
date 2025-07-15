@@ -1,6 +1,6 @@
 import { createEndpoint } from '@/server/api/create-endpoint';
 import * as PluginsMap from '@/plugins/plugins.server';
-import { getAll } from '@/environment/server';
+import { getAll } from '@/server/environment/server';
 
 // List all available plugins (server-side only, not client plugins)
 function listAvailablePlugins() {
