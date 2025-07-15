@@ -6,6 +6,7 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), devtoolsJson()],
+  publicDir: 'app/public',
   ssr: {
     // keeps monaco out of the server bundle so Node never sees the CSS
     noExternal: ['monaco-editor'],

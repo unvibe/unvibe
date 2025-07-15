@@ -22,7 +22,6 @@ export function ThreadDetailsMessageList({
   const tagged = useBackedLogStore((state) => state.tagged);
   const format = useBackedLogStore((state) => state.format);
   const { data } = useAPIQuery('GET /models');
-  console.log(tagged);
   const logs = format(data?.models ?? [], tagged, threadId);
 
   const scrollToBottom = useCallback((node: null | HTMLElement) => {

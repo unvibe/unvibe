@@ -60,7 +60,6 @@ function Wrapper({
 export function ThreadDetailsAssistantMessage() {
   const value = useAssistantMessageContext();
 
-  console.log(value);
   // if it's a tool call, we don't render anything
   if (value.metadata.type === 'tool_call') {
     return null;

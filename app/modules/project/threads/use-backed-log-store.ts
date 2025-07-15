@@ -163,7 +163,6 @@ export const useBackedLogStore = create<BackendLogsStore>()(
       },
       appendMessage(message) {
         set((state) => {
-          console.log('appending', message);
           state.messages.push(message);
         });
       },
