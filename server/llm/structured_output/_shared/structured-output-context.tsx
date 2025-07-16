@@ -7,6 +7,10 @@ import {
   useState,
 } from 'react';
 
+export type SelectionItem = {
+  path: string;
+  selected: boolean;
+};
 // New type for granular selection matching proposal structure
 export type ProposalSelection = {
   replace_files?: { path: string; selected: boolean }[];
@@ -14,6 +18,10 @@ export type ProposalSelection = {
   edit_files?: { path: string; selected: boolean }[];
   edit_ranges?: { path: string; selected: boolean }[];
   shell_scripts?: { script: string; selected: boolean }[];
+  codemod_scripts?: { path: string; selected: boolean }[];
+  find_and_replace?: { path: string; selected: boolean }[];
+  patch_files?: { path: string; selected: boolean }[];
+  find_and_replace_files?: { path: string; selected: boolean }[];
 };
 
 export interface StructuredOutputContextValue {

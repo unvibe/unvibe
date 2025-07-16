@@ -1,5 +1,5 @@
 import { TbTerminal } from 'react-icons/tb';
-import { useStructuredOutputContext } from './context';
+import { useStructuredOutputContext } from '../_shared/structured-output-context';
 import { Checkbox } from '@/lib/ui';
 
 export function StructuredOutputShellScripts() {

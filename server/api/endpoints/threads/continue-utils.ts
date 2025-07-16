@@ -5,13 +5,16 @@ import { normalizePath, runProposalDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
 import { Project } from '@/server/project/types';
 import { StructuredOutput } from '@/server/llm/structured_output';
-// import { runTransforms } from '@/server/llm/structured_output/transform';
 import { VirtualFile } from '@/plugins/_types/plugin.server';
 import fs from 'fs/promises';
 import path from 'path';
 import simpleGit from 'simple-git';
 import { noop } from '@/lib/core/noop';
 import gitDiffParser from 'gitdiff-parser';
+import { resolvePatchFiles } from '@/server/llm/structured_output/patch_files/resolve';
+import { resolveEditInstructions } from '@/server/llm/structured_output/edit_instructions/resolve';
+import { resolveCodemodScripts } from '@/server/llm/structured_output/codemod_scripts/resolve';
+import { resolveFindAndReplace } from '@/server/llm/structured_output/find_and_replace/resolve';
 
 export async function createDiffs(
   project: Project,
@@ -78,7 +81,6 @@ export async function createDiffs(
           0
         );
 
-        // now safely delete the temp file
         try {
           await fs.unlink(tempPath);
         } catch (error) {
@@ -115,9 +117,22 @@ export async function createMetadata(
   const parsed: StructuredOutput = JSON.parse(formatted);
   const diagnostics = await runProposalDiagnostics(parsed, project);
 
+  // Gather all possible paths
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
   const deletedPaths = parsed.delete_files?.map((p) => p.path) || [];
-  const relatedFiles = replacedPaths.concat(deletedPaths);
+  const patchPaths = parsed.patch_files?.map((p) => p.path) || [];
+  const editPaths = parsed.edit_instructions?.map((p) => p.path) || [];
+  const codemodPaths = parsed.codemod_scripts?.map((p) => p.path) || [];
+  const findReplacePaths = parsed.find_and_replace?.map((p) => p.path) || [];
+
+  const relatedFiles = [
+    ...replacedPaths,
+    ...deletedPaths,
+    ...patchPaths,
+    ...editPaths,
+    ...codemodPaths,
+    ...findReplacePaths,
+  ];
 
   const sha1Map = Object.fromEntries(
     await Promise.all(
@@ -130,6 +145,47 @@ export async function createMetadata(
     )
   );
 
+  // Gather all originals for resolution
+  const originalFiles = Object.entries(
+    project.EXPENSIVE_REFACTOR_LATER_content
+  ).map(([path, content]) => ({ path, content }));
+
+  // Resolve all structured output types
+  const resolved: Record<string, VirtualFile[]> = {};
+  if (parsed.replace_files) {
+    resolved.replace_files = parsed.replace_files;
+  }
+  if (parsed.patch_files) {
+    resolved.patch_files = await resolvePatchFiles(
+      parsed.patch_files,
+      originalFiles
+    );
+  }
+  if (parsed.edit_instructions) {
+    resolved.edit_instructions = await resolveEditInstructions(
+      parsed.edit_instructions,
+      originalFiles
+    );
+  }
+  if (parsed.codemod_scripts) {
+    try {
+      resolved.codemod_scripts = await resolveCodemodScripts(
+        parsed.codemod_scripts,
+        originalFiles
+      );
+    } catch (error) {
+      console.error('Error resolving codemod scripts:', error);
+      resolved.codemod_scripts = [];
+    }
+  }
+  if (parsed.find_and_replace) {
+    resolved.find_and_replace = await resolveFindAndReplace(
+      parsed.find_and_replace,
+      originalFiles
+    );
+  }
+
+  // Diff for replace_files and delete_files only (for now)
   const [replaceFilesDiffs, deleteFilesDiffs] = await Promise.all([
     createDiffs(project, parsed.replace_files || []),
     (parsed.delete_files || []).map((file) => {
@@ -145,6 +201,7 @@ export async function createMetadata(
       };
     }),
   ]);
+
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     diagnostics: Object.fromEntries(
@@ -167,6 +224,7 @@ export async function createMetadata(
       replace_files: replaceFilesDiffs,
       delete_files: deleteFilesDiffs,
     },
+    resolved, // resolved VirtualFiles for all structured output types
   };
 
   return {

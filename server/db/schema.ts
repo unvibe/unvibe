@@ -33,13 +33,10 @@ export type StructuredOutputMetadata = {
   source_sha1: Record<string, string>; // sha1 hashes of the source files
   parsed: StructuredOutput; // the parsed structured output
   diagnostics: DiagnosticsByHookName; // diagnostics for each hook
-  resolved_edited_files?: { path: string; content: string }[]; // resolved edited files
-  resolved_edited_ranges?: { path: string; content: string }[]; // resolved edited ranges
+  resolved?: Record<string, { path: string; content: string }[]>; // resolved file contents by key of the structured output
   diffs?: {
     replace_files?: MetadataDiffsEntry[]; // diffs for replaced files
     delete_files?: MetadataDiffsEntry[]; // diffs for deleted files
-    edit_files?: MetadataDiffsEntry[]; // diffs for edited files
-    range_edits?: MetadataDiffsEntry[]; // diffs for edited ranges
   };
 };
 // messages table definition

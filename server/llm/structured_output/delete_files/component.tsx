@@ -1,6 +1,6 @@
-import { ThreadDetailsMessageListItemFile } from '../assistant-file';
-import { useAssistantMessageContext } from '../assistant-message-context';
-import { useStructuredOutputContext } from './context';
+import { ThreadDetailsMessageListItemFile } from '../_shared/virtual-file';
+import { useAssistantMessageContext } from '../_shared/assistant-message-context';
+import { useStructuredOutputContext } from '../_shared/structured-output-context';
 
 export function StructuredOutputDeleteFiles() {
   const { data, selection, setSelection } = useStructuredOutputContext();

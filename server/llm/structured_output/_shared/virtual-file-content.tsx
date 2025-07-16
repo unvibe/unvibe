@@ -1,7 +1,7 @@
 import { Decorations, highlightCode } from '~/modules/markdown/library/parser';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { useFileDiagnostics } from './assistant-file-actions';
+import { useFileDiagnostics } from './virtual-file-actions';
 import { useTheme } from '~/modules/root-providers/theme';
 
 function htmlEscape(text: string) {

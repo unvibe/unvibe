@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
-import { ThreadDetailsMessageListItemFileActions } from './assistant-file-actions';
-import { ThreadDetailsMessageListItemFileContent } from './assistant-file-content';
+import { ThreadDetailsMessageListItemFileActions } from './virtual-file-actions';
+import { ThreadDetailsMessageListItemFileContent } from './virtual-file-content';
 import { Decorations } from '~/modules/markdown/library/parser';
 
 export function ThreadDetailsMessageListItemFile({
@@ -14,7 +14,7 @@ export function ThreadDetailsMessageListItemFile({
   git,
 }: {
   icon?: React.ReactNode;
-  type: 'add' | 'remove' | 'edit';
+  type?: 'add' | 'remove' | 'edit';
   data: { path: string; content?: string };
   setSelected?: (selected: boolean) => void;
   selected?: boolean;

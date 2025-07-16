@@ -1,3 +1,4 @@
+import type { Message } from '@/server/db/schema';
 import {
   createContext,
   Dispatch,
@@ -6,10 +7,14 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { ThreadDetailsMessageProps } from '../_shared-types';
 import type { StructuredOutput } from '@/server/llm/structured_output';
 import { noop } from '@/lib/core/noop';
-import type { Message } from '@/server/db/schema';
+
+export interface ThreadDetailsMessageProps {
+  data: Message;
+  threadId: string;
+  agentId?: string;
+}
 
 type StructuredContentState = {
   added: { path: string; content?: string; selected: boolean }[];

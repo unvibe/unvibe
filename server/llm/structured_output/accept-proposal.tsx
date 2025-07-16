@@ -1,66 +1,29 @@
 import {
-  MdChevronRight,
   MdOutlineDownloading,
   MdOutlinePlayArrow,
   MdRefresh,
 } from 'react-icons/md';
-import { useAssistantMessageContext } from './assistant-message-context';
-import { useStructuredOutputContext } from './structured-output/context';
+import { useAssistantMessageContext } from './_shared/assistant-message-context';
+import { useStructuredOutputContext } from './_shared/structured-output-context';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { useParams } from 'react-router';
-import { Spinner } from '@/lib/ui/spinner';
-
-function ProposalButton({
-  label,
-  icon: Icon,
-  className,
-  onClick,
-  isLoading = false,
-  disabled = false,
-}: {
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  className?: string;
-  onClick?: () => void;
-  isLoading?: boolean;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      className={`font-mono text-xs p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      onClick={onClick}
-      disabled={isLoading || disabled}
-    >
-      <span>
-        {isLoading ? (
-          <div className='w-5 h-5 flex items-center justify-center'>
-            <Spinner className='w-4 h-4' />
-          </div>
-        ) : (
-          <Icon className='w-5 h-5' />
-        )}
-      </span>
-      <span>{label}</span>
-    </button>
-  );
-}
+import { ProposalButton } from '@/lib/ui/button/proposal-button';
 
 const normalizePath = (p: string) => (p.startsWith('./') ? p : `./${p}`);
 
 export function AcceptProposal() {
-  // get if there are any errors in any of the selected files
   const messageContext = useAssistantMessageContext();
   const structuredOutputContext = useStructuredOutputContext();
-  const suggestedPrompts = structuredOutputContext.data.suggested_actions || [];
-  const replaced = structuredOutputContext.data.replace_files || [];
-  const deleted = structuredOutputContext.data.delete_files || [];
-  const scripts = structuredOutputContext.data.shell_scripts || [];
-
-  const hasNoFilesAndNoScripts =
-    replaced.length === 0 && deleted.length === 0 && scripts.length === 0;
+  const { mutate: applyProposal, isPending: isApplyingProposal } =
+    useAPIMutation('POST /projects/accept-proposal');
+  const { mutate: continueThread, isPending: isContinuingThread } =
+    useAPIMutation('POST /threads/continue');
+  const projectId = useParams().project_id as string;
+  const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
+    id: messageContext.message.thread_id,
+  });
 
   const metadata = messageContext.message.metadata;
-
   const selection = structuredOutputContext.selection;
 
   const hasIssues = Object.values(selection)
@@ -77,57 +40,6 @@ export function AcceptProposal() {
       });
     });
 
-  const { mutate: applyProposal, isPending: isApplyingProposal } =
-    useAPIMutation('POST /projects/accept-proposal');
-  const {
-    mutate: continueThread,
-    isPending: isContinuingThread,
-    variables,
-  } = useAPIMutation('POST /threads/continue');
-  const projectId = useParams().project_id as string;
-  const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
-    id: messageContext.message.thread_id,
-  });
-
-  if (hasNoFilesAndNoScripts) {
-    return (
-      <div className='flex items-center justify-between pt-4 pb-2 gap-4'>
-        <div className='grid content-start justify-start gap-4'>
-          {suggestedPrompts.length > 0 &&
-            suggestedPrompts.map((prompt) => (
-              <ProposalButton
-                key={prompt}
-                label={prompt}
-                icon={MdChevronRight}
-                className='bg-background-1 text-foreground-2'
-                isLoading={isContinuingThread && variables?.prompt === prompt}
-                onClick={() => {
-                  continueThread(
-                    {
-                      projectId,
-                      prompt,
-                      threadId: messageContext.message.thread_id,
-                      context_config:
-                        thread?.thread?.context_config || undefined,
-                      images: [],
-                      search_enabled: false,
-                    },
-                    {
-                      onSuccess() {
-                        refetch();
-                      },
-                      onError(error) {
-                        console.error('Error continuing thread', error);
-                      },
-                    }
-                  );
-                }}
-              />
-            ))}
-        </div>
-      </div>
-    );
-  }
   return (
     <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
       <div className='flex items-center gap-4'>
