@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> This is a personal project made for one purpose: bring LLMs (AI assistants) to your local projects and files.
+> This is a personal project I made to explore the possibilities of running LLMs in local projects with full control over context and tools.
 > it has full access to your local files, with request-to-write permissions, so it can read your code, docs, and project structure.
 > Use it at your own risk, and only if you trust the code and the AI assistants it uses.
 
