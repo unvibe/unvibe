@@ -5,12 +5,17 @@ import { Outlet } from 'react-router';
 import { client } from '@/server/api/client';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const data = await client('GET /projects/parse-project', {
-    id: params.project_id,
-  });
-  return {
-    project: data.project,
-  };
+  try {
+    const data = await client('GET /projects/parse-project', {
+      id: params.project_id,
+    });
+    return {
+      project: data.project,
+    };
+  } catch (error) {
+    console.error('Error loading project:', error);
+    throw new Response('Failed to load project', { status: 500 });
+  }
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {

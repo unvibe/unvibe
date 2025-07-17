@@ -3,20 +3,17 @@ import { ThreadDetailsMessageTool } from './tool';
 import { ThreadDetailsMessageAssistant } from './assistant';
 import { ThreadDetailsMessageProps } from './_shared-types';
 
-export function ThreadDetailsMessage({
-  data,
-  threadId,
-}: ThreadDetailsMessageProps) {
+export function ThreadDetailsMessage({ data }: ThreadDetailsMessageProps) {
   if (data.role === 'user') {
-    return <ThreadDetailsMessageUser data={data} threadId={threadId} />;
+    return <ThreadDetailsMessageUser data={data} />;
   }
 
   if (data.role === 'tool') {
-    return <ThreadDetailsMessageTool data={data} threadId={threadId} />;
+    return <ThreadDetailsMessageTool data={data} />;
   }
 
   if (data.role === 'assistant') {
-    return <ThreadDetailsMessageAssistant data={data} threadId={threadId} />;
+    return <ThreadDetailsMessageAssistant data={data} />;
   }
 
   throw new Error(

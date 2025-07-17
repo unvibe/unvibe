@@ -13,6 +13,8 @@ export function usePluginsIcons() {
 export function SidebarPluginsList() {
   const project = useProject();
   const clientPlugins = useClientPlugins();
+  console.log(clientPlugins);
+  console.log(project.plugins);
   const [core, ...rest] = Object.entries(project.plugins || {}).sort(
     ([, a], [, b]) => {
       return a.id === 'core'

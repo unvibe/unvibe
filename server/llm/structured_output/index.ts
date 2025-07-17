@@ -2,14 +2,14 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import * as delete_files from './delete_files';
-import * as shell_scripts from './shell_scripts';
-import * as replace_files from './replace_files';
-import * as message from './message';
-import * as suggested_actions from './suggested_actions';
-import * as edit_instructions from './edit_instructions';
-import * as codemod_scripts from './codemod_scripts';
-import * as find_and_replace from './find_and_replace';
+import * as delete_files from '@/plugins/core/server/structured-output/delete_files';
+import * as shell_scripts from '@/plugins/core/server/structured-output/shell_scripts';
+import * as replace_files from '@/plugins/core/server/structured-output/replace_files';
+import * as message from '@/plugins/core/server/structured-output/message';
+import * as suggested_actions from '@/plugins/core/server/structured-output/suggested_actions';
+import * as edit_instructions from '@/plugins/core/server/structured-output/edit_instructions';
+import * as codemod_scripts from '@/plugins/core/server/structured-output/codemod_scripts';
+import * as find_and_replace from '@/plugins/core/server/structured-output/find_and_replace';
 
 const instructions = [
   message.instructions,

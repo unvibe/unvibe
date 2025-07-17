@@ -4,36 +4,20 @@ import { ServerPlugin } from '../_types/plugin.server';
 // import * as tools from './server/tools';
 
 export const Plugin: ServerPlugin = {
-  metadata: {
-    hooks: [
-      {
-        name: 'go-check',
-        rule: '/\\.go$/',
-        operations: ['diagnostic'],
-      },
-      {
-        name: 'go-format',
-        rule: '/\\.go$/',
-        operations: ['transform'],
-      },
-    ],
-    tools: [],
-    system: [],
-  },
   description:
     'Adds Go language support: linting and formatting for .go files, triggered by go.mod or Go source detection.',
   id,
   sourceCodeHooks: [
     {
       name: 'go-check',
-      rule: /\.go$/,
+      rule: /.go$/,
       operations: {
         diagnostic: virtualFiles.check,
       },
     },
     {
       name: 'go-format',
-      rule: /\.go$/,
+      rule: /.go$/,
       operations: {
         transform: virtualFiles.format,
       },
@@ -49,22 +33,5 @@ export const Plugin: ServerPlugin = {
     return project.paths.some(
       (file) => file.endsWith('go.mod') || file.endsWith('.go')
     );
-  },
-  setup: async (project) => {
-    project.plugins[id] = {
-      id,
-      // tools: Object.values(tools).map((tool) => tool.config),
-      tools: [],
-      info: {},
-      sourceCodeHooks: (Plugin.sourceCodeHooks || []).map((hook) => ({
-        name: hook.name,
-        rule: hook.rule.source,
-        operations: {
-          diagnostic: !!hook.operations.diagnostic,
-          trasnform: !!hook.operations.transform,
-        },
-      })),
-    };
-    return project;
   },
 };

@@ -2,8 +2,8 @@ import type { Message } from '@/server/db/schema';
 import {
   AssistantMessageContextProvider,
   useAssistantMessageContext,
-} from './_shared/assistant-message-context';
-import { StructuredOutputContextProvider } from './_shared/structured-output-context';
+} from '@/lib/react/structured-output/assistant-message-context';
+import { StructuredOutputContextProvider } from '@/lib/react/structured-output/structured-output-context';
 import { useParams } from 'react-router';
 import { Markdown } from '~/modules/markdown/ui/Markdown';
 import clsx from 'clsx';
@@ -13,15 +13,8 @@ import { copyToClipboard } from '@/lib/browser/copy-to-clipboard';
 import { useState } from 'react';
 
 // import structured output components
-import { StructuredOutputReplaceFiles } from './replace_files/component';
-import { StructuredOutputDeleteFiles } from './delete_files/component';
-import { StructuredOutputShellScripts } from './shell_scripts/component';
-import { StructuredOutputMessage } from './message/component';
-import { StructuredOutputSuggestedActions } from './suggested_actions/component';
+import * as ClientPlugins from '@/plugins/plugins-client';
 import { AcceptProposal } from './accept-proposal';
-import { StructuredOutputCodemodScripts } from './codemod_scripts/component';
-import { StructuredOutputEditInstructions } from './edit_instructions/component';
-import { StructuredOutputFindAndReplace } from './find_and_replace/component';
 
 function CopyButton({ content }: { content: string }) {
   const [copied, setCopied] = useState(false);
@@ -93,18 +86,24 @@ export function ThreadDetailsAssistantMessage() {
       : value.metadata.content && typeof value.metadata.content === 'object'
         ? JSON.stringify(value.metadata.content, null, 2)
         : '';
+
+  const components = Object.keys(value.metadata.content).map((so_key) => {
+    return Object.values(ClientPlugins).find(({ Plugin }) => {
+      return Plugin.structuredOutput?.[so_key];
+    })?.Plugin.structuredOutput?.[so_key];
+  });
+
   return (
     <Wrapper copyableContent={contentString}>
       <StructuredOutputContextProvider data={value.metadata.content}>
         <div className='grid gap-2'>
-          <StructuredOutputMessage />
-          <StructuredOutputShellScripts />
-          <StructuredOutputDeleteFiles />
-          <StructuredOutputReplaceFiles />
-          <StructuredOutputSuggestedActions />
-          <StructuredOutputCodemodScripts />
-          <StructuredOutputEditInstructions />
-          <StructuredOutputFindAndReplace />
+          {components.map((Component, index) => {
+            if (!Component) {
+              console.warn(`Structured output component not found`);
+              return null;
+            }
+            return <Component key={index} />;
+          })}
         </div>
         <AcceptProposal />
       </StructuredOutputContextProvider>

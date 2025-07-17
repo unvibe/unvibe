@@ -19,17 +19,11 @@ function readDeps(projectPath: string): string[] {
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: {
-    hooks: [],
-    tools: [],
-    system: [],
-  },
   description:
     'Detects drizzle-orm setup and summarizes schema/models/migrations.',
   detect: async (project) => {
     const deps = readDeps(project.path);
     return deps.includes('drizzle-orm');
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

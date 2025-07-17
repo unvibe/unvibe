@@ -1,26 +1,25 @@
 import { ServerPlugin } from '../_types/plugin.server';
 import simpleGit from 'simple-git';
 import { id } from './plugin.shared';
-import { noop } from '@/lib/core/noop';
-
-const githubRemotePrefix = 'git@github.com:';
 
 const cache: Record<string, boolean> = {};
 
 export const Plugin: ServerPlugin = {
-  metadata: {
-    hooks: [],
-    tools: [],
-    system: ['git_info'],
-  },
   description:
     'Detects Git repositories, exposes branch and repo metadata, and enables Git-aware automations.',
   id,
   createContext: async (baseProject) => {
+    const currentBranch = await simpleGit({
+      baseDir: baseProject.path,
+      binary: 'git',
+      maxConcurrentProcesses: 6,
+    })
+      .branchLocal()
+      .then((branch) => branch.current);
     return {
       tools: {},
       systemParts: {
-        git_info: `Git is installed on this system and the project is a Git repository. current branch is: ${baseProject.plugins[id].info.currentBranch}`,
+        git_info: `Git is installed on this system and the project is a Git repository. current branch is: ${currentBranch}`,
       },
     };
   },
@@ -40,43 +39,5 @@ export const Plugin: ServerPlugin = {
     cache[project.path] = isGitRepo;
 
     return isGitRepo;
-  },
-  setup: async (project) => {
-    try {
-      const git = simpleGit({
-        baseDir: project.path,
-        binary: 'git',
-        maxConcurrentProcesses: 6,
-      });
-      const remote = await git.getRemotes(true);
-      const remoteOrigin = remote.find((r) => r.name === 'origin');
-      const remoteRefs = remoteOrigin?.refs;
-      const remoteUrl = remoteRefs?.fetch || remoteOrigin?.refs.push;
-      const isGithubRepo = Boolean(remoteUrl?.startsWith(githubRemotePrefix));
-      const repo = remoteUrl?.replace(githubRemotePrefix, '').slice(0, -4);
-      const branchSummary = await git.branch();
-      const branches = branchSummary.all;
-      const currentBranch = branchSummary.current;
-
-      project.plugins[id] = {
-        id,
-        // tools: Object.values(tools).map((t) => t.config),
-        tools: [],
-        sourceCodeHooks: [],
-        info: {
-          currentBranch,
-          branches: branches.join(','),
-        },
-      };
-
-      if (isGithubRepo && repo) {
-        project.plugins[id].info.github_repo = repo;
-      }
-
-      return project;
-    } catch (e) {
-      noop(e);
-      return project;
-    }
   },
 };

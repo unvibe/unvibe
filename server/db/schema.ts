@@ -34,13 +34,7 @@ export type StructuredOutputMetadata = {
   parsed: StructuredOutput; // the parsed structured output
   diagnostics: DiagnosticsByHookName; // diagnostics for each hook
   resolved?: Record<string, { path: string; content: string }[]>; // resolved file contents by key of the structured output
-  diffs?: {
-    replace_files?: MetadataDiffsEntry[]; // diffs for replaced files
-    delete_files?: MetadataDiffsEntry[]; // diffs for deleted files
-    codemod_scripts?: MetadataDiffsEntry[]; // diffs for codemod scripts
-    edit_instructions?: MetadataDiffsEntry[]; // diffs for edit instructions
-    find_and_replace?: MetadataDiffsEntry[]; // diffs for find and replace
-  };
+  diffs?: Record<string, MetadataDiffsEntry[]>;
 };
 // messages table definition
 export const messages = sqliteTable('messages', {

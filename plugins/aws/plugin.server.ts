@@ -19,7 +19,6 @@ function readDeps(projectPath: string): string[] {
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects usage of AWS SDK/services and summarizes cloud setup.',
   detect: async (project) => {
     const deps = readDeps(project.path);
@@ -29,6 +28,5 @@ export const Plugin: ServerPlugin = {
       project.paths.some((f) => f.endsWith('serverless.yml'))
     );
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

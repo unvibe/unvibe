@@ -19,7 +19,6 @@ function readDeps(projectPath: string): string[] {
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects TailwindCSS usage, config, and theme summary.',
   detect: async (project) => {
     const deps = readDeps(project.path);
@@ -31,6 +30,5 @@ export const Plugin: ServerPlugin = {
       )
     );
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

@@ -3,11 +3,6 @@ import { id } from './plugin.shared';
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: {
-    hooks: [],
-    tools: [],
-    system: [],
-  },
   description:
     'Shows how pages, entry points, and layouts are structured (app dir, pages dir) and previews UI setup.',
   detect: async (project) => {
@@ -19,6 +14,5 @@ export const Plugin: ServerPlugin = {
         f.startsWith('app/')
     );
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

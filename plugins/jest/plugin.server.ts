@@ -19,7 +19,6 @@ function readDeps(projectPath: string): string[] {
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects Jest/Vitest config and test structure.',
   detect: async (project) => {
     const deps = readDeps(project.path);
@@ -28,6 +27,5 @@ export const Plugin: ServerPlugin = {
       project.paths.some((f) => f.endsWith('jest.config.js'))
     );
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

@@ -71,12 +71,7 @@ export function ThreadDetailsMessageList({
         ref={scrollToBottom}
       >
         {messages?.map((t) => (
-          <ThreadDetailsMessage
-            key={t.id}
-            data={t}
-            threadId={threadId}
-            agentId={agentId}
-          />
+          <ThreadDetailsMessage key={t.id} data={t} agentId={agentId} />
         ))}
       </div>
       <div className='relative'>

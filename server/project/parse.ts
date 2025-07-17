@@ -130,7 +130,14 @@ export async function parseProject(
         .detect(baseProject)
         .then((result) => {
           if (result) {
-            return plugin.setup(baseProject);
+            baseProject.plugins[plugin.id] = {
+              id: plugin.id,
+              info: {
+                description: plugin.description,
+              },
+              tools: [],
+              sourceCodeHooks: [],
+            };
           }
         })
         .catch((error) => {
@@ -156,9 +163,30 @@ export async function parseProject(
 
   const contexts = await Promise.all(
     projectPlugins.map((plugin) =>
-      plugin
-        .createContext(baseProject)
-        .then((ctx) => ({ id: plugin.id, ...ctx }))
+      plugin.createContext(baseProject).then((ctx) => {
+        baseProject.plugins[plugin.id] = {
+          id: plugin.id,
+          info: {
+            description: plugin.description,
+          },
+          sourceCodeHooks:
+            plugin.sourceCodeHooks?.map((hook) => ({
+              name: hook.name,
+              rule: hook.rule.source,
+              operations: {
+                diagnostic: Boolean(hook.operations.diagnostic),
+                trasnform: Boolean(hook.operations.transform),
+              },
+            })) || [],
+          tools: Object.values(ctx.tools).map((tool) => ({
+            name: tool.config.name,
+            description: tool.config.description,
+            parameters: tool.config.parameters,
+            usage: tool.config.usage,
+          })),
+        };
+        return { id: plugin.id, ...ctx };
+      })
     )
   );
 

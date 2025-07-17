@@ -6,20 +6,9 @@ import path from 'node:path';
 import { ServerPlugin } from '../_types/plugin.server';
 
 export const Plugin: ServerPlugin = {
-  metadata: {
-    hooks: [
-      {
-        name: 'eslint-lint',
-        rule: '/(\\.ts|\\.tsx|\\.js|\\.jsx)$/',
-        operations: ['diagnostic'],
-      },
-    ],
-    tools: [],
-    system: [],
-  },
+  id,
   description:
     'Adds ESLint linting for JavaScript and TypeScript files if ESLint config is found in the project.',
-  id,
   sourceCodeHooks: [
     {
       name: 'eslint-lint',
@@ -68,22 +57,6 @@ export const Plugin: ServerPlugin = {
     } catch {
       return false;
     }
-  },
-  setup: async (project) => {
-    project.plugins[id] = {
-      id,
-      tools: [],
-      info: {},
-      sourceCodeHooks: (Plugin.sourceCodeHooks || []).map((hook) => ({
-        name: hook.name,
-        rule: hook.rule.source,
-        operations: {
-          diagnostic: !!hook.operations.diagnostic,
-          trasnform: !!hook.operations.transform,
-        },
-      })),
-    };
-    return project;
   },
   createContext: async () => {
     return {

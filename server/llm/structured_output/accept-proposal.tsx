@@ -3,8 +3,8 @@ import {
   MdOutlinePlayArrow,
   MdRefresh,
 } from 'react-icons/md';
-import { useAssistantMessageContext } from './_shared/assistant-message-context';
-import { useStructuredOutputContext } from './_shared/structured-output-context';
+import { useAssistantMessageContext } from '@/lib/react/structured-output/assistant-message-context';
+import { useStructuredOutputContext } from '@/lib/react/structured-output/structured-output-context';
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { useParams } from 'react-router';
 import { ProposalButton } from '@/lib/ui/button/proposal-button';

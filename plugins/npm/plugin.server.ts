@@ -1,18 +1,8 @@
 import { ServerPlugin } from '../_types/plugin.server';
-import {
-  detectPackageManager,
-  getPackageJson,
-  isInstalled as checkIsInstalled,
-} from '@/plugins/npm/server/detect-package-manager';
+import { detectPackageManager } from '@/plugins/npm/server/detect-package-manager';
 import { id } from './plugin.shared';
-import { listHomeShellProcesses } from './server/list-shell-processes';
 
 export const Plugin: ServerPlugin = {
-  metadata: {
-    hooks: [],
-    tools: [],
-    system: [],
-  },
   description:
     'Detects the package manager (npm, yarn, pnpm, bun) for Node.js projects and exposes npm-related metadata.',
   id,
@@ -28,27 +18,5 @@ export const Plugin: ServerPlugin = {
   detect: async (project) => {
     const packageManager = await detectPackageManager(project.path);
     return packageManager !== 'unknown';
-  },
-  setup: async (project) => {
-    const packageManager = await detectPackageManager(project.path);
-    const pkgJson = await getPackageJson(project.path);
-    const shellProcesses = await listHomeShellProcesses();
-    const isInstalled = await checkIsInstalled(project.path);
-
-    project.plugins[id] = {
-      id,
-      tools: [],
-      sourceCodeHooks: [],
-      info: {
-        packageManager,
-        config: JSON.stringify(pkgJson, null, 2),
-        isInstalled: JSON.stringify(isInstalled),
-        shellProcesses: JSON.stringify(
-          shellProcesses.filter((p) => p.cwd === project.path)
-        ),
-      },
-    };
-
-    return project;
   },
 };

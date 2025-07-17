@@ -3,13 +3,11 @@ import { id } from './plugin.shared';
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects Dockerfiles/compose and outlines build/run setup.',
   detect: async (project) => {
     return project.paths.some(
       (f) => f.endsWith('Dockerfile') || f.endsWith('docker-compose.yml')
     );
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

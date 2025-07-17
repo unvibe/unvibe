@@ -19,12 +19,10 @@ function readDeps(projectPath: string): string[] {
 
 export const Plugin: ServerPlugin = {
   id,
-  metadata: { hooks: [], tools: [], system: [] },
   description: 'Detects Hono server usage and outlines API/routes setup.',
   detect: async (project) => {
     const deps = readDeps(project.path);
     return deps.includes('hono');
   },
-  setup: async (project) => project,
   createContext: async () => ({ tools: {}, systemParts: {} }),
 };

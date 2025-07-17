@@ -4,24 +4,13 @@ import { id } from './plugin.shared';
 import { ServerPlugin } from '../_types/plugin.server';
 
 export const Plugin: ServerPlugin = {
-  metadata: {
-    hooks: [
-      {
-        name: 'prettier-format',
-        rule: '/(\\.ts|\\.tsx|\\.js|\\.jsx|\\.json|\\.md|\\.css|\\.scss|\\.html|\\.yaml|\\.yml|\\.graphql|\\.vue|\\.svelte)$/',
-        operations: ['transform'],
-      },
-    ],
-    tools: [],
-    system: [],
-  },
   description:
     'Provides code formatting for many filetypes using Prettier, based on project configuration files.',
   id,
   sourceCodeHooks: [
     {
       name: 'prettier-format',
-      rule: /(\.ts|\.tsx|\.js|\.jsx|\.json|\.md|\.css|\.scss|\.html|\.yaml|\.yml|\.graphql|\.vue|\.svelte)$/,
+      rule: /(.ts|.tsx|.js|.jsx|.json|.md|.css|.scss|.html|.yaml|.yml|.graphql|.vue|.svelte)$/,
       operations: {
         transform: virtualFiles.format,
       },
@@ -54,21 +43,5 @@ export const Plugin: ServerPlugin = {
       return true;
     }
     return false;
-  },
-  setup: async (project) => {
-    project.plugins[id] = {
-      id,
-      tools: [],
-      info: {},
-      sourceCodeHooks: (Plugin.sourceCodeHooks || []).map((hook) => ({
-        name: hook.name,
-        rule: hook.rule.source,
-        operations: {
-          diagnostic: !!hook.operations.diagnostic,
-          trasnform: !!hook.operations.transform,
-        },
-      })),
-    };
-    return project;
   },
 };

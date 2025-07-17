@@ -8,7 +8,6 @@ function listAvailablePlugins() {
     const p = plugin.Plugin;
     return {
       id: p.id,
-      metadata: p.metadata,
       description: p.description,
     };
   });

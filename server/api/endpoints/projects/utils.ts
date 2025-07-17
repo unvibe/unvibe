@@ -224,3 +224,41 @@ export async function runProposalDiagnostics(
 
   return await Promise.all(hookPromises);
 }
+
+export async function runDiagnostics(project: Project, content: VirtualFile[]) {
+  const plugins = await loadPlugins(project);
+  // console.log('content after edit', content);
+  // run diagnostics on the content
+  const diagnosticHooks = plugins
+    .map((plugin) => plugin.Plugin.sourceCodeHooks)
+    .filter((hook): hook is SourceCodeHook[] => !!hook)
+    .flat()
+    .filter((hook): hook is SourceCodeDiagnosticHook =>
+      Boolean(hook.operations.diagnostic)
+    );
+
+  const hookPromises: Promise<{ name: string; result: string }>[] = [];
+
+  for (const hook of diagnosticHooks) {
+    const hookFiles = content.filter((file) => hook.rule.test(file.path));
+    if (hookFiles.length === 0) {
+      continue;
+    }
+    const task = async () => {
+      try {
+        const diagnosticResult = await hook.operations.diagnostic(
+          hookFiles,
+          project.path
+        );
+        return { name: hook.name, result: diagnosticResult };
+      } catch (error) {
+        console.error(`Failed to run diagnostic hook ${hook.name}:`, error);
+        return { name: hook.name, result: '{}' };
+      }
+    };
+
+    hookPromises.push(task());
+  }
+
+  return await Promise.all(hookPromises);
+}

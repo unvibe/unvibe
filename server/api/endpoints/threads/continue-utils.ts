@@ -1,7 +1,6 @@
-import { formatStructuredOutputFiles } from '@/server/llm/structured_output/utils';
 import { sha1 } from '@/lib/core/hash/sha1';
 import { jsonrepair } from 'jsonrepair';
-import { normalizePath, runProposalDiagnostics } from '../projects/utils';
+import { normalizePath, runDiagnostics } from '../projects/utils';
 import { StructuredOutputMetadata } from '@/server/db/schema';
 import { Project } from '@/server/project/types';
 import { StructuredOutput } from '@/server/llm/structured_output';
@@ -11,9 +10,10 @@ import path from 'path';
 import simpleGit from 'simple-git';
 import { noop } from '@/lib/core/noop';
 import gitDiffParser from 'gitdiff-parser';
-import { resolveEditInstructions } from '@/server/llm/structured_output/edit_instructions/resolve';
-import { resolveCodemodScripts } from '@/server/llm/structured_output/codemod_scripts/resolve';
-import { resolveFindAndReplace } from '@/server/llm/structured_output/find_and_replace/resolve';
+import { resolveEditInstructions } from '@/plugins/core/server/structured-output/edit_instructions/resolve';
+import { resolveCodemodScripts } from '@/plugins/core/server/structured-output/codemod_scripts/resolve';
+import { resolveFindAndReplace } from '@/plugins/core/server/structured-output/find_and_replace/resolve';
+import { runTransforms } from '@/server/llm/structured_output/transform';
 
 export async function createDiffs(
   project: Project,
@@ -112,9 +112,7 @@ export async function createMetadata(
   if (!response) return {};
   const hash = await sha1(response);
   const repaired = jsonrepair(response);
-  const formatted = await formatStructuredOutputFiles(project, repaired);
-  const parsed: StructuredOutput = JSON.parse(formatted);
-  const diagnostics = await runProposalDiagnostics(parsed, project);
+  const parsed: StructuredOutput = JSON.parse(repaired);
 
   // Gather all possible paths
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
@@ -149,26 +147,32 @@ export async function createMetadata(
 
   // Resolve all structured output types
   const resolved: Record<string, VirtualFile[]> = {};
+
   if (parsed.replace_files) {
     resolved.replace_files = parsed.replace_files;
   }
+
+  if (parsed.delete_files) {
+    resolved.delete_files = parsed.delete_files.map((file) => ({
+      path: file.path,
+      content: '',
+    }));
+  }
+
   if (parsed.edit_instructions) {
     resolved.edit_instructions = await resolveEditInstructions(
       parsed.edit_instructions,
       originalFiles
     );
   }
+
   if (parsed.codemod_scripts) {
-    try {
-      resolved.codemod_scripts = await resolveCodemodScripts(
-        parsed.codemod_scripts,
-        originalFiles
-      );
-    } catch (error) {
-      console.error('Error resolving codemod scripts:', error);
-      resolved.codemod_scripts = [];
-    }
+    resolved.codemod_scripts = await resolveCodemodScripts(
+      parsed.codemod_scripts,
+      originalFiles
+    );
   }
+
   if (parsed.find_and_replace) {
     resolved.find_and_replace = await resolveFindAndReplace(
       parsed.find_and_replace,
@@ -176,34 +180,38 @@ export async function createMetadata(
     );
   }
 
-  // Diff for replace_files and delete_files only (for now)
-  const [
-    replaceFilesDiffs,
-    deleteFilesDiffs,
-    codemodFilesDiffs,
-    editInstructionsFilesDiffs,
-    findAndReplaceFilesDiffs,
-  ] = await Promise.all([
-    createDiffs(project, parsed.replace_files || []),
-    (parsed.delete_files || []).map((file) => {
-      return {
-        path: file.path,
-        data: {
-          diff: '',
-          additions: 0,
-          deletions:
-            project.EXPENSIVE_REFACTOR_LATER_content[file.path]?.split('\n')
-              .length,
-        },
-      };
-    }),
-    createDiffs(project, resolved.codemod_scripts || []),
-    createDiffs(project, resolved.edit_instructions || []),
-    createDiffs(project, resolved.find_and_replace || []),
-  ]);
+  // format all resolved files
+  await Promise.all(
+    Object.entries(resolved).map(async ([so_key, vFiles]) => {
+      resolved[so_key] = await runTransforms(project, vFiles);
+    })
+  );
 
+  // diff all resolved files
+  const diffsEntries = await Promise.all(
+    Object.entries(resolved).map(async ([so_key, vFiles]) => {
+      const diff = await createDiffs(project, vFiles);
+      return [so_key, diff] as const;
+    })
+  );
+  const diffs = Object.fromEntries(diffsEntries);
+
+  // run diagnostics for all structured output types
+  const diagnostics = await runDiagnostics(
+    project,
+    Object.values(resolved).flat()
+  );
+
+  console.log({
+    resolved,
+    result: diagnostics,
+  });
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
+    parsed,
+    source_sha1: sha1Map,
+    diffs,
+    resolved,
     diagnostics: Object.fromEntries(
       diagnostics.map((hook) => {
         try {
@@ -218,16 +226,6 @@ export async function createMetadata(
         }
       })
     ),
-    parsed,
-    source_sha1: sha1Map,
-    diffs: {
-      replace_files: replaceFilesDiffs,
-      delete_files: deleteFilesDiffs,
-      codemod_scripts: codemodFilesDiffs,
-      edit_instructions: editInstructionsFilesDiffs,
-      find_and_replace: findAndReplaceFilesDiffs,
-    },
-    resolved, // resolved VirtualFiles for all structured output types
   };
 
   return {
