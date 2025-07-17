@@ -14,7 +14,7 @@ export function StructuredOutputSuggestedActions() {
     variables,
   } = useAPIMutation('POST /threads/continue');
   const suggestedPrompts = data.suggested_actions || [];
-  const projectId = useParams().projectId as string;
+  const projectId = useParams().project_id as string;
   const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
     id: messageContext.message.thread_id,
   });
@@ -24,15 +24,15 @@ export function StructuredOutputSuggestedActions() {
   }
 
   return (
-    <div className='flex items-center justify-between pt-4 pb-2 gap-4'>
-      <div className='grid content-start justify-start gap-4'>
+    <div className='flex items-center justify-between pt-4 gap-4'>
+      <div className='grid content-start justify-start gap-1'>
         {suggestedPrompts.length > 0 &&
           suggestedPrompts.map((prompt) => (
             <ProposalButton
               key={prompt}
               label={prompt}
               icon={MdChevronRight}
-              className='bg-background-1 text-foreground-2'
+              className='bg-background-1 text-foreground-2 text-left items-start py-2!'
               isLoading={isContinuingThread && variables?.prompt === prompt}
               onClick={() => {
                 continueThread(
