@@ -1,4 +1,5 @@
 **codemod_scripts**: An array of codemod scripts to run against files. Each specifies a path, language, and script.
+only supported languages are javascript and typescript (js|jsx|ts|tsx).
 
 ```ts
 // types for reference

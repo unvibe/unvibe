@@ -40,6 +40,15 @@ export function AcceptProposal() {
       });
     });
 
+  const show =
+    structuredOutputContext.data.delete_files?.length ||
+    structuredOutputContext.data.replace_files?.length ||
+    structuredOutputContext.data.shell_scripts?.length ||
+    structuredOutputContext.data.codemod_scripts?.length ||
+    structuredOutputContext.data.find_and_replace?.length;
+
+  if (!show) return null;
+
   return (
     <div className='flex items-center justify-end pt-4 pb-2 gap-4'>
       <div className='flex items-center gap-4'>
