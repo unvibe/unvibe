@@ -63,39 +63,41 @@ function Wrapper({
 export function ThreadDetailsAssistantMessage() {
   const value = useAssistantMessageContext();
 
+  const isToolCall =
+    value.message.tool_calls &&
+    value.message.tool_calls.length > 0 &&
+    !value.message.content;
+
   // if it's a tool call, we don't render anything
-  if (value.metadata.type === 'tool_call') {
+  if (isToolCall) {
     return null;
   }
 
   // if json parsing failed, we render the raw content
-  if (typeof value.metadata.content === 'string') {
+  if (!value.message.metadata?.parsed) {
     return (
-      <Wrapper copyableContent={value.metadata.content}>
+      <Wrapper copyableContent={value.message.content || ''}>
         <div className={clsx('flex items-center gap-2 text-xs')}>
-          <Markdown text={value.metadata.content} />
+          <Markdown text={value.message.content || ''} />
         </div>
       </Wrapper>
     );
   }
 
   // if it's a structured output, we render the structured output component
-  const contentString =
-    typeof value.metadata.content === 'string'
-      ? value.metadata.content
-      : value.metadata.content && typeof value.metadata.content === 'object'
-        ? JSON.stringify(value.metadata.content, null, 2)
-        : '';
+  const contentString = JSON.stringify(value.message.metadata.parsed, null, 2);
 
-  const components = Object.keys(value.metadata.content).map((so_key) => {
-    return Object.values(ClientPlugins).find(({ Plugin }) => {
-      return Plugin.structuredOutput?.[so_key];
-    })?.Plugin.structuredOutput?.[so_key];
-  });
+  const components = Object.keys(value.message.metadata.parsed).map(
+    (so_key) => {
+      return Object.values(ClientPlugins).find(({ Plugin }) => {
+        return Plugin.structuredOutput?.[so_key];
+      })?.Plugin.structuredOutput?.[so_key];
+    }
+  );
 
   return (
     <Wrapper copyableContent={contentString}>
-      <StructuredOutputContextProvider data={value.metadata.content}>
+      <StructuredOutputContextProvider data={value.message.metadata.parsed}>
         <div className='grid gap-2'>
           {components.map((Component, index) => {
             if (!Component) {

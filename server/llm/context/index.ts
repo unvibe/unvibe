@@ -9,8 +9,8 @@ import {
 } from '../models/_shared-types';
 import { Project } from '@/server/project/types';
 import { loadPlugins } from '../structured_output/transform';
-import { structuredOutputInstructions } from '../structured_output';
 import { db } from '@/server/db';
+import { StructuredOutputEntry } from '@/plugins/_types/plugin.server';
 
 function fromThreadMessageToAbstractContextMessage(
   message: Message
@@ -198,6 +198,7 @@ export class Context {
           id: plugin.Plugin.id,
           tools: ctx.tools,
           system: ctx.systemParts,
+          structuredOutput: ctx.structuredOutput,
         };
       })
     );
@@ -287,8 +288,15 @@ export class Context {
         .join('\n') +
       customSystem +
       '\n' +
-      structuredOutputInstructions;
+      pluginsContexts
+        .map((pc) => pc.structuredOutput)
+        .filter((so): so is StructuredOutputEntry[] => Array.isArray(so))
+        .map((soArray) => {
+          return soArray.map((s) => s.instructions).join('\n');
+        })
+        .join('\n');
 
+    console.log('systemString', systemString);
     // 4. set the tools and system parts
     this.setTools(tools);
     this.append.system({ content: systemString });

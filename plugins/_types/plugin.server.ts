@@ -43,6 +43,12 @@ export type LLMToolModule = {
   render?: Record<string, DynamicUIEntry | DynamicUICallback>;
 };
 
+export type StructuredOutputEntry = {
+  key: string;
+  instructions: string;
+  resolveFiles?: (data: unknown) => Promise<VirtualFile[]>;
+};
+
 export type ServerPlugin = {
   description: string;
   id: string;
@@ -50,11 +56,7 @@ export type ServerPlugin = {
   createContext: (baseProject: BaseProject) => Promise<{
     tools: Record<string, LLMToolModule>;
     systemParts: Record<string, string>;
-    structuredOutput?: {
-      key: string;
-      instructions: string;
-      resolveFiles?: (data: unknown) => Promise<VirtualFile[]>;
-    }[];
+    structuredOutput?: StructuredOutputEntry[];
   }>;
   sourceCodeHooks?: SourceCodeHook[];
 };
