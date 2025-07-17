@@ -45,6 +45,7 @@ export type LLMToolModule = {
 
 export type StructuredOutputEntry = {
   key: string;
+  description: string;
   instructions: string;
   resolveFiles?: (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

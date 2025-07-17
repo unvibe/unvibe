@@ -61,25 +61,6 @@ async function saveDerivedCache(
   );
 }
 
-// async function eagerShouldReturnCache(projectPath: string) {
-//   const DIR_CACHE_NAME = 'roots.json';
-//   try {
-//     const roots = await fs.readFile(path.join(CACHE_DIR, DIR_CACHE_NAME), {
-//       encoding: 'utf8',
-//     });
-//     const json = roots ? JSON.parse(roots) : {};
-//     const stat = await fs.stat(projectPath).catch(() => null);
-//     if (!stat) {
-//       return false;
-//     }
-//     if (json[projectPath] === stat.mtimeMs) {
-//       return true;
-//     }
-//   } catch {
-//     return false;
-//   }
-// }
-
 export async function parseProject(
   id: string,
   plugins: ServerPlugin[]
@@ -165,18 +146,6 @@ export async function parseProject(
   const contexts = await Promise.all(
     projectPlugins.map((plugin) =>
       plugin.createContext(baseProject).then((ctx) => {
-        const so = ctx.structuredOutput;
-        if (so && so.length > 0) {
-          baseProject.registeredStructuredOutput.push(
-            ...so.map((entry) => ({
-              key: entry.key,
-              resolve: entry.resolveFiles,
-              apply: entry.apply,
-              resolvable: typeof entry.resolveFiles === 'function',
-              applyable: typeof entry.apply === 'function',
-            }))
-          );
-        }
         baseProject.plugins[plugin.id] = {
           id: plugin.id,
           info: {
@@ -198,6 +167,21 @@ export async function parseProject(
             usage: tool.config.usage,
           })),
         };
+
+        const so = ctx.structuredOutput;
+
+        if (so && so.length > 0) {
+          baseProject.registeredStructuredOutput.push(
+            ...so.map((entry) => ({
+              key: entry.key,
+              description: entry.description,
+              resolve: entry.resolveFiles,
+              apply: entry.apply,
+              resolvable: typeof entry.resolveFiles === 'function',
+              applyable: typeof entry.apply === 'function',
+            }))
+          );
+        }
         return { id: plugin.id, ...ctx };
       })
     )
@@ -213,6 +197,11 @@ export async function parseProject(
         const key = `tool/${ctx.id}/${tool.config.name}`;
         return key;
       });
+      const structuredOutput =
+        ctx.structuredOutput?.map((so) => {
+          const key = `structured_output/${ctx.id}/${so.key}`;
+          return key;
+        }) || [];
       const custom = customSystem.map((sys) => {
         const key = `system/custom/${sys.key}`;
         return key;
@@ -225,7 +214,13 @@ export async function parseProject(
         const key = `hook/${hook.id}/${hook.hook.name}`;
         return key;
       });
-      return [...tools, ...systems, ...custom, ...hooks_config].sort();
+      return [
+        ...tools,
+        ...systems,
+        ...custom,
+        ...hooks_config,
+        ...structuredOutput,
+      ].sort();
     })
     .flat();
 
@@ -264,6 +259,11 @@ export async function parseProject(
               String(_value.hook.rule),
             ].join('\n')
           : '';
+      } else if (type === 'structured_output') {
+        const _value = baseProject.registeredStructuredOutput.find(
+          (so) => so.key === context_key
+        );
+        preview_string = _value ? _value.description : '';
       }
       return {
         key,

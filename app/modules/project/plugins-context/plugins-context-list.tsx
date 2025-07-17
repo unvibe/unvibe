@@ -16,7 +16,11 @@ export function PluginList() {
   const _tools = parsed.filter((item) => item.type === 'tool');
   const _systems = parsed.filter((item) => item.type === 'system');
   const _hooks = parsed.filter((item) => item.type === 'hook');
+  const _structuredOutput = parsed.filter(
+    (item) => item.type === 'structured_output'
+  );
 
+  console.log('_structuredOutput', _structuredOutput);
   const [isSystemAddOpen, setIsSystemAddOpen] = useState(false);
   const [isToolAddOpen, setIsToolAddOpen] = useState(false);
   const [isHookAddOpen, setIsHookAddOpen] = useState(false);
@@ -26,6 +30,22 @@ export function PluginList() {
   return (
     <main className='p-8 max-w-6xl mx-auto'>
       <div className='gap-8 grid content-start'>
+        <Section title='Structured Output' description='LLM structured output'>
+          {_structuredOutput.map((item) => {
+            return (
+              <ContextSectionCard
+                key={item._key}
+                data={item}
+                ViewModal={<ContextItemDetailsHook data={item} />}
+              />
+            );
+          })}
+          <ContextSectionCardAdd onClick={() => setIsHookAddOpen(true)} />
+          <ComingSoonModal
+            onClose={() => setIsHookAddOpen(false)}
+            open={isHookAddOpen}
+          />
+        </Section>
         <Section title='Tools' description='LLM tools'>
           {_tools.map((tool) => {
             return (

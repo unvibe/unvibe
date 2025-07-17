@@ -26,6 +26,7 @@ export interface BaseProject {
   context_preview: { key: string; preview_string: string }[];
   registeredStructuredOutput: {
     key: string;
+    description: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolve?: (data: any, source: VirtualFile[]) => Promise<VirtualFile[]>;
     apply?: (
