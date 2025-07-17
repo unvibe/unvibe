@@ -5,9 +5,5 @@ import { id } from './plugin.shared';
 export const Plugin: ClientPlugin = {
   id,
   icon: SiGit,
-  components: {
-    assistant: {
-      proposal: {},
-    },
-  },
+  components: {},
 };
