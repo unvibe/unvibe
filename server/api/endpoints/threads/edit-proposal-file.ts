@@ -1,12 +1,8 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
 import { db } from '@/server/db';
-import { StructuredOutput } from '@/server/llm/structured_output';
-import { messages } from '@/server/db/schema';
+import { messages, StructuredOutputMetadata } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { createMetadata } from './continue-utils';
-import { parseProject } from '@/server/project/parse';
-import { allPlugins } from './utils';
 
 export const editProposalFile = createEndpoint({
   type: 'POST',
@@ -26,37 +22,26 @@ export const editProposalFile = createEndpoint({
       throw new Error('Message not found');
     }
 
-    const content: StructuredOutput = JSON.parse(message.content);
-    const previous = content.replace_files?.find(
-      (file) => file.path === parsed.newContentFilePath
+    const updatedContent = Object.fromEntries(
+      Object.entries(message.metadata?.resolved || {}).map((entry) => {
+        const key = entry[0];
+        if (key === parsed.newContentFilePath) {
+          return [key, parsed.newContentFileContent] as const;
+        }
+        return entry;
+      })
     );
 
-    if (!previous) {
-      throw new Error('File not found in proposal');
-    }
-
-    const updatedFiles = content.replace_files?.map((file) => {
-      if (file.path === parsed.newContentFilePath) {
-        return { ...file, content: parsed.newContentFileContent };
-      }
-      return file;
-    });
-
-    const updatedContent: StructuredOutput = {
-      ...content,
-      replace_files: updatedFiles,
-    };
-
-    const newContent = JSON.stringify(updatedContent);
-
-    const project = await parseProject(parsed.projectId, allPlugins);
-    const { partialMetadata } = await createMetadata(newContent, project);
+    const metadata = {
+      ...message.metadata,
+      resolved: updatedContent,
+    } as StructuredOutputMetadata;
+    // TODO: re-run metadata creation
 
     await db
       .update(messages)
       .set({
-        content: JSON.stringify(updatedContent),
-        metadata: partialMetadata,
+        metadata,
       })
       .where(eq(messages.id, parsed.messageId));
 

@@ -9,7 +9,7 @@ export function Component() {
   const scripts = data.shell_scripts || [];
   const scriptSelection = selection.shell_scripts || [];
 
-  if (scripts.length === 0) return null;
+  if (!Array.isArray(scripts) || scripts.length === 0) return null;
 
   return (
     <div className='grid gap-2'>
@@ -19,7 +19,7 @@ export function Component() {
         </div>
         <div className='grid gap-2 text-xs font-mono'>
           {scripts.map((script) => {
-            const sel = scriptSelection.find((s) => s.script === script);
+            const sel = scriptSelection.find((s) => s.path === script);
             const checked = !!sel?.selected;
             return (
               <div key={script} className='flex items-center gap-2'>
@@ -30,7 +30,7 @@ export function Component() {
                     setSelection((prev) => {
                       const prevScripts = prev.shell_scripts || [];
                       const idx = prevScripts.findIndex(
-                        (s) => s.script === script
+                        (s) => s.path === script
                       );
                       let updatedScripts: typeof prevScripts;
                       if (idx >= 0) {
@@ -40,7 +40,7 @@ export function Component() {
                       } else {
                         updatedScripts = [
                           ...prevScripts,
-                          { script, selected: !sel?.selected },
+                          { path: script, selected: !sel?.selected },
                         ];
                       }
                       return { ...prev, shell_scripts: updatedScripts };

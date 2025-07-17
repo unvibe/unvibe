@@ -1,1 +1,1 @@
-export const APP_NAME = 'AI-app-thing';
+export const APP_NAME = 'unvibe';

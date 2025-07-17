@@ -5,10 +5,10 @@ import { useStructuredOutputContext } from '@/lib/react/structured-output/struct
 export * from './shared';
 
 export function Component() {
-  const { data, selection, setSelection } = useStructuredOutputContext();
-  const files = data.delete_files || [];
-  const deleteSelection = selection.delete_files || [];
+  const { selection, setSelection } = useStructuredOutputContext();
   const { message } = useAssistantMessageContext();
+  const files = message.metadata?.resolved?.delete_files || [];
+  const deleteSelection = selection.delete_files || [];
 
   return (
     <>

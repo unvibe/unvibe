@@ -296,7 +296,6 @@ export class Context {
         })
         .join('\n');
 
-    console.log('systemString', systemString);
     // 4. set the tools and system parts
     this.setTools(tools);
     this.append.system({ content: systemString });

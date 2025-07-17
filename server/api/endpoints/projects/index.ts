@@ -5,7 +5,6 @@ export * from './list-remote-orgs';
 export * from './list-remote';
 export * from './package-manager-commands';
 export * from './parse-project';
-export * from './proposal-diagnose';
 export * from './request-file';
 export * from './run-diagnostics';
 export * from './run-script';

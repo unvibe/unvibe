@@ -41,11 +41,8 @@ export function AcceptProposal() {
     });
 
   const show =
-    structuredOutputContext.data.delete_files?.length ||
-    structuredOutputContext.data.replace_files?.length ||
-    structuredOutputContext.data.shell_scripts?.length ||
-    structuredOutputContext.data.codemod_scripts?.length ||
-    structuredOutputContext.data.find_and_replace?.length;
+    Object.values(messageContext.message.metadata?.resolved || {}).flat()
+      .length > 0;
 
   if (!show) return null;
 
@@ -67,10 +64,7 @@ export function AcceptProposal() {
                   {
                     id: projectId,
                     selections: structuredOutputContext.selection,
-                    proposal: {
-                      messageId: messageContext.message.id,
-                      ...structuredOutputContext.data,
-                    },
+                    messageId: messageContext.message.id,
                   },
                   {
                     onSuccess(data) {
@@ -111,10 +105,7 @@ export function AcceptProposal() {
                   {
                     id: projectId,
                     selections: structuredOutputContext.selection,
-                    proposal: {
-                      messageId: messageContext.message.id,
-                      ...structuredOutputContext.data,
-                    },
+                    messageId: messageContext.message.id,
                   },
                   {
                     onSuccess(data) {
@@ -164,10 +155,7 @@ export function AcceptProposal() {
                   {
                     id: projectId,
                     selections: structuredOutputContext.selection,
-                    proposal: {
-                      messageId: messageContext.message.id,
-                      ...structuredOutputContext.data,
-                    },
+                    messageId: messageContext.message.id,
                   },
                   {
                     onSuccess(data) {

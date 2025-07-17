@@ -21,7 +21,7 @@ export function Component() {
     id: messageContext.message.thread_id,
   });
 
-  if (suggestedPrompts.length === 0) {
+  if (!Array.isArray(suggestedPrompts) || suggestedPrompts.length === 0) {
     return null;
   }
 

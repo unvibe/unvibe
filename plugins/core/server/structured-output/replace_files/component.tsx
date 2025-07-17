@@ -5,10 +5,10 @@ import { useStructuredOutputContext } from '@/lib/react/structured-output/struct
 export * from './shared';
 
 export function Component() {
-  const { data, selection, setSelection } = useStructuredOutputContext();
-  const files = data.replace_files || [];
+  const { selection, setSelection } = useStructuredOutputContext();
   const replaceSelection = selection.replace_files || [];
   const { message } = useAssistantMessageContext();
+  const files = message.metadata?.resolved?.replace_files || [];
 
   return (
     <>

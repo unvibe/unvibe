@@ -1,203 +1,44 @@
 import { z } from 'zod';
 import { createEndpoint } from '../../create-endpoint';
-import { Project } from '@/server/project/types';
 import { _parseProject } from './utils';
-import { runShellCommand } from '@/lib/server/run-shell-command';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { noop } from '@/lib/core/noop';
+import { db } from '@/server/db';
 
-type Acceptance = {
-  shell_scripts: {
-    script: string;
-    status: 'success' | 'error';
-    payload?: string;
-  }[];
-  replace_files: {
-    path: string;
-    status: 'success' | 'error';
-    payload?: string;
-  }[];
-  delete_files: {
-    path: string;
-    status: 'success' | 'error';
-    payload?: string;
-  }[];
-};
-
-async function applyShellScripts(
-  project: Project,
-  scripts?: string[],
-  selection?: { script: string; selected: boolean }[]
-): Promise<Acceptance['shell_scripts']> {
-  if (!scripts || scripts.length === 0) {
-    return [];
-  }
-  const selected = selection
-    ? scripts.filter((script) =>
-        selection.some((s) => s.script === script && s.selected)
-      )
-    : scripts;
-
-  return await Promise.all(
-    selected.map(async (script) => {
-      let value: string;
-      let status: 'success' | 'error';
-      try {
-        value = await runShellCommand(script, { cwd: project.path });
-        status = 'success';
-      } catch (error) {
-        status = 'error';
-        if (error == null || error === undefined) {
-          value = 'Error: Unknown error occurred';
-        } else if (typeof error === 'string') {
-          value = error;
-        } else if (error instanceof Error) {
-          value = `Error: ${error.message}`;
-        }
-        value = `Error: An unexpected error occurred ${error}`;
-      }
-      return { script, status, payload: value };
-    })
-  );
-}
-
-async function _applyFullFile(
-  project: Project,
-  entry: { path: string; content: string }
-): Promise<void> {
-  const dir = entry.path.split('/').slice(0, -1).join('/');
-  await fs.mkdir(path.join(project.path, dir), { recursive: true });
-  await fs.writeFile(
-    path.join(project.path, entry.path),
-    entry.content ?? '',
-    'utf-8'
-  );
-}
-
-async function applyReplaceFiles(
-  project: Project,
-  replaceFiles?: { path: string; content: string }[],
-  selection?: { path: string; selected: boolean }[]
-): Promise<Acceptance['replace_files']> {
-  if (!replaceFiles || replaceFiles.length === 0) {
-    return [];
-  }
-
-  const selected = selection
-    ? replaceFiles.filter((file) =>
-        selection.some((s) => s.path === file.path && s.selected)
-      )
-    : replaceFiles;
-
-  return await Promise.all(
-    selected.map(async (entry) => {
-      let status: 'success' | 'error';
-      try {
-        await _applyFullFile(project, entry);
-        status = 'success';
-      } catch (error) {
-        status = 'error';
-        // ignore if file doesn't exist or can't be written
-        noop(error);
-      }
-
-      return { path: entry.path, status, payload: '' };
-    })
-  );
-}
-
-async function applyDeletedFiles(
-  project: Project,
-  deleteFiles?: { path: string }[],
-  selection?: { path: string; selected: boolean }[]
-): Promise<Acceptance['delete_files']> {
-  if (!deleteFiles || deleteFiles.length === 0) {
-    return [];
-  }
-
-  const selected = selection
-    ? deleteFiles.filter((file) =>
-        selection.some((s) => s.path === file.path && s.selected)
-      )
-    : deleteFiles;
-
-  return Promise.all(
-    selected.map(async (entry) => {
-      try {
-        await fs.unlink(path.join(project.path, entry.path));
-        return { path: entry.path, status: 'success', payload: '' };
-      } catch (error) {
-        let payload = '';
-        if (error instanceof Error) {
-          payload = `Error: ${error.message}`;
-        } else if (typeof error === 'string') {
-          payload = `Error: ${error}`;
-        } else {
-          payload = 'Error: An unexpected error occurred: ' + String(error);
-        }
-
-        return { path: entry.path, status: 'error', payload: payload };
-      }
-    })
-  );
-}
-
-const proposalSelectionSchema = z.object({
-  replace_files: z
-    .array(z.object({ path: z.string(), selected: z.boolean() }))
-    .optional(),
-  delete_files: z
-    .array(z.object({ path: z.string(), selected: z.boolean() }))
-    .optional(),
-  shell_scripts: z
-    .array(z.object({ script: z.string(), selected: z.boolean() }))
-    .optional(),
-});
-
-const proposalSchema = z.object({
-  messageId: z.string(),
-  message: z.string(),
-  replace_files: z
-    .array(z.object({ path: z.string(), content: z.string() }))
-    .optional(),
-  delete_files: z.array(z.object({ path: z.string() })).optional(),
-  shell_scripts: z.array(z.string()).optional(),
-});
+type Acceptance = Record<
+  string,
+  { path: string; status: 'success' | 'error'; payload?: string }[]
+>;
 
 export const acceptProposal = createEndpoint({
   type: 'POST',
   pathname: '/projects/accept-proposal',
   params: z.object({
     id: z.string(), // project id
-    selections: proposalSelectionSchema,
-    proposal: proposalSchema,
+    messageId: z.string(),
+    selections: z.record(
+      z.array(z.object({ path: z.string(), selected: z.boolean() }))
+    ),
   }),
   handler: async ({ parsed }) => {
     const project = await _parseProject(parsed.id);
-    const scripts = await applyShellScripts(
-      project,
-      parsed.proposal.shell_scripts,
-      parsed.selections.shell_scripts
-    );
+    const message = await db.query.messages.findFirst({
+      where: (m, { eq }) => eq(m.id, parsed.messageId),
+    });
 
-    const [deleted, replaced] = await Promise.all([
-      applyDeletedFiles(
-        project,
-        parsed.proposal.delete_files,
-        parsed.selections.delete_files
-      ),
-      applyReplaceFiles(
-        project,
-        parsed.proposal.replace_files,
-        parsed.selections.replace_files
-      ),
-    ]);
+    const result: Acceptance = {};
 
-    return {
-      shell_scripts: scripts,
-      deleted_files: deleted,
-      replace_files: replaced,
-    };
+    project.registeredStructuredOutput.forEach(async (so) => {
+      const selections = parsed.selections[so.key] || [];
+      const resolved = message?.metadata?.resolved?.[so.key];
+      if (typeof so.apply === 'function') {
+        result[so.key] = await so.apply(
+          project,
+          message?.metadata?.parsed?.[so.key],
+          selections,
+          resolved
+        );
+      }
+    });
+
+    return result;
   },
 });

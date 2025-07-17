@@ -46,7 +46,18 @@ export type LLMToolModule = {
 export type StructuredOutputEntry = {
   key: string;
   instructions: string;
-  resolveFiles?: (data: unknown) => Promise<VirtualFile[]>;
+  resolveFiles?: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any,
+    source: VirtualFile[]
+  ) => Promise<VirtualFile[]>;
+  apply?: (
+    project: BaseProject,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any,
+    selections: { path: string; selected: boolean }[],
+    resolved?: VirtualFile[]
+  ) => Promise<{ path: string; status: 'success' | 'error' }[]>;
 };
 
 export type ServerPlugin = {

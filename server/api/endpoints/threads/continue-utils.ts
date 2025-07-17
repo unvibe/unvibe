@@ -10,9 +10,6 @@ import path from 'path';
 import simpleGit from 'simple-git';
 import { noop } from '@/lib/core/noop';
 import gitDiffParser from 'gitdiff-parser';
-import { resolveEditInstructions } from '@/plugins/core/server/structured-output/edit_instructions/resolve';
-import { resolveCodemodScripts } from '@/plugins/core/server/structured-output/codemod_scripts/resolve';
-import { resolveFindAndReplace } from '@/plugins/core/server/structured-output/find_and_replace/resolve';
 import { runTransforms } from '@/server/llm/structured_output/transform';
 
 export async function createDiffs(
@@ -114,20 +111,25 @@ export async function createMetadata(
   const repaired = jsonrepair(response);
   const parsed: StructuredOutput = JSON.parse(repaired);
 
-  // Gather all possible paths
-  const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
-  const deletedPaths = parsed.delete_files?.map((p) => p.path) || [];
-  const editPaths = parsed.edit_instructions?.map((p) => p.path) || [];
-  const codemodPaths = parsed.codemod_scripts?.map((p) => p.path) || [];
-  const findReplacePaths = parsed.find_and_replace?.map((p) => p.path) || [];
+  const relatedFiles: string[] = [];
 
-  const relatedFiles = [
-    ...replacedPaths,
-    ...deletedPaths,
-    ...editPaths,
-    ...codemodPaths,
-    ...findReplacePaths,
-  ];
+  project.registeredStructuredOutput.forEach((entry) => {
+    if (entry.resolve && typeof entry.resolve === 'function') {
+      // now we can get the files paths
+      const files = Array.isArray(parsed[entry.key])
+        ? (parsed[entry.key] as { path: string }[])
+        : [];
+
+      files.forEach((fileLike: unknown) => {
+        if (typeof fileLike === 'object' && fileLike !== null) {
+          const filePath = (fileLike as { path: string }).path;
+          if (filePath) {
+            relatedFiles.push(normalizePath(filePath));
+          }
+        }
+      });
+    }
+  });
 
   const sha1Map = Object.fromEntries(
     await Promise.all(
@@ -148,37 +150,17 @@ export async function createMetadata(
   // Resolve all structured output types
   const resolved: Record<string, VirtualFile[]> = {};
 
-  if (parsed.replace_files) {
-    resolved.replace_files = parsed.replace_files;
-  }
-
-  if (parsed.delete_files) {
-    resolved.delete_files = parsed.delete_files.map((file) => ({
-      path: file.path,
-      content: '',
-    }));
-  }
-
-  if (parsed.edit_instructions) {
-    resolved.edit_instructions = await resolveEditInstructions(
-      parsed.edit_instructions,
-      originalFiles
-    );
-  }
-
-  if (parsed.codemod_scripts) {
-    resolved.codemod_scripts = await resolveCodemodScripts(
-      parsed.codemod_scripts,
-      originalFiles
-    );
-  }
-
-  if (parsed.find_and_replace) {
-    resolved.find_and_replace = await resolveFindAndReplace(
-      parsed.find_and_replace,
-      originalFiles
-    );
-  }
+  await Promise.all(
+    Object.entries(parsed).map(async ([so_key, value]) => {
+      const entry = project.registeredStructuredOutput.find(
+        (e) => e.key === so_key
+      );
+      if (!entry) return;
+      if (entry.resolve) {
+        resolved[so_key] = await entry.resolve(value, originalFiles);
+      }
+    })
+  );
 
   // format all resolved files
   await Promise.all(

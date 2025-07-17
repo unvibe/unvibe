@@ -120,6 +120,7 @@ export async function parseProject(
     plugins: {},
     context_config: {},
     context_preview: [],
+    registeredStructuredOutput: [],
     EXPENSIVE_REFACTOR_LATER_content: filesWithContent,
   };
 
@@ -164,6 +165,16 @@ export async function parseProject(
   const contexts = await Promise.all(
     projectPlugins.map((plugin) =>
       plugin.createContext(baseProject).then((ctx) => {
+        const so = ctx.structuredOutput;
+        if (so && so.length > 0) {
+          baseProject.registeredStructuredOutput.push(
+            ...so.map((entry) => ({
+              key: entry.key,
+              resolve: entry.resolveFiles,
+              apply: entry.apply,
+            }))
+          );
+        }
         baseProject.plugins[plugin.id] = {
           id: plugin.id,
           info: {

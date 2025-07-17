@@ -5,5 +5,11 @@ export * from './shared';
 
 export function Component() {
   const { data } = useStructuredOutputContext();
-  return <Markdown text={data.message} />;
+  return (
+    <Markdown
+      text={
+        typeof data.message === 'string' ? data.message : String(data.message)
+      }
+    />
+  );
 }
