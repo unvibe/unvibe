@@ -106,18 +106,13 @@ export function ThreadDetailsMessageListItemFileActions({
   const diagnosticChecks = useMemo(() => {
     return Object.values(project.plugins)
       .map((plugin) => {
-        console.log('plugin:', plugin);
         return plugin.sourceCodeHooks.filter((d) => d.operations.diagnostic);
       })
       .flat()
       .filter((d) => {
-        console.log('checking if', data.path, 'matches', d.rule);
-        console.log('check:', d);
-        console.log('should check', new RegExp(d.rule).test(data.path));
         return new RegExp(d.rule).test(data.path);
       });
   }, [project]);
-  console.log('diagnosticChecks:', diagnosticChecks);
 
   const fileResult = diagnosticChecks.map((check) => {
     const result =
@@ -132,7 +127,6 @@ export function ThreadDetailsMessageListItemFileActions({
   // const total = fileResult.length;
   // const progress = Math.round((passedCount / total) * 100) || 1;
 
-  console.log(metadata?.diagnostics);
   const collectedDiagnostics = useMemo(() => {
     const array: (DiagnosticMessage & { checkName: string })[] = [];
     diagnosticChecks.forEach((check) => {
@@ -160,7 +154,6 @@ export function ThreadDetailsMessageListItemFileActions({
     'POST /threads/edit-proposal-file'
   );
   const [showGitDiffModal, setShowGitDiffModal] = useState(false);
-  console.log(diagnosticChecks);
 
   return (
     <div className='p-1 font-mono pl-4 text-xs flex items-center justify-between'>

@@ -202,10 +202,6 @@ export async function createMetadata(
     Object.values(resolved).flat()
   );
 
-  console.log({
-    resolved,
-    result: diagnostics,
-  });
   const partialMetadata: StructuredOutputMetadata = {
     raw: response,
     parsed,
