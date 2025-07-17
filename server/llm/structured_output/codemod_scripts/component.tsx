@@ -10,6 +10,7 @@ export function StructuredOutputCodemodScripts() {
   const codemodSelection: SelectionItem[] = selection.codemod_scripts || [];
   const { message } = useAssistantMessageContext();
   const files = message.metadata?.resolved?.codemod_scripts || [];
+  const git = message.metadata?.diffs?.codemod_scripts || [];
 
   return (
     <>
@@ -20,6 +21,7 @@ export function StructuredOutputCodemodScripts() {
         return (
           <ThreadDetailsMessageListItemFile
             key={file.path + i.toString()}
+            git={git.find((d) => d.path === file.path)?.data}
             enabledEditing={true}
             data={file}
             selected={!!sel?.selected}

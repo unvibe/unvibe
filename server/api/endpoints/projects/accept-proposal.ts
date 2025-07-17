@@ -23,12 +23,6 @@ type Acceptance = {
     status: 'success' | 'error';
     payload?: string;
   }[];
-  edit_files: { path: string; status: 'success' | 'error'; payload?: string }[];
-  edit_ranges: {
-    path: string;
-    status: 'success' | 'error';
-    payload?: string;
-  }[];
 };
 
 async function applyShellScripts(
@@ -154,12 +148,6 @@ const proposalSelectionSchema = z.object({
     .array(z.object({ path: z.string(), selected: z.boolean() }))
     .optional(),
   delete_files: z
-    .array(z.object({ path: z.string(), selected: z.boolean() }))
-    .optional(),
-  edit_files: z
-    .array(z.object({ path: z.string(), selected: z.boolean() }))
-    .optional(),
-  edit_ranges: z
     .array(z.object({ path: z.string(), selected: z.boolean() }))
     .optional(),
   shell_scripts: z

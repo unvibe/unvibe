@@ -37,6 +37,9 @@ export type StructuredOutputMetadata = {
   diffs?: {
     replace_files?: MetadataDiffsEntry[]; // diffs for replaced files
     delete_files?: MetadataDiffsEntry[]; // diffs for deleted files
+    codemod_scripts?: MetadataDiffsEntry[]; // diffs for codemod scripts
+    edit_instructions?: MetadataDiffsEntry[]; // diffs for edit instructions
+    find_and_replace?: MetadataDiffsEntry[]; // diffs for find and replace
   };
 };
 // messages table definition

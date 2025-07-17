@@ -7,7 +7,6 @@ import * as shell_scripts from './shell_scripts';
 import * as replace_files from './replace_files';
 import * as message from './message';
 import * as suggested_actions from './suggested_actions';
-import * as patch_files from './patch_files';
 import * as edit_instructions from './edit_instructions';
 import * as codemod_scripts from './codemod_scripts';
 import * as find_and_replace from './find_and_replace';
@@ -18,7 +17,6 @@ const instructions = [
   delete_files.instructions,
   shell_scripts.instructions,
   suggested_actions.instructions,
-  patch_files.instructions,
   edit_instructions.instructions,
   codemod_scripts.instructions,
   find_and_replace.instructions,
@@ -33,7 +31,6 @@ export type StructuredOutput = {
   delete_files?: delete_files.DeleteFiles;
   shell_scripts?: shell_scripts.ShellScripts;
   suggested_actions?: suggested_actions.SuggestedPrompts;
-  patch_files?: patch_files.PatchFiles;
   edit_instructions?: edit_instructions.EditInstructions;
   codemod_scripts?: codemod_scripts.CodemodScripts;
   find_and_replace?: find_and_replace.FindAndReplaces;

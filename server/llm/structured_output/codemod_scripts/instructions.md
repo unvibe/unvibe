@@ -24,8 +24,7 @@ function transformer(fileInfo, api) {\n  const j = api.jscodeshift;\n  const roo
 
 **Instructions:**
 
-- Write your codemod as a function and export it as `module.exports = transformer;` (or equivalent for your language).
-- Do NOT redeclare or assign 'exports' or 'module' inside your script; these are provided for you.
 - Your codemod receives `(fileInfo, api)` as arguments. Return the new file content as a string.
-- If you need jscodeshift or similar, it's available as the `api` argument or globally as `jscodeshift`.
-- The script is evaluated with `eval()` in a CommonJS-like environment for convenience and simplicity. Use with trusted code only.
+- don't add `module.exports` or `require` and modules or import any code, just as the example, a single function.
+- the function should be named `transformer`.
+- the `script` part should be a single function that transforms the file content, no modules exports at the end of the file

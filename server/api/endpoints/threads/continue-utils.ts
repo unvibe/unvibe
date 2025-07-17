@@ -11,7 +11,6 @@ import path from 'path';
 import simpleGit from 'simple-git';
 import { noop } from '@/lib/core/noop';
 import gitDiffParser from 'gitdiff-parser';
-import { resolvePatchFiles } from '@/server/llm/structured_output/patch_files/resolve';
 import { resolveEditInstructions } from '@/server/llm/structured_output/edit_instructions/resolve';
 import { resolveCodemodScripts } from '@/server/llm/structured_output/codemod_scripts/resolve';
 import { resolveFindAndReplace } from '@/server/llm/structured_output/find_and_replace/resolve';
@@ -120,7 +119,6 @@ export async function createMetadata(
   // Gather all possible paths
   const replacedPaths = parsed.replace_files?.map((p) => p.path) || [];
   const deletedPaths = parsed.delete_files?.map((p) => p.path) || [];
-  const patchPaths = parsed.patch_files?.map((p) => p.path) || [];
   const editPaths = parsed.edit_instructions?.map((p) => p.path) || [];
   const codemodPaths = parsed.codemod_scripts?.map((p) => p.path) || [];
   const findReplacePaths = parsed.find_and_replace?.map((p) => p.path) || [];
@@ -128,7 +126,6 @@ export async function createMetadata(
   const relatedFiles = [
     ...replacedPaths,
     ...deletedPaths,
-    ...patchPaths,
     ...editPaths,
     ...codemodPaths,
     ...findReplacePaths,
@@ -155,12 +152,6 @@ export async function createMetadata(
   if (parsed.replace_files) {
     resolved.replace_files = parsed.replace_files;
   }
-  if (parsed.patch_files) {
-    resolved.patch_files = await resolvePatchFiles(
-      parsed.patch_files,
-      originalFiles
-    );
-  }
   if (parsed.edit_instructions) {
     resolved.edit_instructions = await resolveEditInstructions(
       parsed.edit_instructions,
@@ -186,7 +177,13 @@ export async function createMetadata(
   }
 
   // Diff for replace_files and delete_files only (for now)
-  const [replaceFilesDiffs, deleteFilesDiffs] = await Promise.all([
+  const [
+    replaceFilesDiffs,
+    deleteFilesDiffs,
+    codemodFilesDiffs,
+    editInstructionsFilesDiffs,
+    findAndReplaceFilesDiffs,
+  ] = await Promise.all([
     createDiffs(project, parsed.replace_files || []),
     (parsed.delete_files || []).map((file) => {
       return {
@@ -200,6 +197,9 @@ export async function createMetadata(
         },
       };
     }),
+    createDiffs(project, resolved.codemod_scripts || []),
+    createDiffs(project, resolved.edit_instructions || []),
+    createDiffs(project, resolved.find_and_replace || []),
   ]);
 
   const partialMetadata: StructuredOutputMetadata = {
@@ -223,6 +223,9 @@ export async function createMetadata(
     diffs: {
       replace_files: replaceFilesDiffs,
       delete_files: deleteFilesDiffs,
+      codemod_scripts: codemodFilesDiffs,
+      edit_instructions: editInstructionsFilesDiffs,
+      find_and_replace: findAndReplaceFilesDiffs,
     },
     resolved, // resolved VirtualFiles for all structured output types
   };

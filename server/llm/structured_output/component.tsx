@@ -22,7 +22,6 @@ import { AcceptProposal } from './accept-proposal';
 import { StructuredOutputCodemodScripts } from './codemod_scripts/component';
 import { StructuredOutputEditInstructions } from './edit_instructions/component';
 import { StructuredOutputFindAndReplace } from './find_and_replace/component';
-import { StructuredOutputPatchFiles } from './patch_files/component';
 
 function CopyButton({ content }: { content: string }) {
   const [copied, setCopied] = useState(false);
@@ -97,15 +96,16 @@ export function ThreadDetailsAssistantMessage() {
   return (
     <Wrapper copyableContent={contentString}>
       <StructuredOutputContextProvider data={value.metadata.content}>
-        <StructuredOutputMessage />
-        <StructuredOutputShellScripts />
-        <StructuredOutputDeleteFiles />
-        <StructuredOutputReplaceFiles />
-        <StructuredOutputSuggestedActions />
-        <StructuredOutputCodemodScripts />
-        <StructuredOutputEditInstructions />
-        <StructuredOutputFindAndReplace />
-        <StructuredOutputPatchFiles />
+        <div className='grid gap-2'>
+          <StructuredOutputMessage />
+          <StructuredOutputShellScripts />
+          <StructuredOutputDeleteFiles />
+          <StructuredOutputReplaceFiles />
+          <StructuredOutputSuggestedActions />
+          <StructuredOutputCodemodScripts />
+          <StructuredOutputEditInstructions />
+          <StructuredOutputFindAndReplace />
+        </div>
         <AcceptProposal />
       </StructuredOutputContextProvider>
     </Wrapper>

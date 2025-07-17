@@ -151,12 +151,6 @@ Structured output is a strict JSON object (see `server/llm/structured_output/`) 
   "message": "Summary of the proposed change.",
   "replace_files": [{ "path": "./src/index.js", "content": "// ..." }],
   "delete_files": [{ "path": "./config/old-config.json" }],
-  "edit_ranges": [
-    {
-      "path": "./src/utils.js",
-      "edits": [{ "start": 10, "end": 12, "content": "..." }]
-    }
-  ],
   "shell_scripts": ["bash setup.sh"]
 }
 ```

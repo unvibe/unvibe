@@ -10,6 +10,7 @@ export function StructuredOutputFindAndReplace() {
   const findSelection: SelectionItem[] = selection.find_and_replace || [];
   const { message } = useAssistantMessageContext();
   const files = message.metadata?.resolved?.find_and_replace || [];
+  const git = message.metadata?.diffs?.find_and_replace || [];
 
   return (
     <>
@@ -22,6 +23,7 @@ export function StructuredOutputFindAndReplace() {
             key={file.path + i.toString()}
             enabledEditing={true}
             data={file}
+            git={git.find((d) => d.path === file.path)?.data}
             selected={!!sel?.selected}
             setSelected={(newState) => {
               setSelection((prev) => {

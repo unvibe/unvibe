@@ -283,12 +283,6 @@ All significant changes, questions, or analyses are made using a structured outp
   "message": "Summary of the proposed change.",
   "replace_files": [{ "path": "string", "content": "string" }],
   "delete_files": [{ "path": "string" }],
-  "edit_ranges": [
-    {
-      "path": "string",
-      "edits": [{ "start": 10, "end": 12, "content": "..." }]
-    }
-  ],
   "shell_scripts": ["optional_shell_command"]
 }
 ```

@@ -15,13 +15,12 @@ export type SelectionItem = {
 export type ProposalSelection = {
   replace_files?: { path: string; selected: boolean }[];
   delete_files?: { path: string; selected: boolean }[];
-  edit_files?: { path: string; selected: boolean }[];
-  edit_ranges?: { path: string; selected: boolean }[];
   shell_scripts?: { script: string; selected: boolean }[];
   codemod_scripts?: { path: string; selected: boolean }[];
   find_and_replace?: { path: string; selected: boolean }[];
   patch_files?: { path: string; selected: boolean }[];
   find_and_replace_files?: { path: string; selected: boolean }[];
+  edit_instructions?: { path: string; selected: boolean }[];
 };
 
 export interface StructuredOutputContextValue {
@@ -49,6 +48,9 @@ export function StructuredOutputContextProvider({
     const replace = data.replace_files || [];
     const remove = data.delete_files || [];
     const scripts = data.shell_scripts || [];
+    const codemods = data.codemod_scripts || [];
+    const findAndReplace = data.find_and_replace || [];
+    const editInstructions = data.edit_instructions || [];
     return {
       replace_files: replace.map((file) => ({
         path: file.path,
@@ -56,6 +58,18 @@ export function StructuredOutputContextProvider({
       })),
       delete_files: remove.map((file) => ({ path: file.path, selected: true })),
       shell_scripts: scripts.map((script) => ({ script, selected: true })),
+      codemod_scripts: codemods.map((script) => ({
+        path: script.path,
+        selected: true,
+      })),
+      find_and_replace: findAndReplace.map((fr) => ({
+        path: fr.path,
+        selected: true,
+      })),
+      edit_instructions: editInstructions.map((instruction) => ({
+        path: instruction.path,
+        selected: true,
+      })),
     };
   });
   return (

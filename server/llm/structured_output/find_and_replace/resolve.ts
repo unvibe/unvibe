@@ -14,7 +14,14 @@ export async function resolveFindAndReplace(
   }
   return Object.entries(grouped).map(([path, actions]) => {
     const orig = originalFiles.find((f) => f.path === path);
-    if (!orig) throw new Error(`Original file not found: ${path}`);
+    if (!orig) {
+      // fallback if original file not found
+      console.warn(`Original file not found: ${path}`);
+      return {
+        path,
+        content: actions.map((a) => a.replace || '').join('\n'),
+      };
+    }
     let content = orig.content;
     for (const { search, replace, expected_matches } of actions) {
       const matches = content.split(search).length - 1;

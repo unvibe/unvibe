@@ -10,6 +10,7 @@ export function StructuredOutputEditInstructions() {
   const editSelection: SelectionItem[] = selection.edit_instructions || [];
   const { message } = useAssistantMessageContext();
   const files = message.metadata?.resolved?.edit_instructions || [];
+  const git = message.metadata?.diffs?.edit_instructions || [];
 
   return (
     <>
@@ -22,6 +23,7 @@ export function StructuredOutputEditInstructions() {
             key={file.path + i.toString()}
             enabledEditing={true}
             data={file}
+            git={git.find((d) => d.path === file.path)?.data}
             selected={!!sel?.selected}
             setSelected={(newState) => {
               setSelection((prev) => {

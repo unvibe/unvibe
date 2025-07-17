@@ -14,7 +14,13 @@ export async function resolveEditInstructions(
   }
   return Object.entries(grouped).map(([path, actions]) => {
     const orig = originalFiles.find((f) => f.path === path);
-    if (!orig) throw new Error(`Original file not found: ${path}`);
+    if (!orig) {
+      console.warn(`Original file not found: ${path}`);
+      return {
+        path,
+        content: actions.map((a) => a.new_content || '').join('\n'),
+      };
+    }
     const lines = orig.content.split('\n');
     for (const edit of actions) {
       if (edit.action === 'replace') {
