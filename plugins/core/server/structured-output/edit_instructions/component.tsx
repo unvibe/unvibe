@@ -4,15 +4,28 @@ import {
   useStructuredOutputContext,
   SelectionItem,
 } from '@/lib/react/structured-output/structured-output-context';
+import { key } from './shared';
+import type { EditInstructions } from '.';
 
 export * from './shared';
 
+Component.getDefaultState = (
+  data: EditInstructions
+): Record<string, SelectionItem[]> => {
+  return {
+    [key]: data?.map((item) => ({
+      path: item.path,
+      selected: true,
+    })),
+  };
+};
+
 export function Component() {
   const { selection, setSelection } = useStructuredOutputContext();
-  const editSelection: SelectionItem[] = selection.edit_instructions || [];
+  const editSelection: SelectionItem[] = selection[key] || [];
   const { message } = useAssistantMessageContext();
-  const files = message.metadata?.resolved?.edit_instructions || [];
-  const git = message.metadata?.diffs?.edit_instructions || [];
+  const files = message.metadata?.resolved?.[key] || [];
+  const git = message.metadata?.diffs?.[key] || [];
 
   return (
     <>

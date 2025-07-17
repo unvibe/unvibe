@@ -3,14 +3,17 @@ import {
   AssistantMessageContextProvider,
   useAssistantMessageContext,
 } from '@/lib/react/structured-output/assistant-message-context';
-import { StructuredOutputContextProvider } from '@/lib/react/structured-output/structured-output-context';
+import {
+  SelectionItem,
+  StructuredOutputContextProvider,
+} from '@/lib/react/structured-output/structured-output-context';
 import { useParams } from 'react-router';
 import { Markdown } from '~/modules/markdown/ui/Markdown';
 import clsx from 'clsx';
 import { HiOutlineDuplicate } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import { copyToClipboard } from '@/lib/browser/copy-to-clipboard';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 // import structured output components
 import * as ClientPlugins from '@/plugins/plugins-client';
@@ -87,19 +90,39 @@ export function ThreadDetailsAssistantMessage() {
   // if it's a structured output, we render the structured output component
   const contentString = JSON.stringify(value.message.metadata.parsed, null, 2);
 
-  const components = Object.keys(value.message.metadata.parsed).map(
-    (so_key) => {
-      return Object.values(ClientPlugins).find(({ Plugin }) => {
-        return Plugin.structuredOutput?.[so_key];
-      })?.Plugin.structuredOutput?.[so_key];
-    }
-  );
+  const components = useMemo(() => {
+    let defaultState: Record<string, SelectionItem[]> = {};
+
+    const _components = Object.keys(value?.message?.metadata?.parsed || {}).map(
+      (so_key) => {
+        return Object.values(ClientPlugins).find(({ Plugin }) => {
+          const component = Plugin.structuredOutput?.[so_key];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const getDefaultState = (component as any)?.getDefaultState;
+          if (typeof getDefaultState === 'function') {
+            const defaultSelection = getDefaultState(
+              value?.message?.metadata?.parsed[so_key]
+            );
+            if (defaultSelection) {
+              defaultState = { ...defaultState, ...defaultSelection };
+            }
+          }
+          return Plugin.structuredOutput?.[so_key];
+        })?.Plugin.structuredOutput?.[so_key];
+      }
+    );
+
+    return { components: _components, defaultState };
+  }, [value?.message?.metadata?.parsed]);
 
   return (
     <Wrapper copyableContent={contentString}>
-      <StructuredOutputContextProvider data={value.message.metadata.parsed}>
+      <StructuredOutputContextProvider
+        data={value.message.metadata.parsed}
+        defaultState={components.defaultState}
+      >
         <div className='grid gap-2'>
-          {components.map((Component, index) => {
+          {components.components.map((Component, index) => {
             if (!Component) {
               console.warn(`Structured output component not found`);
               return null;

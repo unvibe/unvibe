@@ -124,13 +124,12 @@ export const createTool: CreateTool = ({ project }) => {
               {
                 keys: ['text'],
                 includeScore: true,
-                threshold: 0.3,
                 isCaseSensitive: caseSensitive,
+                threshold: 0.5,
+                minMatchCharLength: 5,
               }
             );
-            const matches = fuse
-              .search(symbol, { limit: 50 })
-              .filter((m) => m.score! < 0.3);
+            const matches = fuse.search(symbol, { limit: 50 });
             for (const m of matches) {
               const idx = m.item.idx;
               results.push({

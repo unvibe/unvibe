@@ -4,15 +4,28 @@ import {
   useStructuredOutputContext,
   SelectionItem,
 } from '@/lib/react/structured-output/structured-output-context';
+import { key } from './shared';
+import type { CodemodScripts } from '.';
 
 export * from './shared';
 
+Component.getDefaultState = (
+  data: CodemodScripts
+): Record<string, SelectionItem[]> => {
+  return {
+    [key]: data?.map((item) => ({
+      path: item.path,
+      selected: true,
+    })),
+  };
+};
+
 export function Component() {
   const { selection, setSelection } = useStructuredOutputContext();
-  const codemodSelection: SelectionItem[] = selection.codemod_scripts || [];
+  const codemodSelection: SelectionItem[] = selection?.[key] || [];
   const { message } = useAssistantMessageContext();
-  const files = message.metadata?.resolved?.codemod_scripts || [];
-  const git = message.metadata?.diffs?.codemod_scripts || [];
+  const files = message.metadata?.resolved?.[key] || [];
+  const git = message.metadata?.diffs?.[key] || [];
 
   return (
     <>

@@ -172,6 +172,8 @@ export async function parseProject(
               key: entry.key,
               resolve: entry.resolveFiles,
               apply: entry.apply,
+              resolvable: typeof entry.resolveFiles === 'function',
+              applyable: typeof entry.apply === 'function',
             }))
           );
         }

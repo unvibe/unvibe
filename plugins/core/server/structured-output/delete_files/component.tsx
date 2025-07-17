@@ -1,14 +1,30 @@
 import { ThreadDetailsMessageListItemFile } from '@/lib/react/structured-output/virtual-file';
 import { useAssistantMessageContext } from '@/lib/react/structured-output/assistant-message-context';
-import { useStructuredOutputContext } from '@/lib/react/structured-output/structured-output-context';
+import {
+  SelectionItem,
+  useStructuredOutputContext,
+} from '@/lib/react/structured-output/structured-output-context';
+import { key } from './shared';
+import type { DeleteFiles } from '.';
 
 export * from './shared';
+
+Component.getDefaultState = (
+  data: DeleteFiles
+): Record<string, SelectionItem[]> => {
+  return {
+    [key]: data?.map((item) => ({
+      path: item.path,
+      selected: true,
+    })),
+  };
+};
 
 export function Component() {
   const { selection, setSelection } = useStructuredOutputContext();
   const { message } = useAssistantMessageContext();
-  const files = message.metadata?.resolved?.delete_files || [];
-  const deleteSelection = selection.delete_files || [];
+  const files = message.metadata?.resolved?.[key] || [];
+  const deleteSelection = selection?.[key] || [];
 
   return (
     <>

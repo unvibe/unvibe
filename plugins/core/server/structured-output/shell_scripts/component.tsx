@@ -1,13 +1,29 @@
 import { TbTerminal } from 'react-icons/tb';
 import { Checkbox } from '@/lib/ui';
-import { useStructuredOutputContext } from '@/lib/react/structured-output/structured-output-context';
+import {
+  SelectionItem,
+  useStructuredOutputContext,
+} from '@/lib/react/structured-output/structured-output-context';
+import { key } from './shared';
+import type { ShellScripts } from '.';
 
 export * from './shared';
 
+Component.getDefaultState = (
+  data: ShellScripts
+): Record<string, SelectionItem[]> => {
+  return {
+    [key]: data?.map((item) => ({
+      path: item,
+      selected: true,
+    })),
+  };
+};
+
 export function Component() {
   const { data, selection, setSelection } = useStructuredOutputContext();
-  const scripts = data.shell_scripts || [];
-  const scriptSelection = selection.shell_scripts || [];
+  const scripts = (data?.[key] || []) as ShellScripts;
+  const scriptSelection = selection?.[key] || [];
 
   if (!Array.isArray(scripts) || scripts.length === 0) return null;
 

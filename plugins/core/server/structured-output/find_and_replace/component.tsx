@@ -4,15 +4,28 @@ import {
   useStructuredOutputContext,
   SelectionItem,
 } from '@/lib/react/structured-output/structured-output-context';
+import { key } from './shared';
+import type { FindAndReplace } from '.';
 
 export * from './shared';
 
+Component.getDefaultState = (
+  data: FindAndReplace[]
+): Record<string, SelectionItem[]> => {
+  return {
+    [key]: data?.map((item) => ({
+      path: item.path,
+      selected: true,
+    })),
+  };
+};
+
 export function Component() {
   const { selection, setSelection } = useStructuredOutputContext();
-  const findSelection: SelectionItem[] = selection.find_and_replace || [];
+  const findSelection: SelectionItem[] = selection?.[key] || [];
   const { message } = useAssistantMessageContext();
-  const files = message.metadata?.resolved?.find_and_replace || [];
-  const git = message.metadata?.diffs?.find_and_replace || [];
+  const files = message.metadata?.resolved?.[key] || [];
+  const git = message.metadata?.diffs?.[key] || [];
 
   return (
     <>
