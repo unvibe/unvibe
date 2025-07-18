@@ -6,3 +6,4 @@ export * as get_file_metadata from './get_file_metadata';
 export * as fuzzy_search_files from './fuzzy_search_files';
 
 export * as node_scratch_pad from './node_scratch_pad';
+export * as memory from './memory';

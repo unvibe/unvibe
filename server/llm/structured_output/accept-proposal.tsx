@@ -8,6 +8,7 @@ import { useStructuredOutputContext } from '@/lib/react/structured-output/struct
 import { useAPIMutation, useAPIQuery } from '@/server/api/client';
 import { useParams } from 'react-router';
 import { ProposalButton } from '@/lib/ui/button/proposal-button';
+import { useProject } from '~/modules/project/provider';
 
 const normalizePath = (p: string) => (p.startsWith('./') ? p : `./${p}`);
 
@@ -22,6 +23,7 @@ export function AcceptProposal() {
   const { data: thread, refetch } = useAPIQuery('GET /threads/details', {
     id: messageContext.message.thread_id,
   });
+  const project = useProject();
 
   const metadata = messageContext.message.metadata;
   const selection = structuredOutputContext.selection;
@@ -40,9 +42,18 @@ export function AcceptProposal() {
       });
     });
 
+  const hasAppliicableActions = Object.keys(
+    messageContext.message.metadata?.parsed || {}
+  ).some((so_key) => {
+    const sourceOfSOKey = project.registeredStructuredOutput.find(
+      (one) => so_key === one.key && (one.applyable || one.resolvable)
+    );
+    return sourceOfSOKey !== undefined;
+  });
+
   const show =
     Object.values(messageContext.message.metadata?.resolved || {}).flat()
-      .length > 0;
+      .length > 0 || hasAppliicableActions;
 
   if (!show) return null;
 

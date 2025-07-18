@@ -6,7 +6,6 @@ import {
   useContext,
   useState,
 } from 'react';
-import { useProject } from '~/modules/project/provider';
 
 export type SelectionItem = {
   path: string;
@@ -42,17 +41,10 @@ export function StructuredOutputContextProvider({
   data: StructuredOutput;
   defaultState?: ProposalSelection;
 }) {
-  const project = useProject();
-  const registeredStructuredOutput = project.registeredStructuredOutput || [];
-  // Initialize selection state based on proposal structure
   const [selection, setSelection] = useState<ProposalSelection>(
     defaultState || DEFAULT_SELECTION
   );
 
-  console.log(
-    Object.keys(data),
-    registeredStructuredOutput.filter(({ key }) => key in data)
-  );
   return (
     <StructuredOutputContext.Provider value={{ data, selection, setSelection }}>
       {children}

@@ -90,6 +90,7 @@
     "@shikijs/monaco": "^3.4.2",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/vite": "^4.1.4",
+    "@types/babel__traverse": "^7.20.7",
     "@types/diff": "^7.0.2",
     "@types/js-cookie": "^3.0.6",
     "@types/jscodeshift": "^17.3.0",

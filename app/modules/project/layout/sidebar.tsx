@@ -18,6 +18,7 @@ import { SidebarPluginsList } from '../plugins-context/sidebar-plugins-list';
 import { SidebarThemesList } from '../themes/sidebar-themes-list';
 import { SidebarIcon, SidebarIconsGroup } from '../lib/sidebar-icon';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
+import { SidebarVisualList } from '../visual/sidebar-visual-list';
 
 export function ProjectLayoutSidebar() {
   const pathname = usePathname();
@@ -35,7 +36,7 @@ export function ProjectLayoutSidebar() {
     [pathname, url]
   );
   const active = useMemo<
-    'threads' | 'archive' | 'tools' | 'plugins' | 'files' | 'themes'
+    'threads' | 'archive' | 'tools' | 'plugins' | 'files' | 'themes' | 'visual'
   >(() => {
     if (compUrl('archive')) return 'archive';
     if (compUrl('threads')) return 'threads';
@@ -43,6 +44,7 @@ export function ProjectLayoutSidebar() {
     if (compUrl('plugins')) return 'plugins';
     if (compUrl('files')) return 'files';
     if (compUrl('themes')) return 'themes';
+    if (compUrl('visual')) return 'visual';
     return 'threads';
   }, [compUrl]);
 
@@ -60,6 +62,8 @@ export function ProjectLayoutSidebar() {
         return SidebarPluginsList;
       case 'themes':
         return SidebarThemesList;
+      case 'visual':
+        return SidebarVisualList;
       default:
         return null;
     }
@@ -90,16 +94,6 @@ export function ProjectLayoutSidebar() {
             />
           </SidebarIconsGroup>
           <SidebarIconsGroup>
-            {/* <SidebarIcon
-              Icon={TiSpannerOutline}
-              href={url('tools')}
-              active={compUrl('tools')}
-            />
-            <SidebarIcon
-              Icon={TiDocumentText}
-              href={url('system')}
-              active={compUrl('system')}
-            /> */}
             <SidebarIcon
               Icon={TbAdjustmentsHorizontal}
               href={url('plugins')}

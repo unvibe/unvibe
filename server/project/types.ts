@@ -17,6 +17,11 @@ export interface ProjectPlugin {
   }[];
 }
 
+export type UIEntryPoint = {
+  path: string;
+  file: string;
+};
+
 export interface BaseProject {
   path: string;
   size: number;
@@ -27,6 +32,8 @@ export interface BaseProject {
   registeredStructuredOutput: {
     key: string;
     description: string;
+    // ? -----------------------------------------------------------------------
+    // ? theses two function are not serializable, so we use them only in server
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolve?: (data: any, source: VirtualFile[]) => Promise<VirtualFile[]>;
     apply?: (
@@ -36,7 +43,11 @@ export interface BaseProject {
       selections: { path: string; selected: boolean }[],
       resolved?: VirtualFile[]
     ) => Promise<{ path: string; status: 'success' | 'error' }[]>;
+    // ? -----------------------------------------------------------------------
+    resolvable: boolean;
+    applyable: boolean;
   }[];
+  UIEntryPoints: Record<string /* plugin.id */, UIEntryPoint[]>;
   // -- remove later
   EXPENSIVE_REFACTOR_LATER_content: Record<string, string>;
 }

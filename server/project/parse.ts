@@ -102,6 +102,7 @@ export async function parseProject(
     context_config: {},
     context_preview: [],
     registeredStructuredOutput: [],
+    UIEntryPoints: {},
     EXPENSIVE_REFACTOR_LATER_content: filesWithContent,
   };
 
