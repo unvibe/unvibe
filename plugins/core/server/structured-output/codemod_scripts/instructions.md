@@ -1,7 +1,7 @@
 **codemod_scripts**: An array of codemod scripts to run against files. Each specifies a path, language, and script.
 only supported languages are javascript and typescript (js|jsx|ts|tsx).
 
-it's also another way to suggest edits to a file, so for example the user would want a certain change to be made, you can use this to suggest that change.
+it's also another way to suggest edits to a file (js,jsx,ts,tsx ONLY), so for example the user would want a certain change to be made, you can use this to suggest that change.
 
 the user wouldn't know about the codemod at all, they would just see the file with the change applied.
 

@@ -7,6 +7,18 @@
 
 Run llms in your local projects and files with full configuration and control over context
 
+## Features
+
+- 🧠 Memory-first: Remembers key project context and conversation threads to improve responses
+- 🔗 Automatic context: Plugins auto-detect relevant files, dependencies, and history for smarter suggestions
+- 🛠️ Custom tools: Extend Unvibe with your own developer tools and integrations
+- 📜 Custom system instructions: Fine-tune assistant behavior and problem-solving style
+- 🧑‍💻 Deep diagnostics: Git, TypeScript, and ESLint integration for actionable insights
+- 🎨 Visual mode: Iterate on UI visually and preview changes in real time
+- 📂 Files mode: See before/after code edits and review changes safely
+- 🌈 Theming: Personalize with custom colors, fonts, and editor styles
+- ⚡ Easy model swapping: Add and configure new LLMs with minimal setup
+
 ## Requirements
 
 - **Node.js**: requires Node.js version 23 or higher.
@@ -128,6 +140,7 @@ There's a lot of rough edges throughout the app, this is an experimental phase, 
 - [ ] Make next.js plugin
 - [ ] Make react-router plugin
 - [ ] Show Structured Output status (outdated/accepted/...)
+- [ ] Autocomplete file paths in the `llm-input` component
 
 ## Contributing
 
