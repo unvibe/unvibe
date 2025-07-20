@@ -5,8 +5,12 @@ import * as llm from '@/server/llm';
 
 export const config = make({
   name: 'project_memory',
-  description: `Store and retrieve persistent project memory using embeddings. All data is stored in .unvibe/<project-id>/memory.json with semantic search.`,
-  usage: `**project_memory**: Add or search for persistent memories by semantic embedding.\n\nParams:\n- action (string): 'add' | 'search'.\n- text (string): The memory to store or the query.\n- topK (number, optional): Number of top results when searching.\n- projectId (string): Unique project identifier.`,
+  description: `Store and retrieve persistent project memory using embeddings. All data is stored in .unvibe/<project-id>/memory.json with semantic search.
+
+AI Assistant Guidance: When a user references or alludes to previous conversations, project decisions, or past events (e.g., 'Do you remember when...', 'Have we discussed...'), automatically search the project memory for relevant context before responding. Do NOT wait for explicit instructions like 'search memory'—be proactive in surfacing relevant past information.`,
+  usage: `**project_memory**: Add or search for persistent memories by semantic embedding.\n\nParams:\n- action (string): 'add' | 'search'.\n- text (string): The memory to store or the query.\n- topK (number, optional): Number of top results when searching.\n- projectId (string): Unique project identifier.
+
+AI Assistant Note: Whenever a user references a previous conversation, proactively search project memory for relevant context.`,
   parameters: {
     action: {
       type: 'string',

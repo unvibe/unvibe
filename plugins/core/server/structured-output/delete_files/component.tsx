@@ -39,14 +39,12 @@ export function Component() {
             git={git}
             icon={
               <span className='w-4 h-4 border-2 border-rose-600 flex relative'>
-                <div className='rotate-45 absolute inset-0'>
-                  <span className='absolute inset-0 flex items-center justify-center'>
-                    <span className='w-0.5 h-2 bg-rose-600 rotate-90' />
-                  </span>
-                  <span className='absolute inset-0 flex items-center justify-center'>
-                    <span className='w-0.5 h-2 bg-rose-600' />
-                  </span>
-                </div>
+                <span className='absolute inset-0 flex items-center justify-center'>
+                  <span className='w-0.5 h-2 bg-rose-600 rotate-90' />
+                </span>
+                <span className='absolute inset-0 flex items-center justify-center'>
+                  <span className='w-0.5 h-2 bg-rose-600' />
+                </span>
               </span>
             }
             key={file.path + i.toString()}

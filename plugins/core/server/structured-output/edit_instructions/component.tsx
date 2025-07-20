@@ -63,7 +63,10 @@ export function Component() {
             icon={
               <span className='w-4 h-4 border-2 border-blue-600 flex relative'>
                 <span className='absolute inset-0 flex items-center justify-center'>
-                  <span className='w-2 h-2 bg-blue-300 rounded-full' />
+                  <span className='w-0.5 h-2 bg-blue-600 rotate-90' />
+                </span>
+                <span className='absolute inset-0 flex items-center justify-center'>
+                  <span className='w-0.5 h-2 bg-blue-600' />
                 </span>
               </span>
             }
