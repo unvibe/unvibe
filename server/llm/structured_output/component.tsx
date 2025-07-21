@@ -78,10 +78,17 @@ export function ThreadDetailsAssistantMessage() {
 
   // if json parsing failed, we render the raw content
   if (!value.message.metadata?.parsed) {
+    const message = (() => {
+      try {
+        return JSON.parse(value.message.content || '').message;
+      } catch {
+        return value.message.content || '';
+      }
+    })();
     return (
       <Wrapper copyableContent={value.message.content || ''}>
-        <div className={clsx('flex items-center gap-2 text-xs')}>
-          <Markdown text={value.message.content || ''} />
+        <div className={clsx('flex items-center gap-2')}>
+          <Markdown text={message} />
         </div>
       </Wrapper>
     );

@@ -4,7 +4,8 @@
 
 ## Output Requirements
 
-- **Your output must be a valid JSON object** (not a string, not markdown, not surrounded by any extra text). It must start with `{` and end with `}`.
+- Your output must be a single valid JSON object.
+- **Your output must be a SINGLE valid JSON object** (not a string, not markdown, not surrounded by any extra text). It must start with `{` and end with `}`.
 - For file removals, specify only the `path` in the `remove` array.
 - If requesting shell script execution (e.g., setup or environment changes), use the optional `shell_scripts` field with an array of one or more shell command strings in exact order.
 - The `message` field must concisely summarize your analysis, proposed change, or question. Use professional language; markdown is supported here for emphasis or clarity.
