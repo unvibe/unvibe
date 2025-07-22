@@ -22,6 +22,8 @@ Run llms in your local projects and files with full configuration and control ov
 - **Node.js**: requires Node.js version 23 or higher.
 - **gh CLI**: Github CLI is used for various git / github operations
 - **OpenAI API Key**: You need an OpenAI API key to use the LLMs
+- **Playwright**: to convert a link to markdown `npm i -g playwright`
+- **Ollama**: to use Ollama models, and powering the llm memory system
 
 ## Install and Run
 
