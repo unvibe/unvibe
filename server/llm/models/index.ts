@@ -19,8 +19,14 @@ import * as Qwen3 from './qwen3-latest';
 import * as DeepSeek from './deepseek-r1';
 import * as MoonshotKimi128k from './moonshot-kimi-128k';
 import * as MoonshotV1128k from './moonshot-v1-128k';
+import * as GPT5 from './chat-gpt-5';
+import * as GPT5Mini from './chat-gpt-5-mini';
+import * as GPT5Nano from './chat-gpt-5-nano';
 
 export const models = {
+  GPT5,
+  GPT5Mini,
+  GPT5Nano,
   ChatGPT4_1Mini,
   ChatGPT4_1Nano,
   ChatGPT4_1,

@@ -17,41 +17,45 @@ export function ProjectVisualModeEntry({ url }: { url: string }) {
     if (typeof window === 'undefined') return;
 
     const updateUrl = () => {
-      if (iframeRef.current) {
-        setCurrentUrl(
-          iframeRef.current.contentWindow?.location.pathname || url
-        );
+      const win = iframeRef.current?.contentWindow;
+      if (!win) return;
+      try {
+        const { origin, pathname, search, hash } = win.location;
+        setCurrentUrl(`${origin}${pathname}${search}${hash}`);
+      } catch {
+        // cross-origin guard
       }
     };
 
-    // Patch pushState/replaceState in the iframe
     const patchHistory = () => {
       const win = node.contentWindow;
       if (!win) return;
       const origPushState = win.history.pushState;
       const origReplaceState = win.history.replaceState;
       win.history.pushState = function (...args) {
-        const ret = origPushState.apply(this, args);
+        const ret = origPushState.apply(this, args as never);
         win.dispatchEvent(new Event('urlchange'));
         return ret;
-      };
+      } as typeof win.history.pushState;
       win.history.replaceState = function (...args) {
-        const ret = origReplaceState.apply(this, args);
+        const ret = origReplaceState.apply(this, args as never);
         win.dispatchEvent(new Event('urlchange'));
         return ret;
-      };
+      } as typeof win.history.replaceState;
     };
+
+    const onLoad = () => {
+      updateUrl();
+      patchHistory();
+    };
+
     try {
-      node.addEventListener('load', () => {
-        updateUrl();
-        patchHistory();
-      });
+      node.addEventListener('load', onLoad);
       node.contentWindow?.addEventListener('popstate', updateUrl);
       node.contentWindow?.addEventListener('urlchange', updateUrl);
 
-      // Cleanup
       return () => {
-        node.removeEventListener('load', updateUrl);
+        node.removeEventListener('load', onLoad);
         node.contentWindow?.removeEventListener('popstate', updateUrl);
         node.contentWindow?.removeEventListener('urlchange', updateUrl);
       };
@@ -74,9 +78,7 @@ export function ProjectVisualModeEntry({ url }: { url: string }) {
               className='p-2 cursor-pointer bg-background-1/50 rounded-xl'
               onClick={(e) => {
                 e.stopPropagation();
-                if (iframeRef.current) {
-                  iframeRef.current.contentWindow?.history.back();
-                }
+                iframeRef.current?.contentWindow?.history.back();
               }}
             >
               <HiArrowLongLeft className='w-5 h-5 text-foreground-2' />
@@ -85,9 +87,7 @@ export function ProjectVisualModeEntry({ url }: { url: string }) {
               className='p-2 cursor-pointer bg-background-1/50 rounded-xl'
               onClick={(e) => {
                 e.stopPropagation();
-                if (iframeRef.current) {
-                  iframeRef.current.contentWindow?.history.forward();
-                }
+                iframeRef.current?.contentWindow?.history.forward();
               }}
             >
               <HiArrowLongRight className='w-5 h-5 text-foreground-2' />
@@ -98,18 +98,21 @@ export function ProjectVisualModeEntry({ url }: { url: string }) {
               <HiChevronDown className='w-5 h-5' />
             </button>
             <input
-              defaultValue={url}
-              value={url}
+              value={currentUrl}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
-                  if (iframeRef.current) {
-                    iframeRef.current.contentWindow?.history.pushState(
-                      {},
-                      '',
-                      currentUrl
-                    );
-                    iframeRef.current.contentWindow?.location.reload();
+                  const win = iframeRef.current?.contentWindow;
+                  if (!win) return;
+                  try {
+                    // If user entered a relative path, keep same origin
+                    const next = currentUrl.startsWith('http')
+                      ? currentUrl
+                      : new URL(currentUrl, win.location.origin).toString();
+                    win.history.pushState({}, '', next);
+                    win.location.reload();
+                  } catch (err) {
+                    console.error('Navigation error:', err);
                   }
                 }
               }}
@@ -125,22 +128,18 @@ export function ProjectVisualModeEntry({ url }: { url: string }) {
             className='p-2 cursor-pointer bg-background-1/50 rounded-xl'
             onClick={(e) => {
               e.stopPropagation();
-              if (iframeRef.current) {
-                iframeRef.current.contentWindow?.location.reload();
-              }
+              iframeRef.current?.contentWindow?.location.reload();
             }}
           >
             <HiArrowPath className='w-5 h-5 text-foreground-2' />
           </button>
-          {/* <button
-            className='p-2 rounded-full bg-background-1/50 shrink-0 cursor-pointer'
-            // onClick={closeModal}
-          >
-            <HiXMark className='w-6 h-6' />
-          </button> */}
         </div>
       </div>
-      <iframe ref={onIframe} src={url} className='w-full h-[calc(100%-60px)]' />
+      <iframe
+        ref={onIframe}
+        src={currentUrl}
+        className='w-full h-[calc(100%-60px)]'
+      />
     </div>
   );
 }

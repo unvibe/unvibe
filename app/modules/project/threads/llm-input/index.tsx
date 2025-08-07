@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import { HiChevronDown } from 'react-icons/hi2';
 
@@ -11,6 +11,8 @@ import ModelsSelector from './models-selector';
 import { ThreadInputBox } from './thread-input-box';
 import { useHomeInfo } from '~/modules/root-providers/home-info';
 import { AWS_KEYS } from '~/routes/(home)/home/environment/useEnvironmentStatus';
+import { useAPIMutation } from '@/server/api/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function StartThreadInput({
   onSubmit,
@@ -18,11 +20,13 @@ export function StartThreadInput({
   placeholder = 'Make a BMI calculator',
   initialContextConfig,
   currentModelId,
+  threadId,
 }: {
   isPending: boolean;
   placeholder?: string;
   initialContextConfig?: Record<string, boolean>;
   currentModelId?: string;
+  threadId?: string;
   onSubmit: (value: {
     prompt: string;
     images: string[];
@@ -84,6 +88,63 @@ export function StartThreadInput({
 
   const _models = Object.values(models.raw);
   const { env } = useHomeInfo();
+
+  // Persist model changes for existing threads
+  const queryClient = useQueryClient();
+  const prevModelRef = useRef<string | undefined>(undefined);
+
+  const { mutate: updateModelMutate } = useAPIMutation(
+    'POST /threads/update-model',
+    {
+      onMutate: async (variables) => {
+        const queryKey = ['GET /threads/details', { id: variables.id }];
+        await queryClient.cancelQueries({ queryKey });
+        const previous = queryClient.getQueryData(queryKey);
+        queryClient.setQueryData(queryKey, (old: any) => {
+          return {
+            ...old,
+            thread: {
+              ...old?.thread,
+              model_id: variables.model_id,
+            },
+          } as typeof old;
+        });
+        return { previous };
+      },
+      onError: (err, variables, context) => {
+        if (context?.previous) {
+          queryClient.setQueryData(
+            ['GET /threads/details', { id: variables.id }],
+            context.previous
+          );
+        }
+      },
+      onSettled: (_data, _err, variables) => {
+        if (variables?.id) {
+          queryClient.invalidateQueries({
+            queryKey: ['GET /threads/details', { id: variables.id }],
+          });
+        }
+      },
+    }
+  );
+
+  useEffect(() => {
+    // Initialize previous model to currentModelId on first render
+    if (prevModelRef.current === undefined) {
+      prevModelRef.current = currentModelId;
+      return;
+    }
+
+    // Only attempt to persist if this component is associated with an existing thread
+    if (!threadId) return;
+
+    if (selectedModel !== prevModelRef.current) {
+      updateModelMutate({ id: threadId, model_id: selectedModel });
+      prevModelRef.current = selectedModel;
+    }
+  }, [selectedModel, threadId, currentModelId, updateModelMutate]);
+
   return (
     <>
       <ThreadInputBox

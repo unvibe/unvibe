@@ -21,7 +21,7 @@ export const listModels = createEndpoint({
   pathname: '/models',
   handler: async () => {
     return {
-      DEFAULT_MODEL: llm.models.ChatGPT4_1,
+      DEFAULT_MODEL: llm.models.GPT5Mini,
       raw: llm.models,
       runnerProviderMap,
       apiKeyProviderMap,

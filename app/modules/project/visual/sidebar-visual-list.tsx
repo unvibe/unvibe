@@ -1,10 +1,13 @@
 import { useProject } from '../provider';
 import { HiPlus } from 'react-icons/hi2';
 import { FaRegEye } from 'react-icons/fa';
+import { useParams } from '@/lib/next/navigation';
+import Link from '@/lib/next/link';
 
 export function SidebarVisualList() {
   const project = useProject();
   const uiEntries = project.UIEntryPoints;
+  const projectId = useParams().project_id as string;
 
   return (
     <div className='grid content-start overflow-y-auto h-full w-full overflow-x-hidden'>
@@ -27,19 +30,27 @@ export function SidebarVisualList() {
           <div key={plugin}>
             <div className='text-foreground-2 font-semibold'>{plugin}</div>
             <ul className='grid gap-1'>
-              {entries.map((entry) => (
-                <li
-                  key={entry.path}
-                  className='text-foreground-2 text-xs bg-background-2 p-1'
-                >
-                  {entry.path.startsWith('/') ? entry.path : '/' + entry.path}
-                  {entry.file && (
-                    <span className='text-foreground-3 ml-2'>
-                      ({entry.file})
-                    </span>
-                  )}
-                </li>
-              ))}
+              {entries
+                // avoid recursive visual path
+                .filter((entry) => !entry.path.includes('/visual'))
+                .map((entry) => {
+                  const path = entry.path.startsWith('/')
+                    ? entry.path
+                    : '/' + entry.path;
+                  const href = `/projects/${projectId}/visual?path=${encodeURIComponent(
+                    path
+                  )}`;
+                  return (
+                    <li key={entry.path} className='text-foreground-2 text-xs'>
+                      <Link
+                        href={href}
+                        className='block bg-background-2 p-1 rounded hover:bg-background-3 transition-colors'
+                      >
+                        {path}
+                      </Link>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         ))}

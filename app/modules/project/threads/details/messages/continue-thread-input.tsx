@@ -89,6 +89,7 @@ export function ContinueThreadInput() {
       placeholder='Continue the conversation...'
       initialContextConfig={data?.thread?.context_config || undefined}
       currentModelId={data?.thread?.model_id}
+      threadId={threadId}
       onSubmit={({
         prompt,
         images,
