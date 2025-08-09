@@ -2,7 +2,13 @@ import { useAPIQuery } from '@/server/api/client';
 import { ThreadDetailsHeader } from './header';
 import { ThreadDetailsMessageList } from './messages/thread-details-message-list';
 
-export function ThreadDetails({ id }: { id: string }) {
+export function ThreadDetails({
+  id,
+  withInput = true,
+}: {
+  id: string;
+  withInput?: boolean;
+}) {
   const { data } = useAPIQuery('GET /threads/details', {
     id,
   });
@@ -12,7 +18,11 @@ export function ThreadDetails({ id }: { id: string }) {
   return (
     <div className='w-full block h-screen'>
       <ThreadDetailsHeader />
-      <ThreadDetailsMessageList threadId={id} messages={thread?.messages} />
+      <ThreadDetailsMessageList
+        threadId={id}
+        messages={thread?.messages}
+        withInput={withInput}
+      />
     </div>
   );
 }

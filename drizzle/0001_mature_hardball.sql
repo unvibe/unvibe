@@ -1,0 +1,1 @@
+ALTER TABLE `threads` ADD `type` text DEFAULT 'thread' NOT NULL;

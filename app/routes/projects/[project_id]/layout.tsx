@@ -29,13 +29,14 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const project = loaderData.project;
+
   return (
     <ProjectProvider project={project}>
       <div className='flex w-full h-screen'>
         <aside className='w-[360px] h-screen overflow-hidden grid shrink-0'>
           <ProjectLayoutSidebar />
         </aside>
-        <main className='w-full max-w-full overflow-x-hidden'>
+        <main className='w-full max-w-full overflow-x-hidden flex-1'>
           <Outlet />
         </main>
       </div>

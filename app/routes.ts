@@ -47,10 +47,17 @@ export default [
         'routes/projects/[project_id]/files/[encoded]/page.tsx'
       ),
       // visual mode
-      route(
-        '/projects/:project_id/visual',
-        'routes/projects/[project_id]/visual/page.tsx'
-      ),
+      layout('routes/projects/[project_id]/visual/layout.tsx', [
+        route(
+          '/projects/:project_id/visual',
+          'routes/projects/[project_id]/visual/page.tsx'
+        ),
+        // visual mode threads
+        route(
+          '/projects/:project_id/visual/:id',
+          'routes/projects/[project_id]/visual/[id]/page.tsx'
+        ),
+      ]),
       // plugins
       route(
         '/projects/:project_id/plugins',

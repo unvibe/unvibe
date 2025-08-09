@@ -11,6 +11,7 @@ import { Project } from '@/server/project/types';
 import { loadPlugins } from '../structured_output/transform';
 import { db } from '@/server/db';
 import { StructuredOutputEntry } from '@/plugins/_types/plugin.server';
+import { wrapInstructions } from '../structured_output';
 
 function fromThreadMessageToAbstractContextMessage(
   message: Message
@@ -267,35 +268,45 @@ export class Context {
       .filter((value) => !!value)
       .join('\n');
 
-    const systemString =
-      pluginsContexts
-        .map((pluginContext) => {
-          const systemParts = pluginContext.system;
-          const filteredParts = Object.entries(systemParts)
-            .filter(([key]) => {
-              const configKey = `system/${pluginContext.id}/${key}`;
-              if (configKey in config) {
-                return config[configKey] !== false;
-              }
-              // If the config key does not exist, we assume the system part is enabled by default
-              return true;
-            })
-            .map(([, value]) => value)
-            .join('\n');
+    const pluginsSystem = pluginsContexts
+      .map((pluginContext) => {
+        const systemParts = pluginContext.system;
+        const filteredParts = Object.entries(systemParts)
+          .filter(([key]) => {
+            const configKey = `system/${pluginContext.id}/${key}`;
+            if (configKey in config) {
+              return config[configKey] !== false;
+            }
+            // If the config key does not exist, we assume the system part is enabled by default
+            return true;
+          })
+          .map(([, value]) => value)
+          .join('\n');
 
-          return filteredParts;
-        })
-        .join('\n') +
-      customSystem +
-      '\n' +
+        return filteredParts;
+      })
+      .join('\n');
+
+    const structuredOutputSystem = wrapInstructions(
       pluginsContexts
         .map((pc) => pc.structuredOutput)
         .filter((so): so is StructuredOutputEntry[] => Array.isArray(so))
         .map((soArray) => {
           return soArray.map((s) => s.instructions).join('\n');
         })
-        .join('\n');
+        .join('\n')
+    );
 
+    const systemString = pluginsSystem + customSystem + structuredOutputSystem;
+
+    console.log(
+      '-------------------------------------------------------------'
+    );
+    console.log('FULL SYSTEM PROMPT');
+    console.log(systemString);
+    console.log(
+      '-------------------------------------------------------------'
+    );
     // 4. set the tools and system parts
     this.setTools(tools);
     this.append.system({ content: systemString });

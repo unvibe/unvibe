@@ -14,10 +14,12 @@ export function ThreadDetailsMessageList({
   messages,
   threadId,
   agentId,
+  withInput = true,
 }: {
   messages?: Message[];
   threadId: string;
   agentId?: string;
+  withInput?: boolean;
 }) {
   const tagged = useBackedLogStore((state) => state.tagged);
   const format = useBackedLogStore((state) => state.format);
@@ -107,7 +109,7 @@ export function ThreadDetailsMessageList({
               )}
             </div>
           )}
-          <ContinueThreadInput></ContinueThreadInput>
+          {withInput && <ContinueThreadInput></ContinueThreadInput>}
         </div>
       </div>
     </div>

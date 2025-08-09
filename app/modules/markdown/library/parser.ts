@@ -14,8 +14,14 @@ export function parseMarkdownSync(markdown: string, theme: string): string {
     },
   });
 
-  // markdown-it is synchronous
-  return md.render(markdown);
+  try {
+    // markdown-it is synchronous
+    return md.render(markdown);
+  } catch (error) {
+    console.error('Error parsing markdown:', error);
+    console.error('Markdown content:', markdown);
+    return '';
+  }
 }
 
 export function parseMarkdown(

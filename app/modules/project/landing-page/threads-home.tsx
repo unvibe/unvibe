@@ -21,17 +21,24 @@ export function ThreadsHome() {
       onError: (_, __, context) => {
         const queryKey = getQueryKey('GET /threads/list', {
           projectId,
+          type: 'thread',
         });
         queryClient.setQueryData(queryKey, context.previousThreads);
       },
       // Always refetch after error or success:
       onSettled: () => {
-        const queryKey = getQueryKey('GET /threads/list', { projectId });
+        const queryKey = getQueryKey('GET /threads/list', {
+          projectId,
+          type: 'thread',
+        });
         queryClient.invalidateQueries({ queryKey });
       },
       onMutate: async (variables) => {
         // optimistically update the thread list
-        const queryKey = getQueryKey('GET /threads/list', { projectId });
+        const queryKey = getQueryKey('GET /threads/list', {
+          projectId,
+          type: 'thread',
+        });
         await queryClient.cancelQueries({ queryKey: queryKey });
 
         const previousThreads =
@@ -47,6 +54,7 @@ export function ThreadsHome() {
               ...(old?.threads || []),
               {
                 id: variables.id,
+                type: 'thread',
                 project_id: projectId,
                 pinned: false,
                 archived: false,

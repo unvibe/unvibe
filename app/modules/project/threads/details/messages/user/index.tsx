@@ -5,6 +5,7 @@ import { HiOutlineDuplicate } from 'react-icons/hi';
 import { copyToClipboard } from '@/lib/browser/copy-to-clipboard';
 import { useState } from 'react';
 import { toast } from '@/lib/ui/notification';
+import { useParams, usePathname } from '@/lib/next/navigation';
 
 function CopyButton({ content }: { content: string }) {
   const [copied, setCopied] = useState(false);
@@ -29,11 +30,15 @@ function CopyButton({ content }: { content: string }) {
 export function ThreadDetailsMessageUser({ data }: ThreadDetailsMessageProps) {
   const parsedContent = data.content;
   const images = data.images_urls;
+  const projectId = useParams().project_id as string;
+  const isVisual = usePathname().startsWith(`/projects/${projectId}/visual`);
+  const width = isVisual ? 'w-full' : 'max-w-[70%] pe-4';
   return (
-    <div className={clsx('flex w-full justify-end pe-4 text-foreground-2')}>
+    <div className={clsx('flex w-full justify-end text-foreground-2')}>
       <div
         className={clsx(
-          'p-4 flex rounded-2xl max-w-[70%] overflow-hidden bg-background-1 group relative'
+          'p-4 flex rounded-2xl overflow-hidden bg-background-1 group relative',
+          width
         )}
       >
         <div className={clsx('whitespace-pre-wrap relative')}>

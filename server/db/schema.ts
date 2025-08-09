@@ -6,6 +6,7 @@ import { StructuredOutput } from '../llm/structured_output';
 // threads table definition
 export const threads = sqliteTable('threads', {
   id: text('id').primaryKey(),
+  type: text('type').default('thread').notNull().$type<'thread' | 'visual'>(),
   project_id: text('project_id').notNull(),
   title: text('title').notNull(),
   pinned: integer('pinned', { mode: 'boolean' }).notNull().default(false),

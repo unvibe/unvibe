@@ -31,9 +31,9 @@ export const Plugin: ServerPlugin = {
         StructuredOutputReplaceFiles,
         StructuredOutputDeleteFiles,
         StructuredOutputShellScripts,
-        StructuredOutputCodemodScripts,
-        StructuredOutputFindAndReplace,
-        StructuredOutputEditInstructions,
+        // StructuredOutputCodemodScripts,
+        // StructuredOutputFindAndReplace,
+        // StructuredOutputEditInstructions,
         StructuredOutputSuggestedActions,
       ],
     };

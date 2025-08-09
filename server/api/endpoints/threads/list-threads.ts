@@ -7,6 +7,7 @@ export const getThreads = createEndpoint({
   pathname: '/threads/list',
   params: z.object({
     projectId: z.string(),
+    type: z.enum(['thread', 'visual']).optional().default('thread'),
     archived: z
       .string()
       .transform((v) => v === 'true')
@@ -19,7 +20,11 @@ export const getThreads = createEndpoint({
       const threads = await db.query.threads.findMany({
         orderBy: (fields, { desc }) => desc(fields.created_at),
         where: (threads, { eq, and }) =>
-          and(eq(threads.archived, true), eq(threads.project_id, projectId)),
+          and(
+            eq(threads.archived, true),
+            eq(threads.project_id, projectId),
+            eq(threads.type, parsed.type)
+          ),
       });
 
       return { threads };
@@ -28,7 +33,11 @@ export const getThreads = createEndpoint({
     const threads = await db.query.threads.findMany({
       orderBy: (fields, { desc }) => desc(fields.created_at),
       where: (threads, { eq, and }) =>
-        and(eq(threads.archived, false), eq(threads.project_id, projectId)),
+        and(
+          eq(threads.archived, false),
+          eq(threads.project_id, projectId),
+          eq(threads.type, parsed.type)
+        ),
     });
 
     return { threads };

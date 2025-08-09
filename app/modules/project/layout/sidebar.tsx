@@ -18,7 +18,7 @@ import { SidebarPluginsList } from '../plugins-context/sidebar-plugins-list';
 import { SidebarThemesList } from '../themes/sidebar-themes-list';
 import { SidebarIcon, SidebarIconsGroup } from '../lib/sidebar-icon';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
-import { SidebarVisualList } from '../visual/sidebar-visual-list';
+import { SidebarVisualThreadList as SidebarVisualList } from '../threads/list/sidebar-visual-list';
 
 export function ProjectLayoutSidebar() {
   const pathname = usePathname();
@@ -111,9 +111,11 @@ export function ProjectLayoutSidebar() {
             active={compUrl('archive')}
           />
         </div>
-        <div className='border-2 border-border rounded-2xl overflow-hidden w-full bg-background-1'>
-          {Component && <Component />}
-        </div>
+        {Component && (
+          <div className='border-2 border-border rounded-2xl overflow-hidden w-full bg-background-1'>
+            <Component />
+          </div>
+        )}
       </div>
     </div>
   );

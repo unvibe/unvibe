@@ -10,6 +10,7 @@ export function SidebarArchiveList() {
   const { data } = useAPIQuery('GET /threads/list', {
     archived: true,
     projectId: useParams().project_id as string,
+    type: 'thread',
   });
 
   // Sort: pinned first, then newest

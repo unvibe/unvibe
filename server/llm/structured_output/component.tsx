@@ -18,6 +18,7 @@ import { useMemo, useState } from 'react';
 // import structured output components
 import * as ClientPlugins from '@/plugins/plugins-client';
 import { AcceptProposal } from './accept-proposal';
+import { usePathname } from '@/lib/next/navigation';
 
 function CopyButton({ content }: { content: string }) {
   const [copied, setCopied] = useState(false);
@@ -46,11 +47,15 @@ function Wrapper({
   children: React.ReactNode;
   copyableContent?: string;
 }) {
+  const projectId = useParams().project_id as string;
+  const isVisual = usePathname().startsWith(`/projects/${projectId}/visual`);
+  const width = isVisual ? 'w-full' : 'max-w-[70%] ps-4';
   return (
-    <div className={clsx('flex w-full justify-start ps-4')}>
+    <div className={clsx('flex w-full justify-start')}>
       <div
         className={clsx(
-          'p-4 flex rounded-2xl max-w-[70%] w-full group',
+          'p-4 flex rounded-2xl group',
+          width,
           'bg-background-2 relative'
         )}
       >
@@ -100,9 +105,9 @@ export function ThreadDetailsAssistantMessage() {
   const components = useMemo(() => {
     let defaultState: Record<string, SelectionItem[]> = {};
 
-    const _components = Object.keys(value?.message?.metadata?.parsed || {}).map(
-      (so_key) => {
-        return Object.values(ClientPlugins).find(({ Plugin }) => {
+    const _components = Object.keys(value?.message?.metadata?.parsed || {})
+      .map((so_key) => {
+        const target = Object.values(ClientPlugins).find(({ Plugin }) => {
           const component = Plugin.structuredOutput?.[so_key];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const getDefaultState = (component as any)?.getDefaultState;
@@ -115,9 +120,28 @@ export function ThreadDetailsAssistantMessage() {
             }
           }
           return Plugin.structuredOutput?.[so_key];
-        })?.Plugin.structuredOutput?.[so_key];
-      }
-    );
+        });
+
+        if (target) {
+          return target.Plugin.structuredOutput?.[so_key];
+        }
+
+        return function Fallback() {
+          return (
+            <div>
+              <strong>{so_key}</strong>
+              <Markdown
+                text={JSON.stringify(
+                  value?.message?.metadata?.parsed[so_key],
+                  null,
+                  2
+                )}
+              />
+            </div>
+          );
+        };
+      })
+      .filter(Boolean);
 
     return { components: _components, defaultState };
   }, [value?.message?.metadata?.parsed]);

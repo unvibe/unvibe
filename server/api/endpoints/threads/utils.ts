@@ -83,6 +83,7 @@ export function createThread({
   title,
   workspaces,
   context_config = {},
+  type = 'thread',
 }: {
   id: string;
   projectId: string;
@@ -90,9 +91,11 @@ export function createThread({
   title: string;
   workspaces: string[];
   context_config: Record<string, boolean>;
+  type?: Thread['type'];
 }): Thread {
   return {
     id,
+    type,
     project_id: projectId,
     model_id: modelId,
     created_at: Date.now(),

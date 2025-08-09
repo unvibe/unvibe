@@ -8,13 +8,13 @@ import clsx from 'clsx';
 import { TiMessage } from 'react-icons/ti';
 import { MdPushPin } from 'react-icons/md';
 
-export function SidebarThreadList() {
+export function SidebarVisualThreadList() {
   const projectId = useParams().project_id;
   const { data, isFetching } = useAPIQuery(
     'GET /threads/list',
     {
       projectId: typeof projectId === 'string' ? projectId : '',
-      type: 'thread',
+      type: 'visual',
     },
     !!projectId
   );
@@ -81,12 +81,11 @@ function ThreadListCard({
   projectId: string;
 }) {
   const pathname = usePathname();
-  const isActive = pathname === `/projects/${projectId}/threads/${thread.id}`;
+  const isVisual = pathname.startsWith(`/projects/${projectId}/visual`);
+  const href = `/projects/${projectId}/${isVisual ? 'visual' : 'threads'}/${thread.id}`;
+  const isActive = pathname === href;
   return (
-    <Link
-      href={`/projects/${projectId}/threads/${thread.id}`}
-      className='group'
-    >
+    <Link href={href} className='group'>
       <div
         className={clsx(
           isActive ? 'bg-background-2 text-foreground-1' : 'text-foreground-2',
