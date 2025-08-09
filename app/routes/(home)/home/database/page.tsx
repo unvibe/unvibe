@@ -3,7 +3,7 @@ import { ProjectVisualModeEntry } from '~/modules/project/visual/visual-mode-ent
 export default function HomeDatabasePage() {
   return (
     <div className='w-full h-full overflow-hidden flex items-stretch border border-border'>
-      <ProjectVisualModeEntry url='https://local.drizzle.studio' />
+      <ProjectVisualModeEntry src='https://local.drizzle.studio' />
     </div>
   );
 }

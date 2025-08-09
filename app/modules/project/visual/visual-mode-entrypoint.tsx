@@ -5,17 +5,19 @@ import {
   HiArrowPath,
   HiChevronDown,
 } from 'react-icons/hi2';
-import { useEffect, RefObject } from 'react';
+import { RefObject } from 'react';
 import { noop } from '@/lib/core/noop';
 
 export const ProjectVisualModeEntry = function ProjectVisualModeEntry({
   src,
   ref,
   onPathnameChange,
+  onReload,
 }: {
   src: string;
   ref?: RefObject<HTMLIFrameElement | null>;
   onPathnameChange?: (pathname: string) => void;
+  onReload?: () => void;
 }) {
   console.log(src);
   return (
@@ -66,13 +68,17 @@ export const ProjectVisualModeEntry = function ProjectVisualModeEntry({
             className='p-2 cursor-pointer bg-background-1/50 rounded-xl'
             onClick={(e) => {
               e.stopPropagation();
-              try {
-                if (ref?.current) {
-                  const src = ref?.current.src;
-                  ref.current.src = src; // force reload
+              if (onReload) {
+                onReload();
+              } else {
+                try {
+                  if (ref?.current) {
+                    const src = ref?.current.src;
+                    ref.current.src = src; // force reload
+                  }
+                } catch {
+                  // ignore
                 }
-              } catch {
-                // ignore
               }
             }}
           >

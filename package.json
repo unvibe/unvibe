@@ -59,7 +59,7 @@
     "mime": "^4.0.7",
     "monaco-vim": "^0.4.2",
     "ollama": "^0.5.15",
-    "openai": "^4.91.1",
+    "openai": "^4.104.0",
     "playwright": "^1.44.0",
     "prettier": "^3.5.3",
     "radix-ui": "^1.1.3",

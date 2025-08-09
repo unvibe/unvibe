@@ -8,6 +8,7 @@ import { useProject } from '~/modules/project/provider';
 import { useNavigate } from 'react-router';
 import { useLayoutContext } from './layout-context';
 import { captureScreenshot } from '~/modules/project/visual/visual-mode-entrypoint';
+import { NPMActionbarSection } from '@/plugins/npm/client/components/npm-actionbar-section';
 
 const CDN_URL = import.meta.env.VITE_CDN_URL;
 
@@ -239,6 +240,7 @@ export default function Page(_props: Route.ComponentProps) {
           <ConnectNotice />
         )}
         <div className='sticky bottom-8 z-50 p-2'>
+          <NPMActionbarSection />
           <StartThreadInput
             isPending={isCreating}
             onSubmit={(value) => {

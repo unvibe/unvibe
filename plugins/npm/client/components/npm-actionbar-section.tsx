@@ -126,6 +126,7 @@ function ScriptButton({
 export function NPMActionbarSection() {
   const project = useProject();
   const info = project.plugins[id].info;
+  console.log(info);
 
   const pkgJSON = JSON.parse(info.config);
   const scripts = pkgJSON?.scripts || {};

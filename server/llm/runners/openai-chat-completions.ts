@@ -324,6 +324,14 @@ async function run(
       ...(search_enabled ? { web_search_options: {} } : {}),
     });
 
+    console.log(
+      '--------------------------------------------------------------'
+    );
+    console.log('response', JSON.stringify(response, null, 2));
+    console.log(
+      '--------------------------------------------------------------'
+    );
+
     // update the context with the assistant's response
     _config.context.append.any(
       fromChatCompletionMessageToAbstractContextMessage(

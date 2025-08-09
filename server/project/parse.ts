@@ -113,10 +113,12 @@ export async function parseProject(
         .detect(baseProject)
         .then((result) => {
           if (result) {
+            const old = baseProject.plugins[plugin.id]?.info;
             baseProject.plugins[plugin.id] = {
               id: plugin.id,
               info: {
                 description: plugin.description,
+                ...old,
               },
               tools: [],
               sourceCodeHooks: [],
@@ -147,10 +149,12 @@ export async function parseProject(
   const contexts = await Promise.all(
     projectPlugins.map((plugin) =>
       plugin.createContext(baseProject).then((ctx) => {
+        const old = baseProject.plugins[plugin.id].info;
         baseProject.plugins[plugin.id] = {
           id: plugin.id,
           info: {
             description: plugin.description,
+            ...old,
           },
           sourceCodeHooks:
             plugin.sourceCodeHooks?.map((hook) => ({

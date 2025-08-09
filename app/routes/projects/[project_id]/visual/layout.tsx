@@ -17,6 +17,11 @@ function Layout({ children }: { children?: React.ReactNode }) {
         {port ? (
           <ProjectVisualModeEntry
             ref={iframeRef}
+            onReload={() => {
+              if (iframeRef.current) {
+                iframeRef.current.src = src;
+              }
+            }}
             src={src}
             onPathnameChange={(_pathname) => {
               setPathname(_pathname);
