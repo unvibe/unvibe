@@ -1,3 +1,4 @@
+import { BACKEND_WS_PORT } from '@/server/constants.vite';
 import { useEffect, useRef, useCallback, useState } from 'react';
 
 export interface SocketMessage {
@@ -30,7 +31,7 @@ export function onSocketUpdate(cb: SocketListener) {
 
 let retryCount = 0;
 const maxRetries = Infinity; // unlimited retries
-const url = 'ws://localhost:3006';
+const url = `ws://localhost:${BACKEND_WS_PORT}`;
 
 function connectSocket() {
   if (retryCount >= maxRetries) {

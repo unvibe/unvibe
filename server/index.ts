@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { startWebsocketServer } from './websocket/server';
 import { api } from './api';
 import { baseURL } from './api/constants';
+import { BACKEND_PORT, BACKEND_WS_PORT } from './constants';
 
 const app = new Hono();
 
@@ -65,8 +66,8 @@ app.all(`${baseURL}/*`, async (c) => {
   }
 });
 
-const port = 3008;
-console.log(`Hono server listening on http://localhost:${port}`);
+const port = BACKEND_PORT;
+const wsPort = BACKEND_WS_PORT;
 
-startWebsocketServer();
+startWebsocketServer(wsPort);
 serve({ fetch: app.fetch, port });

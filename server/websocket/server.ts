@@ -3,9 +3,9 @@ import { StructuredChatMessage } from './types';
 
 let websocketServerInstance: WebSocketServer | null = null;
 
-export function startWebsocketServer() {
+export function startWebsocketServer(port: number) {
   if (websocketServerInstance) return websocketServerInstance;
-  const wss = new WebSocketServer({ port: 3006 });
+  const wss = new WebSocketServer({ port });
   websocketServerInstance = wss;
 
   wss.on('connection', (ws) => {
@@ -26,7 +26,7 @@ export function startWebsocketServer() {
     });
   });
 
-  console.log('WebSocket server is running on ws://localhost:3006');
+  console.log(`WebSocket server is running on ws://localhost:${port}`);
   return wss;
 }
 

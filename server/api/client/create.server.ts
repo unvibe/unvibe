@@ -1,3 +1,4 @@
+import { BACKEND_PORT } from '@/server/constants.vite';
 import type { API } from '..';
 import type { InferParams } from '../create-endpoint';
 
@@ -10,7 +11,7 @@ export type Endpoints = {
   };
 };
 
-const host = 'http://localhost:3008';
+const host = `http://localhost:${BACKEND_PORT}`;
 
 // ------------------- 🔥 Typed Request Function ----------------------
 export function createClient(baseURL: string) {
